@@ -1,0 +1,1099 @@
+# Turkish translation for pil-modu.
+# Machine-assisted; native speakers are welcome to review.
+msgid ""
+msgstr ""
+"Project-Id-Version: pil-modu\n"
+"PO-Revision-Date: 2026-09-26 00:00+0000\n"
+"Last-Translator: pil-modu contributors\n"
+"Language-Team: Turkish\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/pil_modu/capabilities.py:126
+#, python-brace-format
+msgid "the EC does not support the “{fan}” fan mode"
+msgstr "EC “{fan}” fan modunu desteklemiyor"
+
+#: src/pil_modu/capabilities.py:128
+msgid "manual fan needs the msi-ec driver"
+msgstr "manuel fan için msi-ec sürücüsü gerekli"
+
+#: src/pil_modu/capabilities.py:130
+#, python-brace-format
+msgid "the built-in display only supports {hz} Hz"
+msgstr "dahili ekran yalnızca {hz} Hz destekliyor"
+
+#: src/pil_modu/cli.py:19
+msgid "Power modes for MSI laptops on KDE Plasma."
+msgstr "KDE Plasma'daki MSI dizüstüleri için güç modları."
+
+#: src/pil_modu/cli.py:21
+msgid "mode, restore, status, charge or doctor"
+msgstr "mod, geri, durum, sarj ya da doctor"
+
+#: src/pil_modu/cli.py:24
+msgid "charge: 60, 80 or 100 · passwordless: on or off"
+msgstr "sarj: 60, 80 ya da 100 · passwordless: on ya da off"
+
+#: src/pil_modu/cli.py:27
+msgid "external displays: auto, keep or off"
+msgstr "harici ekranlar: otomatik, koru ya da kapat"
+
+#: src/pil_modu/cli.py:29
+msgid "show the plan without changing anything"
+msgstr "hiçbir şeyi değiştirmeden planı göster"
+
+#: src/pil_modu/cli.py:31
+msgid "do not change the NVIDIA boot setting (used by automatic mode)"
+msgstr "NVIDIA açılış ayarını değiştirme (otomatik mod kullanır)"
+
+#: src/pil_modu/cli.py:41
+msgid "Selected mode:"
+msgstr "Seçilen mod:"
+
+#: src/pil_modu/cli.py:41
+msgid "none yet"
+msgstr "henüz yok"
+
+#: src/pil_modu/cli.py:42
+msgid "Power profile:"
+msgstr "Güç profili:"
+
+#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:145
+#: src/pil_modu/ui/window.py:351
+msgid "on"
+msgstr "açık"
+
+#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:145
+#: src/pil_modu/ui/window.py:351
+msgid "off"
+msgstr "kapalı"
+
+#: src/pil_modu/cli.py:47
+msgid "brightness"
+msgstr "parlaklık"
+
+#: src/pil_modu/cli.py:52
+msgid "NVIDIA now:"
+msgstr "NVIDIA şu an:"
+
+#: src/pil_modu/cli.py:52
+msgid "no PCI device / disabled"
+msgstr "PCI aygıtı yok / devre dışı"
+
+#: src/pil_modu/cli.py:53
+msgid "NVIDIA next boot:"
+msgstr "NVIDIA sonraki açılış:"
+
+#: src/pil_modu/cli.py:53
+msgid "disabled"
+msgstr "devre dışı"
+
+#: src/pil_modu/cli.py:53
+msgid "available"
+msgstr "kullanılabilir"
+
+#: src/pil_modu/cli.py:57
+msgid "Battery:"
+msgstr "Pil:"
+
+#: src/pil_modu/cli.py:60 src/pil_modu/cli.py:131
+#: src/pil_modu/controller.py:138
+msgid "Charge limit:"
+msgstr "Şarj sınırı:"
+
+#: src/pil_modu/cli.py:61
+#, python-brace-format
+msgid "(charging resumes below {start}%)"
+msgstr "(%{start} altına inince şarj yeniden başlar)"
+
+#: src/pil_modu/cli.py:63
+msgid "Battery discharge power:"
+msgstr "Pil deşarj gücü:"
+
+#: src/pil_modu/cli.py:64
+msgid "Battery charge current power (not system usage):"
+msgstr "Pil şarj/akım gücü (sistem tüketimi değil):"
+
+#: src/pil_modu/cli.py:72
+msgid "yes"
+msgstr "var"
+
+#: src/pil_modu/cli.py:72
+msgid "NO"
+msgstr "YOK"
+
+#: src/pil_modu/cli.py:74
+msgid "Model"
+msgstr "Model"
+
+#: src/pil_modu/cli.py:75
+msgid "NO (display settings are skipped)"
+msgstr "YOK (ekran ayarları atlanır)"
+
+#: src/pil_modu/cli.py:76
+msgid "Display control (kscreen-doctor)"
+msgstr "Ekran ayarı (kscreen-doctor)"
+
+#: src/pil_modu/cli.py:77
+msgid "Brightness control"
+msgstr "Parlaklık ayarı"
+
+#: src/pil_modu/cli.py:78
+msgid "Panel refresh rates"
+msgstr "Panel yenileme hızları"
+
+#: src/pil_modu/cli.py:79
+#, python-brace-format
+msgid "yes · firmware {version}"
+msgstr "var · firmware {version}"
+
+#: src/pil_modu/cli.py:80
+msgid "NO (fan/EC settings are skipped; AUR: msi-ec-dkms-git)"
+msgstr "YOK (fan/EC ayarları atlanır; AUR: msi-ec-dkms-git)"
+
+#: src/pil_modu/cli.py:81
+msgid "EC modes"
+msgstr "EC modları"
+
+#: src/pil_modu/cli.py:82
+msgid "Fan modes"
+msgstr "Fan modları"
+
+#: src/pil_modu/cli.py:84
+msgid "CPU turbo control"
+msgstr "CPU turbo ayarı"
+
+#: src/pil_modu/cli.py:85 src/pil_modu/describe.py:77
+#: src/pil_modu/describe.py:92 src/pil_modu/describe.py:120
+msgid "Keyboard backlight"
+msgstr "Klavye ışığı"
+
+#: src/pil_modu/cli.py:86 src/pil_modu/describe.py:106
+#: src/pil_modu/ui/charge.py:37 src/pil_modu/ui/tray.py:32
+msgid "Charge limit"
+msgstr "Şarj sınırı"
+
+#: src/pil_modu/cli.py:88
+msgid "Outputs wired to NVIDIA"
+msgstr "NVIDIA'ya bağlı çıkışlar"
+
+#: src/pil_modu/cli.py:89
+msgid "PCI power management"
+msgstr "PCI güç yönetimi"
+
+#: src/pil_modu/cli.py:89 src/pil_modu/describe.py:136
+#, python-brace-format
+msgid "{count} device"
+msgid_plural "{count} devices"
+msgstr[0] "{count} aygıt"
+msgstr[1] "{count} aygıt"
+
+#: src/pil_modu/cli.py:91
+msgid "Audio power saving"
+msgstr "Ses güç tasarrufu"
+
+#: src/pil_modu/cli.py:93
+msgid "Conflicting services"
+msgstr "Çakışan servisler"
+
+#: src/pil_modu/cli.py:93
+msgid "none"
+msgstr "yok"
+
+#: src/pil_modu/cli.py:101
+#, python-brace-format
+msgid "Unavailable mode: {mode} ({reason})"
+msgstr "Kullanılamayan mod: {mode} ({reason})"
+
+#: src/pil_modu/cli.py:112
+msgid "Another pil-modu process is already running."
+msgstr "Başka bir pil-modu işlemi zaten çalışıyor."
+
+#: src/pil_modu/cli.py:114
+msgid "A value can only be used with the charge or passwordless command."
+msgstr "Değer yalnızca sarj ya da passwordless komutuyla kullanılır."
+
+#: src/pil_modu/cli.py:116
+#, python-brace-format
+msgid "The charge limit must be one of: {values}"
+msgstr "Şarj sınırı şunlardan biri olmalı: {values}"
+
+#: src/pil_modu/cli.py:124
+msgid "Use: pil-modu passwordless on|off"
+msgstr "Kullanım: pil-modu passwordless on|off"
+
+#: src/pil_modu/cli.py:131
+msgid "not supported on this device"
+msgstr "bu cihazda desteklenmiyor"
+
+#: src/pil_modu/cli.py:135
+msgid "ERROR:"
+msgstr "HATA:"
+
+#: src/pil_modu/controller.py:30
+#, python-brace-format
+msgid "{outputs} is wired to NVIDIA and cannot stay on in battery mode, because NVIDIA is turned off. Use balanced mode for two screens."
+msgstr "{outputs} NVIDIA'ya bağlı; batarya modunda NVIDIA kapandığı için açık tutulamaz. Çift ekran için dengeli modunu seç."
+
+#: src/pil_modu/controller.py:48
+msgid "No saved settings to restore; nothing changed."
+msgstr "Geri dönüş kaydı yok; hiçbir şey değişmedi."
+
+#: src/pil_modu/controller.py:58
+msgid "Note: the old EC value 'unspecified' cannot be written back; the closest mode is used."
+msgstr "Not: eski EC değeri 'unspecified' geri yazılamaz; en yakın mod kullanılır."
+
+#: src/pil_modu/controller.py:70
+msgid "CPU, display and EC settings applied:"
+msgstr "İşlemci, ekran ve EC ayarları uygulandı:"
+
+#: src/pil_modu/controller.py:73
+msgid "NVIDIA boot setting left unchanged."
+msgstr "NVIDIA açılış ayarı değiştirilmedi."
+
+#: src/pil_modu/controller.py:76
+msgid "Status: pil-modu status | Restore: pil-modu restore"
+msgstr "Durum: pil-modu durum | Geri dönüş: pil-modu geri"
+
+#: src/pil_modu/controller.py:92
+msgid "The power profile was changed by another program"
+msgstr "Güç profili başka bir program tarafından değiştirildi"
+
+#: src/pil_modu/controller.py:109 src/pil_modu/privileged/hardware.py:168
+msgid "Rollback error:"
+msgstr "Geri alma hatası:"
+
+#: src/pil_modu/controller.py:114
+msgid "No NVIDIA GPU; boot setting skipped."
+msgstr "NVIDIA ekran kartı yok; açılış ayarı atlandı."
+
+#: src/pil_modu/controller.py:117
+msgid "CPU and display settings were applied, but the NVIDIA boot setting could not be completed. Apply the same mode again."
+msgstr "İşlemci ve ekran ayarları uygulandı, ancak NVIDIA açılış ayarı tamamlanamadı. Aynı modu yeniden uygula."
+
+#: src/pil_modu/controller.py:121
+msgid "NVIDIA is not disabled yet. Restart to finish battery mode."
+msgstr "NVIDIA henüz devre dışı değil. Batarya modunu tamamlamak için yeniden başlat."
+
+#: src/pil_modu/controller.py:123
+msgid "NVIDIA is currently disabled. Restart to use it again."
+msgstr "NVIDIA şu anda devre dışı. Yeniden kullanmak için yeniden başlat."
+
+#: src/pil_modu/controller.py:125
+msgid "The GPU state matches the selected mode."
+msgstr "GPU durumu seçilen modla uyumlu."
+
+#: src/pil_modu/controller.py:129
+msgid "GPU mode at next boot:"
+msgstr "Sonraki açılışta GPU modu:"
+
+#: src/pil_modu/controller.py:130
+msgid "Profile:"
+msgstr "Profil:"
+
+#: src/pil_modu/controller.py:137
+msgid "The charge limit could not be set."
+msgstr "Şarj sınırı ayarlanamadı."
+
+#: src/pil_modu/controller.py:143
+msgid "The password rule could not be changed."
+msgstr "Parola kuralı değiştirilemedi."
+
+#: src/pil_modu/controller.py:144
+#, python-brace-format
+msgid "Automatic switching without a password: {state}"
+msgstr "Parolasız otomatik geçiş: {state}"
+
+#: src/pil_modu/describe.py:14
+msgid "Performance"
+msgstr "Performans"
+
+#: src/pil_modu/describe.py:14 src/pil_modu/presets.py:58
+msgid "Balanced"
+msgstr "Dengeli"
+
+#: src/pil_modu/describe.py:15
+msgid "Power saver"
+msgstr "Güç tasarrufu"
+
+#: src/pil_modu/describe.py:19
+msgid "Automatic"
+msgstr "Otomatik"
+
+#: src/pil_modu/describe.py:19
+msgid "Silent"
+msgstr "Sessiz"
+
+#: src/pil_modu/describe.py:19
+msgid "Basic"
+msgstr "Temel"
+
+#: src/pil_modu/describe.py:20
+msgid "Custom curve (MControlCenter)"
+msgstr "Manuel eğri (MControlCenter)"
+
+#: src/pil_modu/describe.py:24 src/pil_modu/describe.py:137
+msgid "On"
+msgstr "Açık"
+
+#: src/pil_modu/describe.py:24 src/pil_modu/describe.py:77
+#: src/pil_modu/describe.py:89 src/pil_modu/describe.py:120
+#: src/pil_modu/describe.py:137 src/pil_modu/describe.py:178
+msgid "Off"
+msgstr "Kapalı"
+
+#: src/pil_modu/describe.py:29
+msgid "Highest refresh rate"
+msgstr "En yüksek yenileme hızı"
+
+#: src/pil_modu/describe.py:29
+msgid "Lowest refresh rate"
+msgstr "En düşük yenileme hızı"
+
+#: src/pil_modu/describe.py:31
+#, python-brace-format
+msgid "{hz} Hz (highest)"
+msgstr "{hz} Hz (en yüksek)"
+
+#: src/pil_modu/describe.py:32
+#, python-brace-format
+msgid "{hz} Hz (lowest)"
+msgstr "{hz} Hz (en düşük)"
+
+#: src/pil_modu/describe.py:37
+#, python-brace-format
+msgid "Outputs wired to NVIDIA ({outputs}) turn off · others follow your choice"
+msgstr "NVIDIA'ya bağlı olanlar ({outputs}) kapanır · diğerleri seçime göre"
+
+#: src/pil_modu/describe.py:39
+msgid "Follows your choice below · refresh rate unchanged"
+msgstr "Aşağıdaki seçime göre · Hz'i değişmez"
+
+#: src/pil_modu/describe.py:46
+msgid "Built-in display"
+msgstr "Dahili ekran"
+
+#: src/pil_modu/describe.py:47
+msgid "Brightness"
+msgstr "Parlaklık"
+
+#: src/pil_modu/describe.py:48
+msgid "Unchanged (needs Plasma 6.1+)"
+msgstr "Değişmez (Plasma 6.1+ gerekli)"
+
+#: src/pil_modu/describe.py:49 src/pil_modu/ui/window.py:196
+msgid "External displays"
+msgstr "Harici ekranlar"
+
+#: src/pil_modu/describe.py:51 src/pil_modu/describe.py:102
+msgid "Displays"
+msgstr "Ekranlar"
+
+#: src/pil_modu/describe.py:51
+msgid "Unchanged (needs KDE Plasma 6)"
+msgstr "Değişmez (KDE Plasma 6 gerekli)"
+
+#: src/pil_modu/describe.py:53 src/pil_modu/describe.py:101
+#: src/pil_modu/describe.py:173
+msgid "Power profile"
+msgstr "Güç profili"
+
+#: src/pil_modu/describe.py:54 src/pil_modu/describe.py:118
+#: src/pil_modu/describe.py:119
+msgid "CPU turbo"
+msgstr "CPU turbo"
+
+#: src/pil_modu/describe.py:55
+msgid "Not adjustable on this system"
+msgstr "Bu sistemde ayarlanamıyor"
+
+#: src/pil_modu/describe.py:59 src/pil_modu/describe.py:115
+msgid "EC mode"
+msgstr "EC modu"
+
+#: src/pil_modu/describe.py:60
+#, python-brace-format
+msgid "{mode} ({wanted} not available)"
+msgstr "{mode} ({wanted} yok)"
+
+#: src/pil_modu/describe.py:61 src/pil_modu/describe.py:116
+msgid "Fan"
+msgstr "Fan"
+
+#: src/pil_modu/describe.py:65
+msgid "No msi-ec driver · fan and EC mode are skipped"
+msgstr "msi-ec sürücüsü yok · fan ve EC modu atlanır"
+
+#: src/pil_modu/describe.py:68 src/pil_modu/describe.py:128
+msgid "NVIDIA now"
+msgstr "NVIDIA şimdi"
+
+#: src/pil_modu/describe.py:68 src/pil_modu/describe.py:128
+msgid "Always awake"
+msgstr "Hep uyanık"
+
+#: src/pil_modu/describe.py:68 src/pil_modu/describe.py:128
+msgid "Sleeps when idle"
+msgstr "Boştayken uyur"
+
+#: src/pil_modu/describe.py:69 src/pil_modu/describe.py:177
+msgid "NVIDIA at boot"
+msgstr "NVIDIA açılışta"
+
+#: src/pil_modu/describe.py:69
+msgid "Fully off · needs a restart"
+msgstr "Tamamen kapanır · yeniden başlatma gerekir"
+
+#: src/pil_modu/describe.py:70 src/pil_modu/describe.py:178
+#: src/pil_modu/describe.py:179
+msgid "Available"
+msgstr "Kullanılabilir"
+
+#: src/pil_modu/describe.py:72
+msgid "No NVIDIA GPU"
+msgstr "NVIDIA ekran kartı yok"
+
+#: src/pil_modu/describe.py:80
+msgid "PCI devices"
+msgstr "PCI aygıtları"
+
+#: src/pil_modu/describe.py:81
+#, python-brace-format
+msgid "{count} device sleeps when idle"
+msgid_plural "{count} devices sleep when idle"
+msgstr[0] "{count} aygıt boştayken uyur"
+msgstr[1] "{count} aygıt boştayken uyur"
+
+#: src/pil_modu/describe.py:84
+msgid "Sound card"
+msgstr "Ses kartı"
+
+#: src/pil_modu/describe.py:84
+msgid "Sleeps after 1 s of silence"
+msgstr "1 sn sessizlikten sonra uyur"
+
+#: src/pil_modu/describe.py:85 src/pil_modu/describe.py:123
+msgid "Disk writes"
+msgstr "Diske yazma"
+
+#: src/pil_modu/describe.py:85
+msgid "Every 60 s (the disk sleeps longer)"
+msgstr "60 sn'de bir (disk daha uzun uyur)"
+
+#: src/pil_modu/describe.py:87
+msgid "Device power saving"
+msgstr "Aygıt tasarrufu"
+
+#: src/pil_modu/describe.py:87
+msgid "Off (can be enabled in settings)"
+msgstr "Kapalı (ayarlardan açılabilir)"
+
+#: src/pil_modu/describe.py:90
+msgid "Unchanged"
+msgstr "Değişmez"
+
+#: src/pil_modu/describe.py:92 src/pil_modu/describe.py:93
+msgid "Back to how it was before the first mode"
+msgstr "İlk moddan önceki haline döner"
+
+#: src/pil_modu/describe.py:93
+msgid "PCI, sound, Bluetooth, disk"
+msgstr "PCI, ses, Bluetooth, disk"
+
+#: src/pil_modu/describe.py:95
+msgid "Display"
+msgstr "Ekran"
+
+#: src/pil_modu/describe.py:95
+msgid "Processor"
+msgstr "İşlemci"
+
+#: src/pil_modu/describe.py:95
+msgid "Fan and EC"
+msgstr "Fan ve EC"
+
+#: src/pil_modu/describe.py:96
+msgid "Graphics"
+msgstr "Ekran kartı"
+
+#: src/pil_modu/describe.py:96 src/pil_modu/describe.py:104
+msgid "Devices"
+msgstr "Aygıtlar"
+
+#: src/pil_modu/describe.py:100
+msgid "Restored"
+msgstr "Geri yüklenenler"
+
+#: src/pil_modu/describe.py:101
+msgid "The profile before the first mode"
+msgstr "İlk moddan önceki profil"
+
+#: src/pil_modu/describe.py:102
+msgid "Previous layout, refresh rate, scale and brightness"
+msgstr "Eski düzen, Hz, ölçek ve parlaklık"
+
+#: src/pil_modu/describe.py:103
+msgid "Processor and EC"
+msgstr "İşlemci ve EC"
+
+#: src/pil_modu/describe.py:103
+msgid "Previous turbo, EC mode, fan and Cooler Boost"
+msgstr "Eski turbo, EC modu, fan ve Cooler Boost"
+
+#: src/pil_modu/describe.py:104
+msgid "Previous keyboard backlight, PCI, sound, Bluetooth and disk settings"
+msgstr "Eski klavye ışığı, PCI, ses, Bluetooth ve disk ayarları"
+
+#: src/pil_modu/describe.py:105
+msgid "Available after a restart"
+msgstr "Yeniden başlatınca kullanılabilir"
+
+#: src/pil_modu/describe.py:106
+msgid "Unchanged (separate setting)"
+msgstr "Değişmez (ayrı ayar)"
+
+#: src/pil_modu/describe.py:121
+#, python-brace-format
+msgid "Level {level}"
+msgstr "Seviye {level}"
+
+#: src/pil_modu/describe.py:122
+msgid "Sound card power saving"
+msgstr "Ses kartı tasarrufu"
+
+#: src/pil_modu/describe.py:123
+#, python-brace-format
+msgid "Every {seconds} s"
+msgstr "{seconds} sn'de bir"
+
+#: src/pil_modu/describe.py:138
+msgid "PCI power saving"
+msgstr "PCI güç tasarrufu"
+
+#: src/pil_modu/describe.py:160
+#, python-brace-format
+msgid "{output} refresh rate"
+msgstr "{output} yenileme hızı"
+
+#: src/pil_modu/describe.py:165
+#, python-brace-format
+msgid "{output} brightness"
+msgstr "{output} parlaklığı"
+
+#: src/pil_modu/describe.py:179
+msgid "Off (after a restart)"
+msgstr "Kapalı (yeniden başlatınca)"
+
+#: src/pil_modu/display.py:43
+#, python-brace-format
+msgid "{output}: previous resolution not found"
+msgstr "{output}: eski çözünürlük bulunamadı"
+
+#: src/pil_modu/display.py:52
+#, python-brace-format
+msgid "{output}: {hz} Hz is not supported"
+msgstr "{output}: {hz} Hz desteklenmiyor"
+
+#: src/pil_modu/display.py:78
+msgid "Built-in display not found"
+msgstr "Dahili ekran bulunamadı"
+
+#: src/pil_modu/display.py:118
+msgid "At least one connected display must stay on"
+msgstr "En az bir bağlı ekran açık kalmalı"
+
+#: src/pil_modu/display.py:130
+#, python-brace-format
+msgid "Could not verify display state: {output}"
+msgstr "Ekran durumu doğrulanamadı: {output}"
+
+#: src/pil_modu/display.py:138
+#, python-brace-format
+msgid "Could not verify refresh rate: {output}"
+msgstr "Yenileme hızı doğrulanamadı: {output}"
+
+#: src/pil_modu/display.py:141
+#, python-brace-format
+msgid "Could not verify brightness: {output}"
+msgstr "Parlaklık doğrulanamadı: {output}"
+
+#: src/pil_modu/elevated.py:43
+msgid "Hardware authorization or apply failed:"
+msgstr "Donanım yetkilendirmesi ya da uygulaması başarısız:"
+
+#. Translators: percent sign position, e.g. "%{value}" in Turkish
+#: src/pil_modu/i18n.py:59
+#, python-brace-format
+msgid "{value}%"
+msgstr "%{value}"
+
+#: src/pil_modu/plan.py:69
+#, python-brace-format
+msgid "{mode} is not available on this computer: {reason}"
+msgstr "{mode} bu bilgisayarda kullanılamıyor: {reason}"
+
+#: src/pil_modu/plan.py:94
+#, python-brace-format
+msgid "A hardware setting did not stick: {path}"
+msgstr "Bir donanım ayarı tutmadı: {path}"
+
+#: src/pil_modu/presets.py:12
+msgid "Automatic (by mode)"
+msgstr "Moda göre otomatik"
+
+#: src/pil_modu/presets.py:13
+msgid "Keep on"
+msgstr "Açık tut"
+
+#: src/pil_modu/presets.py:14
+msgid "Turn off"
+msgstr "Kapat"
+
+#: src/pil_modu/presets.py:51
+msgid "Maximum performance"
+msgstr "Maksimum performans"
+
+#: src/pil_modu/presets.py:51
+msgid "100% brightness · Turbo · Cooler Boost"
+msgstr "%100 parlaklık · Turbo · Cooler Boost"
+
+#: src/pil_modu/presets.py:54
+msgid "Performance · Manual fan"
+msgstr "Performans · Manuel fan"
+
+#: src/pil_modu/presets.py:55
+msgid "100% brightness · Turbo · Your own fan curve"
+msgstr "%100 parlaklık · Turbo · Fan eğrisi sende"
+
+#: src/pil_modu/presets.py:58
+msgid "60% brightness · Automatic fan · NVIDIA sleeps when idle"
+msgstr "%60 parlaklık · Otomatik fan · NVIDIA boşta uyur"
+
+#: src/pil_modu/presets.py:61
+msgid "Maximum battery"
+msgstr "Maksimum batarya"
+
+#: src/pil_modu/presets.py:61
+msgid "30% brightness · NVIDIA off · Devices sleep"
+msgstr "%30 parlaklık · NVIDIA kapalı · Aygıtlar uyur"
+
+#: src/pil_modu/presets.py:63
+msgid "Maximum battery · Low Hz"
+msgstr "Maksimum batarya · Düşük Hz"
+
+#: src/pil_modu/presets.py:63
+msgid "Lowest Hz · 30% brightness · NVIDIA off"
+msgstr "En düşük Hz · %30 parlaklık · NVIDIA kapalı"
+
+#: src/pil_modu/privileged/gpu_boot.py:88
+msgid "mkinitcpio/dracut not found; boot images were not rebuilt."
+msgstr "mkinitcpio/dracut bulunamadı; açılış imajları yenilenmedi."
+
+#: src/pil_modu/privileged/gpu_boot.py:122
+msgid "Invalid GPU mode"
+msgstr "Geçersiz GPU modu"
+
+#: src/pil_modu/privileged/gpu_boot.py:124
+msgid "Administrator rights are required"
+msgstr "Yönetici yetkisi gerekiyor"
+
+#: src/pil_modu/privileged/gpu_boot.py:126
+msgid "No integrated GPU found; turning NVIDIA off would leave no display"
+msgstr "Tümleşik GPU bulunamadı; NVIDIA kapatılırsa ekran kalmaz"
+
+#: src/pil_modu/privileged/gpu_boot.py:128
+msgid "NVIDIA drives the built-in display (GPU mode 'Discrete'/MUX in the BIOS). Turning NVIDIA off would black out the screen; choose 'MSHybrid'/'Optimus' in the BIOS."
+msgstr "Dahili ekranı NVIDIA sürüyor (BIOS'ta GPU modu 'Discrete'/MUX). NVIDIA kapatılırsa ekran kararır; BIOS'ta 'MSHybrid'/'Optimus' seç."
+
+#: src/pil_modu/privileged/gpu_boot.py:137
+msgid "Unexpected configuration; existing files were not touched"
+msgstr "Beklenmeyen yapılandırma; mevcut dosyalara dokunulmadı"
+
+#: src/pil_modu/privileged/gpu_boot.py:142
+msgid "GPU boot setting is already:"
+msgstr "GPU açılış ayarı zaten:"
+
+#: src/pil_modu/privileged/gpu_boot.py:154
+msgid "Rebuilding boot images; this can take a few minutes..."
+msgstr "Açılış imajları hazırlanıyor; bu birkaç dakika sürebilir..."
+
+#: src/pil_modu/privileged/gpu_boot.py:159
+msgid "GPU configuration rolled back; rebuilding the previous boot images."
+msgstr "GPU yapılandırması geri alındı; eski açılış imajları yeniden oluşturuluyor."
+
+#: src/pil_modu/privileged/gpu_boot.py:162
+msgid "GPU boot setting saved:"
+msgstr "GPU açılış ayarı kaydedildi:"
+
+#: src/pil_modu/privileged/gpu_boot.py:163
+msgid "The change takes effect after a restart. Your session was not closed."
+msgstr "Değişiklik yeniden başlatınca geçerli olur. Oturumun kapatılmadı."
+
+#: src/pil_modu/privileged/gpu_boot.py:171
+msgid "GPU configuration error:"
+msgstr "GPU yapılandırma hatası:"
+
+#: src/pil_modu/privileged/hardware.py:147
+msgid "Unsupported setting:"
+msgstr "Desteklenmeyen ayar:"
+
+#: src/pil_modu/privileged/hardware.py:162
+#: src/pil_modu/privileged/hardware.py:196
+msgid "Could not verify:"
+msgstr "Doğrulanamadı:"
+
+#: src/pil_modu/privileged/hardware.py:193
+msgid "Unsupported charge limit:"
+msgstr "Desteklenmeyen şarj sınırı:"
+
+#: src/pil_modu/privileged/hardware.py:238
+msgid "Skipped (device missing):"
+msgstr "Atlandı (aygıt yok):"
+
+#: src/pil_modu/privileged/hardware.py:280
+#, python-brace-format
+msgid "{path} does not belong to pil-modu; not touched"
+msgstr "{path} pil-modu'ya ait değil; dokunulmadı"
+
+#: src/pil_modu/ui/app.py:43 src/pil_modu/ui/tray.py:53
+#: src/pil_modu/ui/tray.py:84 src/pil_modu/ui/tray.py:92
+#: src/pil_modu/ui/tray.py:95 src/pil_modu/ui/window.py:72
+#: src/pil_modu/ui/window.py:136
+msgid "Power Modes"
+msgstr "Güç Modları"
+
+#: src/pil_modu/ui/changes.py:46
+msgid "All settings of this mode"
+msgstr "Bu modun tüm ayarları"
+
+#: src/pil_modu/ui/changes.py:71
+msgid "Cannot apply this mode"
+msgstr "Bu mod uygulanamıyor"
+
+#: src/pil_modu/ui/changes.py:74
+#, python-brace-format
+msgid "{count} setting will change"
+msgid_plural "{count} settings will change"
+msgstr[0] "{count} ayar değişecek"
+msgstr[1] "{count} ayar değişecek"
+
+#: src/pil_modu/ui/changes.py:79
+msgid "Nothing to change"
+msgstr "Değişecek bir şey yok"
+
+#: src/pil_modu/ui/changes.py:80
+msgid "This mode is already in effect."
+msgstr "Bu mod zaten uygulanmış durumda."
+
+#: src/pil_modu/ui/charge.py:14
+msgid "The battery charges to full."
+msgstr "Pil tam dolar."
+
+#: src/pil_modu/ui/charge.py:16
+#, python-brace-format
+msgid "Charging stops at {limit}% and resumes below {start}%."
+msgstr "Şarj %{limit}'de durur, %{start} altına inince yeniden başlar."
+
+#: src/pil_modu/ui/charge.py:18
+#, python-brace-format
+msgid "Charging stops at {limit}%."
+msgstr "Şarj %{limit}'de durur."
+
+#: src/pil_modu/ui/charge.py:22
+msgid "Charging now."
+msgstr "Şu an şarj oluyor."
+
+#: src/pil_modu/ui/charge.py:24
+msgid "Limit reached; plugged in but not charging."
+msgstr "Sınıra ulaşıldı; prizde ama şarj etmiyor."
+
+#: src/pil_modu/ui/charge.py:25
+msgid "Plugged in, waiting to charge."
+msgstr "Prizde, şarj beklemede."
+
+#: src/pil_modu/ui/charge.py:34
+msgid "The highest level the battery charges to. Independent of modes and restored at boot. 60% and 80% extend battery life."
+msgstr "Pilin dolacağı en yüksek seviye. Modlardan bağımsızdır ve açılışta geri yüklenir. %60 ve %80 pil ömrünü uzatır."
+
+#: src/pil_modu/ui/charge.py:62
+msgid "This computer does not support a charge limit."
+msgstr "Bu bilgisayar şarj sınırını desteklemiyor."
+
+#: src/pil_modu/ui/settings_dialog.py:34 src/pil_modu/ui/window.py:147
+msgid "Settings"
+msgstr "Ayarlar"
+
+#: src/pil_modu/ui/settings_dialog.py:40
+msgid "System default"
+msgstr "Sistem dili"
+
+#: src/pil_modu/ui/settings_dialog.py:45
+msgid "Let PCI devices, the sound card and the disk sleep"
+msgstr "PCI aygıtları, ses kartı ve disk uyusun"
+
+#: src/pil_modu/ui/settings_dialog.py:47
+msgid "Turn Bluetooth off"
+msgstr "Bluetooth'u kapat"
+
+#: src/pil_modu/ui/settings_dialog.py:50
+msgid "Switch modes when the charger is plugged in or out"
+msgstr "Şarj aleti takılınca/çekilince mod değiştir"
+
+#: src/pil_modu/ui/settings_dialog.py:54
+msgid "Switch without asking for a password"
+msgstr "Parola sormadan geç"
+
+#: src/pil_modu/ui/settings_dialog.py:56
+msgid "Adds a polkit rule so local administrators of this session can apply modes without a password. Only the pil-modu hardware helper is allowed, and only whitelisted settings."
+msgstr "Bu oturumdaki yerel yöneticiler modları parolasız uygulayabilsin diye bir polkit kuralı ekler. Yalnızca pil-modu donanım yardımcısına ve yalnızca izin listesindeki ayarlara izin verilir."
+
+#: src/pil_modu/ui/settings_dialog.py:61
+msgid "Start in the system tray when I log in"
+msgstr "Oturum açınca sistem tepsisinde başlat"
+
+#: src/pil_modu/ui/settings_dialog.py:65 src/pil_modu/ui/window.py:415
+msgid "Language"
+msgstr "Dil"
+
+#: src/pil_modu/ui/settings_dialog.py:67
+msgid "A new language is used after the app restarts."
+msgstr "Yeni dil, uygulama yeniden açılınca kullanılır."
+
+#: src/pil_modu/ui/settings_dialog.py:69
+msgid "Battery modes"
+msgstr "Batarya modları"
+
+#: src/pil_modu/ui/settings_dialog.py:73
+msgid "Automatic mode"
+msgstr "Otomatik mod"
+
+#: src/pil_modu/ui/settings_dialog.py:76
+msgid "Plugged in"
+msgstr "Prizde"
+
+#: src/pil_modu/ui/settings_dialog.py:77
+msgid "On battery"
+msgstr "Pilde"
+
+#: src/pil_modu/ui/settings_dialog.py:80
+msgid "Automatic switches do not change the NVIDIA boot setting, so the boot image is not rebuilt each time. Apply a battery mode by hand to turn NVIDIA fully off. The app must be running (tray is enough)."
+msgstr "Otomatik geçişler NVIDIA açılış ayarını değiştirmez; böylece açılış imajı her seferinde yeniden oluşturulmaz. NVIDIA'yı tamamen kapatmak için batarya modunu elle uygula. Uygulama açık olmalı (tepside olması yeterli)."
+
+#: src/pil_modu/ui/settings_dialog.py:84
+msgid "System tray"
+msgstr "Sistem tepsisi"
+
+#: src/pil_modu/ui/status_strip.py:11
+msgid "No battery information"
+msgstr "Pil bilgisi yok"
+
+#: src/pil_modu/ui/status_strip.py:14
+#, python-brace-format
+msgid "{level} · charging"
+msgstr "{level} · şarj oluyor"
+
+#: src/pil_modu/ui/status_strip.py:16
+#, python-brace-format
+msgid "{level} · plugged in"
+msgstr "{level} · prizde"
+
+#: src/pil_modu/ui/status_strip.py:18
+#, python-brace-format
+msgid "{level} · {watts} W"
+msgstr "{level} · {watts} W"
+
+#: src/pil_modu/ui/status_strip.py:24
+msgid "NVIDIA off"
+msgstr "NVIDIA kapalı"
+
+#: src/pil_modu/ui/status_strip.py:25
+msgid "NVIDIA sleeping"
+msgstr "NVIDIA uykuda"
+
+#: src/pil_modu/ui/status_strip.py:25
+msgid "NVIDIA active"
+msgstr "NVIDIA aktif"
+
+#: src/pil_modu/ui/status_strip.py:26
+msgid "NVIDIA going to sleep"
+msgstr "NVIDIA uykuya geçiyor"
+
+#: src/pil_modu/ui/status_strip.py:26
+msgid "NVIDIA waking up"
+msgstr "NVIDIA uyanıyor"
+
+#: src/pil_modu/ui/status_strip.py:33
+#, python-brace-format
+msgid "CPU {temp}°C"
+msgstr "CPU {temp}°C"
+
+#: src/pil_modu/ui/status_strip.py:35 src/pil_modu/ui/status_strip.py:40
+#, python-brace-format
+msgid "fan {speed}%"
+msgstr "fan %{speed}"
+
+#: src/pil_modu/ui/status_strip.py:38
+#, python-brace-format
+msgid "GPU {temp}°C"
+msgstr "GPU {temp}°C"
+
+#: src/pil_modu/ui/status_strip.py:110
+msgid "Battery level. While discharging, the battery's own power reading; it cannot be measured while plugged in."
+msgstr "Pil seviyesi. Pildeyken pilin kendi bildirdiği güç; prizdeyken ölçülemez."
+
+#: src/pil_modu/ui/status_strip.py:112 src/pil_modu/ui/status_strip.py:113
+msgid "Temperature and fan speed reported by the EC"
+msgstr "EC'nin bildirdiği sıcaklık ve fan hızı"
+
+#: src/pil_modu/ui/status_strip.py:114
+msgid "Current state of the NVIDIA GPU"
+msgstr "NVIDIA ekran kartının şu anki durumu"
+
+#: src/pil_modu/ui/tray.py:43
+msgid "Open Power Modes"
+msgstr "Güç Modları'nı aç"
+
+#: src/pil_modu/ui/tray.py:44
+msgid "Quit"
+msgstr "Çık"
+
+#: src/pil_modu/ui/tray.py:53
+msgid "Another change is still being applied."
+msgstr "Başka bir değişiklik hâlâ uygulanıyor."
+
+#: src/pil_modu/ui/tray.py:92 src/pil_modu/ui/window.py:372
+#, python-brace-format
+msgid "{name} applied."
+msgstr "{name} uygulandı."
+
+#: src/pil_modu/ui/tray.py:95
+#, python-brace-format
+msgid "{name} could not be applied. Open the window for the log."
+msgstr "{name} uygulanamadı. Günlük için pencereyi aç."
+
+#: src/pil_modu/ui/widgets.py:125
+msgid "Active"
+msgstr "Aktif"
+
+#: src/pil_modu/ui/widgets.py:148
+#, python-brace-format
+msgid "Not available here: {reason}"
+msgstr "Bu bilgisayarda yok: {reason}"
+
+#: src/pil_modu/ui/window.py:41
+msgid "The msi-ec driver was not found: fan, EC mode and Cooler Boost cannot be changed (AUR: msi-ec-dkms-git)."
+msgstr "msi-ec sürücüsü bulunamadı: fan, EC modu ve Cooler Boost değiştirilemez (AUR: msi-ec-dkms-git)."
+
+#: src/pil_modu/ui/window.py:44
+msgid "KDE Plasma 6 was not found: refresh rate and brightness are not changed."
+msgstr "KDE Plasma 6 bulunamadı: yenileme hızı ve parlaklık değiştirilmez."
+
+#: src/pil_modu/ui/window.py:46
+#, python-brace-format
+msgid "{services} is running and conflicts with power profiles; modes may fail to verify. Disable one of them."
+msgstr "{services} çalışıyor ve güç profilleriyle çakışıyor; modlar doğrulanamayabilir. Birini devre dışı bırak."
+
+#: src/pil_modu/ui/window.py:54
+msgid "Activity log"
+msgstr "İşlem günlüğü"
+
+#: src/pil_modu/ui/window.py:60
+msgid "Applied steps appear here."
+msgstr "Uygulanan adımlar burada görünür."
+
+#: src/pil_modu/ui/window.py:156 src/pil_modu/ui/window.py:425
+msgid "Restart"
+msgstr "Yeniden başlat"
+
+#: src/pil_modu/ui/window.py:193
+msgid "Whether external displays stay on in this mode. Their refresh rate and resolution never change."
+msgstr "Harici ekranların bu modda açık kalıp kalmayacağı. Yenileme hızları ve çözünürlükleri hiç değişmez."
+
+#: src/pil_modu/ui/window.py:214
+msgid "Show log"
+msgstr "Günlüğü göster"
+
+#: src/pil_modu/ui/window.py:225 src/pil_modu/ui/window.py:226
+msgid "Restore previous settings"
+msgstr "Önceki ayarlara dön"
+
+#: src/pil_modu/ui/window.py:228
+msgid "Previous settings"
+msgstr "Önceki ayarlar"
+
+#: src/pil_modu/ui/window.py:230 src/pil_modu/ui/window.py:311
+msgid "Apply"
+msgstr "Uygula"
+
+#: src/pil_modu/ui/window.py:302
+#, python-brace-format
+msgid "{outputs} is wired to NVIDIA: it turns off in battery mode and cannot be used until NVIDIA is back."
+msgstr "{outputs} NVIDIA'ya bağlı: batarya modunda kapanır ve NVIDIA geri gelene kadar kullanılamaz."
+
+#: src/pil_modu/ui/window.py:311
+msgid "Apply again"
+msgstr "Yeniden uygula"
+
+#: src/pil_modu/ui/window.py:318
+#, python-brace-format
+msgid "Active mode: {mode}"
+msgstr "Aktif mod: {mode}"
+
+#: src/pil_modu/ui/window.py:319
+msgid "No mode applied yet (system settings)"
+msgstr "Henüz mod uygulanmadı (sistem ayarları)"
+
+#: src/pil_modu/ui/window.py:324
+msgid "NVIDIA will be disabled after a restart."
+msgstr "Yeniden başlatınca NVIDIA devre dışı kalacak."
+
+#: src/pil_modu/ui/window.py:325
+msgid "NVIDIA will be available again after a restart."
+msgstr "Yeniden başlatınca NVIDIA yeniden kullanılabilir olacak."
+
+#: src/pil_modu/ui/window.py:348
+#, python-brace-format
+msgid "{limit}% charge limit"
+msgstr "%{limit} şarj sınırı"
+
+#: src/pil_modu/ui/window.py:353
+#, python-brace-format
+msgid "Password-free switching {state}"
+msgstr "Parolasız geçiş {state}"
+
+#: src/pil_modu/ui/window.py:360
+#, python-brace-format
+msgid "Applying {name}… An administrator password may be requested."
+msgstr "{name} uygulanıyor… Yönetici parolası istenebilir."
+
+#: src/pil_modu/ui/window.py:374
+#, python-brace-format
+msgid "{count} setting changed."
+msgid_plural "{count} settings changed."
+msgstr[0] "{count} ayar değişti."
+msgstr[1] "{count} ayar değişti."
+
+#: src/pil_modu/ui/window.py:378
+#, python-brace-format
+msgid "{name} could not be applied. See the log for details."
+msgstr "{name} uygulanamadı. Ayrıntılar günlükte."
+
+#: src/pil_modu/ui/window.py:416
+msgid "The new language is used after the app restarts."
+msgstr "Yeni dil, uygulama yeniden açılınca kullanılır."
+
+#: src/pil_modu/ui/window.py:425
+msgid "Restart the computer now?"
+msgstr "Bilgisayar şimdi yeniden başlatılsın mı?"
+
+#: src/pil_modu/ui/window.py:435
+msgid "Still working"
+msgstr "İşlem sürüyor"
+
+#: src/pil_modu/ui/window.py:436
+msgid "You can close the window when the settings are applied."
+msgstr "Ayarlar uygulanınca pencereyi kapatabilirsin."

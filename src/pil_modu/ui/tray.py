@@ -3,7 +3,7 @@ from PySide6.QtGui import QAction, QActionGroup, QIcon
 from PySide6.QtWidgets import QMenu, QSystemTrayIcon
 
 from .. import status
-from ..i18n import _
+from ..i18n import _, percent
 from ..presets import PRESETS
 from ..privileged.hardware import CHARGE_LIMITS
 from .status_strip import battery_text, sensor_text
@@ -33,7 +33,7 @@ class Tray(QSystemTrayIcon):
         self.limits = {}
         limit_group = QActionGroup(self.charge_menu)
         for limit in CHARGE_LIMITS:
-            action = QAction(f"{limit}%", self.charge_menu, checkable=True)
+            action = QAction(percent(limit), self.charge_menu, checkable=True)
             action.triggered.connect(lambda _checked=False, value=limit: self.window.apply_charge(value))
             limit_group.addAction(action)
             self.charge_menu.addAction(action)

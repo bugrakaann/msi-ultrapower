@@ -7,7 +7,7 @@ import fcntl
 import sys
 
 from . import capabilities, controller, paths, state, status, system
-from .i18n import _
+from .i18n import _, ngettext, percent
 from .presets import ALIASES, EXTERNAL_ALIASES, EXTERNAL_CHOICES, PRESETS, RESTORE_COMMANDS
 from .privileged import hardware as hw
 
@@ -54,10 +54,10 @@ def print_status():
 
     bat = status.battery()
     if bat:
-        print(_("Battery:"), bat.status, f"{bat.capacity}%")
+        print(_("Battery:"), bat.status, percent(bat.capacity))
         start, end = status.charge_limits()
         if end is not None:
-            print(_("Charge limit:"), f"{end}%",
+            print(_("Charge limit:"), percent(end),
                   _("(charging resumes below {start}%)").format(start=start) if start else "")
         if bat.watts is not None:
             label = _("Battery discharge power:") if bat.discharging \
@@ -86,7 +86,8 @@ def print_doctor():
         (_("Charge limit"), yes[caps.charge_limit]),
         ("NVIDIA", yes[caps.nvidia]),
         (_("Outputs wired to NVIDIA"), ", ".join(caps.nvidia_outputs) or "—"),
-        (_("PCI power management"), _("{count} devices").format(count=caps.runtime_pm)),
+        (_("PCI power management"), ngettext("{count} device", "{count} devices",
+                                             caps.runtime_pm).format(count=caps.runtime_pm)),
         (_("Audio power saving"), yes[caps.sound_power_save]),
         ("Bluetooth", yes[caps.bluetooth]),
         (_("Conflicting services"), ", ".join(caps.conflicts) or _("none")),
@@ -127,7 +128,7 @@ def main(argv=None):
                     controller.set_charge_limit(opt.sinir)
                 else:
                     limit = status.charge_limits()[1]
-                    print(_("Charge limit:"), f"{limit}%" if limit else _("not supported on this device"))
+                    print(_("Charge limit:"), percent(limit) if limit else _("not supported on this device"))
             else:
                 controller.change_mode(opt.mod, opt.harici, opt.dene, keep_gpu=opt.gpu_koru)
     except Exception as exc:

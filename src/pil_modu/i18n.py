@@ -45,12 +45,32 @@ def is_rtl():
     return current() in RIGHT_TO_LEFT
 
 
+RLM = "\u200f"   # sağdan sola işareti: "HDMI-A-1 …" gibi Latin başlayan cümleler de sağa yaslansın
+FSI, PDI = "\u2068", "\u2069"  # yön yalıtımı: "80% ← 30%" gibi değerler yer değiştirmesin
+
+
+def directional(text):
+    """Sağdan sola dillerde metni sağdan sola paragraf yapar; diğer dillerde aynen döner."""
+    return RLM + text if text and is_rtl() else text
+
+
 def _(message):
-    return _translation.gettext(message)
+    return directional(_translation.gettext(message))
 
 
 def ngettext(singular, plural, n):
-    return _translation.ngettext(singular, plural, n)
+    return directional(_translation.ngettext(singular, plural, n))
+
+
+def isolate(text):
+    """Değeri çevresindeki metnin yönünden bağımsız tutar (sayılar, aygıt adları)."""
+    return f"{FSI}{text}{PDI}" if is_rtl() else str(text)
+
+
+def percent(value):
+    """Yüzde yazımı dile göre değişir: 80% (en), %80 (tr)."""
+    # Translators: percent sign position, e.g. "%{value}" in Turkish
+    return _("{value}%").format(value=value)
 
 
 def N_(message):

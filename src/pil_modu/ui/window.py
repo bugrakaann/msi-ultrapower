@@ -12,7 +12,7 @@ from PySide6.QtWidgets import (QButtonGroup, QComboBox, QDialog, QDialogButtonBo
                                QPushButton, QScrollArea, QToolButton, QVBoxLayout, QWidget)
 
 from .. import capabilities, controller, describe, settings, state, status, system
-from ..i18n import _
+from ..i18n import _, ngettext
 from ..presets import EXTERNAL_CHOICES, PRESETS
 from .changes import ChangesPanel
 from .charge import ChargePanel
@@ -371,7 +371,8 @@ class MainWindow(QWidget):
         if ok:
             text = _("{name} applied.").format(name=name)
             if count:
-                text += " " + _("{count} settings changed.").format(count=count)
+                text += " " + ngettext("{count} setting changed.", "{count} settings changed.",
+                                       count).format(count=count)
             self.result.show_message("ok", text)
         else:
             self.result.show_message("error", _("{name} could not be applied. See the log for "

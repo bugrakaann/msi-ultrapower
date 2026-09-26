@@ -5,7 +5,7 @@ import time
 from dataclasses import dataclass
 
 from . import capabilities, display, elevated, plan, settings, state, status, system
-from .i18n import _
+from .i18n import _, percent
 from .presets import PRESETS
 from .privileged import gpu_boot
 from .privileged import hardware as hw
@@ -135,7 +135,7 @@ def print_plan(p):
 def set_charge_limit(limit):
     if not elevated.set_charge_limit(limit):
         raise RuntimeError(_("The charge limit could not be set."))
-    print(_("Charge limit:"), f"{limit}%", flush=True)
+    print(_("Charge limit:"), percent(limit), flush=True)
 
 
 def set_passwordless(enabled):

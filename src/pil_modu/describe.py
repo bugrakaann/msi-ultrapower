@@ -6,7 +6,7 @@ plan.py'nin gerçekte yaptığıyla aynı kuralları izler.
 from html import escape
 
 from . import capabilities, settings
-from .i18n import _, ngettext
+from .i18n import _, ngettext, percent
 from .privileged import hardware as hw
 
 
@@ -44,7 +44,7 @@ def describe(preset, caps, options=None):
     options = {**settings.DEFAULTS, **(options or {})}
     if caps.screen:
         screen = [(_("Built-in display"), _panel_hz(preset, caps)),
-                  (_("Brightness"), f"{preset.brightness}%" if caps.brightness
+                  (_("Brightness"), percent(preset.brightness) if caps.brightness
                    else _("Unchanged (needs Plasma 6.1+)")),
                   (_("External displays"), _external(preset, caps))]
     else:
@@ -162,7 +162,7 @@ def _screen_changes(args, outputs):
         elif setting == "brightness" and "brightness" in output:
             old = round(output["brightness"] * 100)
             if abs(old - int(value)) > 1:
-                rows.append((_("{output} brightness").format(output=name), f"{old}%", f"{value}%"))
+                rows.append((_("{output} brightness").format(output=name), percent(old), percent(value)))
     return rows
 
 

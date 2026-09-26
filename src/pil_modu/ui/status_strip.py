@@ -3,13 +3,13 @@ from PySide6.QtCore import QPoint, QRect, QSize, Qt
 from PySide6.QtWidgets import QLabel, QLayout, QStyle, QWidget
 
 from .. import status
-from ..i18n import _
+from ..i18n import _, percent
 
 
 def battery_text(bat):
     if bat is None:
         return _("No battery information")
-    level = f"{bat.capacity}%" if bat.capacity is not None else "—%"
+    level = percent(bat.capacity if bat.capacity is not None else "—")
     if bat.status == "Charging":
         return _("{level} · charging").format(level=level)
     if bat.status in ("Full", "Not charging"):

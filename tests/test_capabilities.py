@@ -1,10 +1,12 @@
 import unittest
 from dataclasses import replace
 
-from pil_modu import capabilities, describe, display
+from pil_modu import capabilities, describe, display, i18n
 from pil_modu.presets import PRESETS
 
 from helpers import fake_output
+
+i18n.setup("en")  # metin karşılaştıran testler sistem dilinden bağımsız olsun
 
 CAPS = capabilities.Capabilities(
     model="MSI Test", shift_modes=("eco", "comfort", "sport", "turbo"),

@@ -3,7 +3,7 @@ from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QButtonGroup, QHBoxLayout, QPushButton
 
 from .. import status
-from ..i18n import _
+from ..i18n import _, percent
 from ..privileged.hardware import CHARGE_LIMITS
 from .widgets import heading, muted, panel
 
@@ -40,7 +40,7 @@ class ChargePanel(QObject):
         segments = QHBoxLayout()
         segments.setSpacing(0)
         for index, limit in enumerate(CHARGE_LIMITS):
-            button = QPushButton(f"{limit}%")
+            button = QPushButton(percent(limit))
             button.setObjectName("segment")
             button.setCheckable(True)
             button.setProperty("position", "first" if index == 0 else

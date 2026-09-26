@@ -2,7 +2,7 @@
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QLabel
 
-from ..i18n import _, ngettext
+from ..i18n import _, directional, isolate, ngettext
 from .widgets import heading, link_button, muted, panel, section_label
 
 
@@ -74,7 +74,8 @@ class ChangesPanel:
             self.title.setText(ngettext("{count} setting will change", "{count} settings will change",
                                         len(changes)).format(count=len(changes)))
             self.note.setText("")
-            fill(self.changes, [(label, f"{old}  {arrow}  {new}") for label, old, new in changes])
+            fill(self.changes, [(label, directional(f"{isolate(old)}  {arrow}  {isolate(new)}"))
+                                for label, old, new in changes])
         else:
             self.title.setText(_("Nothing to change"))
             self.note.setText(_("This mode is already in effect."))
