@@ -11,7 +11,7 @@ from .i18n import _
 from .presets import ALIASES, EXTERNAL_ALIASES, EXTERNAL_CHOICES, PRESETS, RESTORE_COMMANDS
 from .privileged import hardware as hw
 
-COMMANDS = [*PRESETS, *RESTORE_COMMANDS, "durum", "sarj", "doctor"]
+COMMANDS = [*PRESETS, *RESTORE_COMMANDS, "durum", "sarj", "doctor", "passwordless"]
 
 
 def parse_args(argv):
@@ -20,8 +20,8 @@ def parse_args(argv):
     parser.add_argument("mod", metavar="command", choices=[*COMMANDS, *ALIASES],
                         help=_("mode, restore, status, charge or doctor") + ": "
                         + ", ".join(sorted({*COMMANDS, *ALIASES})))
-    parser.add_argument("sinir", metavar="limit", nargs="?", choices=hw.CHARGE_LIMITS,
-                        help=_("charge only: highest percentage the battery charges to"))
+    parser.add_argument("sinir", metavar="value", nargs="?",
+                        help=_("charge: 60, 80 or 100 · passwordless: on or off"))
     parser.add_argument("--harici", "--external", dest="harici", default="otomatik",
                         choices=[*EXTERNAL_CHOICES, *EXTERNAL_ALIASES],
                         help=_("external displays: auto, keep or off"))
@@ -109,12 +109,19 @@ def main(argv=None):
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
                 raise RuntimeError(_("Another pil-modu process is already running.")) from None
-            if opt.mod != "sarj" and opt.sinir:
-                raise RuntimeError(_("A percentage can only be used with the charge command."))
+            if opt.sinir and opt.mod not in ("sarj", "passwordless"):
+                raise RuntimeError(_("A value can only be used with the charge or passwordless command."))
+            if opt.mod == "sarj" and opt.sinir and opt.sinir not in hw.CHARGE_LIMITS:
+                raise RuntimeError(_("The charge limit must be one of: {values}").format(
+                    values=", ".join(hw.CHARGE_LIMITS)))
             if opt.mod == "durum":
                 print_status()
             elif opt.mod == "doctor":
                 print_doctor()
+            elif opt.mod == "passwordless":
+                if opt.sinir not in ("on", "off"):
+                    raise RuntimeError(_("Use: pil-modu passwordless on|off"))
+                controller.set_passwordless(opt.sinir == "on")
             elif opt.mod == "sarj":
                 if opt.sinir:
                     controller.set_charge_limit(opt.sinir)

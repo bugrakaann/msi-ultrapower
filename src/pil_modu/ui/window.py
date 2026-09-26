@@ -1,109 +1,109 @@
-"""Ana pencere: mod seç → ne değişeceğine bak → Uygula."""
+"""Ana pencere: durum → mod seç → neyin değişeceğine bak → Uygula.
+
+Donanıma dokunmaz; her işlemi CLI'ye (runner) yaptırır. Tepsi ve otomatik mod da
+buradaki apply_mode / apply_charge'ı kullanır; böylece tek bir işlem kuyruğu olur.
+"""
 import shutil
 
-from PySide6.QtCore import QProcess, Qt, QTimer
+from PySide6.QtCore import QProcess, Qt, QTimer, Signal
 from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import (QButtonGroup, QComboBox, QFrame, QGridLayout,
+from PySide6.QtWidgets import (QButtonGroup, QComboBox, QDialog, QDialogButtonBox, QFrame,
                                QHBoxLayout, QLabel, QMessageBox, QPlainTextEdit, QProgressBar,
-                               QPushButton, QScrollArea, QSlider, QToolButton, QVBoxLayout,
-                               QWidget)
+                               QPushButton, QScrollArea, QToolButton, QVBoxLayout, QWidget)
 
-from .. import capabilities, describe, settings, state, status, system
+from .. import capabilities, controller, describe, settings, state, status, system
+from ..i18n import _
 from ..presets import EXTERNAL_CHOICES, PRESETS
-from ..privileged.hardware import CHARGE_LIMITS
+from .changes import ChangesPanel
+from .charge import ChargePanel
 from .runner import ModeRunner
-from .widgets import STYLE, Banner, ModeCard, icon_label, muted, section_label
+from .settings_dialog import SettingsDialog, set_autostart
+from .status_strip import StatusStrip
+from .widgets import STYLE, Banner, ModeCard, link_button, muted
 
 REFRESH_MS = 2000
-CHARGE_DELAY_MS = 700  # kaydırıcı durduktan sonra uygula; her adımda parola sorulmasın
-PREFERRED_SIZE = (700, 900)
+PREVIEW_EVERY = 8      # değişiklik listesi her 8 yenilemede bir (≈16 sn) yeniden hesaplanır
+PREFERRED_SIZE = (600, 820)
 SCREEN_MARGIN = 32     # pencere ile ekran kenarı arasında bırakılan boşluk
-ONE_COLUMN_BELOW = 560  # içerik bu genişlikten darsa kartlar tek sütun olur
-GPU_RUNTIME = {"suspended": "Uykuda", "active": "Aktif",
-               "suspending": "Uykuya geçiyor", "resuming": "Uyanıyor"}
-
-
-def battery_text(bat):
-    if bat is None:
-        return "Pil bilgisi yok"
-    level = f"%{bat.capacity}" if bat.capacity is not None else "%—"
-    if bat.status == "Charging":
-        return f"{level} · Şarj oluyor"
-    if bat.status in ("Full", "Not charging"):
-        return f"{level} · Prizde"
-    if bat.discharging and bat.watts is not None:
-        return f"{level} · {bat.watts:.1f} W tüketim"
-    return level
-
-
-def charge_text(bat, start, limit):
-    """Şarj sınırına göre pilin şarj olup olmayacağını anlatır."""
-    if limit >= 100:
-        goal = "Pil tam dolar."
-    else:
-        goal = f"Pil %{limit} dolunca şarj durur" + (f", %{start} altına inince yeniden başlar." if start
-                                                   else ".")
-    if bat is None or bat.discharging:
-        return goal
-    if bat.status == "Charging":
-        return goal + " Şu an şarj oluyor."
-    if bat.capacity is not None and bat.capacity >= limit:
-        return goal + " Sınıra ulaşıldı; prizde ama şarj etmiyor."
-    return goal + " Prizde, şarj beklemede."
 
 
 def detect_capabilities():
     try:
         outputs = system.get_outputs()
     except Exception:
-        outputs = []  # KDE dışında ya da kscreen-doctor yoksa Hz bilinmez
+        outputs = []  # kscreen-doctor çalışmazsa Hz bilinmez
     return capabilities.detect(outputs)
 
 
 def missing_features(caps):
     notes = []
     if not caps.ec:
-        notes.append("msi-ec sürücüsü bulunamadı: fan, EC modu ve Cooler Boost ayarlanamaz "
-                     "(AUR: msi-ec-dkms-git).")
+        notes.append(_("The msi-ec driver was not found: fan, EC mode and Cooler Boost cannot be "
+                       "changed (AUR: msi-ec-dkms-git)."))
     if not caps.screen:
-        notes.append("KDE Plasma 6 bulunamadı: ekran Hz'i ve parlaklığı değiştirilmez.")
+        notes.append(_("KDE Plasma 6 was not found: refresh rate and brightness are not changed."))
     if caps.conflicts:
-        notes.append(f"{', '.join(caps.conflicts)} çalışıyor ve güç profilleriyle çakışır; "
-                     "modlar doğrulanamayabilir. Birini devre dışı bırak.")
+        notes.append(_("{services} is running and conflicts with power profiles; modes may fail to "
+                       "verify. Disable one of them.").format(services=", ".join(caps.conflicts)))
     return " ".join(notes)
 
 
+class LogDialog(QDialog):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.setWindowTitle(_("Activity log"))
+        self.resize(620, 380)
+        layout = QVBoxLayout(self)
+        self.text = QPlainTextEdit()
+        self.text.setReadOnly(True)
+        self.text.setMaximumBlockCount(500)
+        self.text.setPlaceholderText(_("Applied steps appear here."))
+        layout.addWidget(self.text)
+        buttons = QDialogButtonBox(QDialogButtonBox.Close)
+        buttons.rejected.connect(self.hide)
+        layout.addWidget(buttons)
+
+
 class MainWindow(QWidget):
+    finished = Signal(str, bool)  # (işlem adı, başarılı mı) — tepsi bildirimleri için
+
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Güç Modları")
-        self.setWindowIcon(QIcon.fromTheme("battery"))
+        self.setWindowTitle(_("Power Modes"))
+        self.setWindowIcon(QIcon.fromTheme("battery-profile-balanced"))
         self.setStyleSheet(STYLE)
         self.setMinimumSize(380, 360)
         self.resize(*PREFERRED_SIZE)
         self._fitted = False
-        self._columns = 0
+        self._ticks = 0
+        self.quit_on_close = True  # tepsi varsa False; pencere kapanınca gizlenir
 
         self.caps = detect_capabilities()
         self.runner = ModeRunner(self)
         self.runner.output.connect(self._append_log)
         self.runner.finished.connect(self._on_finished)
-        self.pending_args = None
+        self.pending = None      # (args, görünen ad, değişen ayar sayısı)
+        self.log_dialog = LogDialog(self)
+        self.selected = None
+        self._change_count = 0
 
-        # İçerik kaydırılabilir; Uygula çubuğu her ekran boyutunda altta görünür kalır.
         content = QWidget()
         content.setObjectName("content")
         body = QVBoxLayout(content)
-        body.setContentsMargins(20, 20, 20, 16)
-        body.setSpacing(14)
+        body.setContentsMargins(20, 18, 20, 16)
+        body.setSpacing(12)
         body.addLayout(self._build_header())
+        self.status_strip = StatusStrip(self.caps)
+        body.addWidget(self.status_strip)
         body.addWidget(self._build_reboot_banner())
         body.addWidget(self._build_capability_banner())
-        body.addLayout(self._build_cards())
-        body.addWidget(self._build_details())
-        body.addWidget(self._build_charge())
-        body.addLayout(self._build_footer())
-        body.addWidget(self.log)
+        body.addLayout(self._build_modes())
+        body.addLayout(self._build_external())
+        self.changes = ChangesPanel()
+        body.addWidget(self.changes.widget)
+        self.charge = ChargePanel()
+        self.charge.requested.connect(self.apply_charge)
+        body.addWidget(self.charge.widget)
         body.addStretch()
 
         self.scroll = QScrollArea()
@@ -122,8 +122,8 @@ class MainWindow(QWidget):
         initial = active.get("mod")
         if initial not in PRESETS or self.cards[initial].unsupported:
             initial = "dengeli"
-        self._select(initial)
         self.external.setCurrentIndex(max(0, self.external.findData(active.get("harici", "otomatik"))))
+        self._select(initial)
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.refresh)
@@ -133,164 +133,76 @@ class MainWindow(QWidget):
     # ---------- Arayüzün kurulumu ----------
 
     def _build_header(self):
-        title = QLabel("Güç Modları")
+        title = QLabel(_("Power Modes"))
         title.setStyleSheet("font-size: 22px; font-weight: 600;")
-        self.active_label = muted()
+        self.subtitle = muted(self.caps.model)
         left = QVBoxLayout()
         left.setSpacing(2)
         left.addWidget(title)
-        if self.caps.model:
-            left.addWidget(muted(self.caps.model))
-        left.addWidget(self.active_label)
+        left.addWidget(self.subtitle)
 
-        self.battery_label = QLabel()
-        self.battery_label.setStyleSheet("font-size: 15px; font-weight: 600;")
-        self.battery_label.setToolTip("2 saniyede bir yenilenir. Pilin bildirdiği deşarj gücüdür; "
-                                      "prizdeyken toplam tüketim ölçülemez.")
+        settings_button = QToolButton()
+        settings_button.setIcon(QIcon.fromTheme("configure"))
+        settings_button.setAutoRaise(True)
+        settings_button.setToolTip(_("Settings"))
+        settings_button.clicked.connect(self.open_settings)
+
         header = QHBoxLayout()
         header.addLayout(left, 1)
-        header.addWidget(icon_label("battery", 22), 0, Qt.AlignTop)
-        header.addWidget(self.battery_label, 0, Qt.AlignTop)
+        header.addWidget(settings_button, 0, Qt.AlignTop)
         return header
 
     def _build_reboot_banner(self):
-        self.reboot_banner = Banner("Yeniden başlat")
+        self.reboot_banner = Banner(_("Restart"))
         self.reboot_banner.action.connect(self._reboot)
         return self.reboot_banner
 
     def _build_capability_banner(self):
-        banner = Banner()
+        self.capability_banner = Banner()
         notes = missing_features(self.caps)
         if notes:
-            banner.show_message("warn", notes)
-        return banner
+            self.capability_banner.show_message("warn", notes)
+        return self.capability_banner
 
-    def _build_cards(self):
+    def _build_modes(self):
         self.cards = {}
         self.group = QButtonGroup(self)
         self.group.setExclusive(True)
+        layout = QVBoxLayout()
+        layout.setSpacing(8)
         for preset in PRESETS.values():
             card = ModeCard(preset)
-            card.clicked.connect(lambda _=False, key=preset.key: self._select(key))
-            reason = capabilities.unsupported_reason(preset, self.caps)
-            sections = describe.describe(preset, self.caps, settings.load())
-            card.set_info(describe.to_html(preset.title, sections, reason), reason)
+            card.clicked.connect(lambda _checked=False, key=preset.key: self._select(key))
             self.group.addButton(card)
             self.cards[preset.key] = card
-        self.card_grid = QGridLayout()
-        self.card_grid.setSpacing(10)
-        self._layout_cards(2)
-        return self.card_grid
+            layout.addWidget(card)
+        self._update_card_info()
+        return layout
 
-    def _layout_cards(self, columns):
-        if columns == self._columns:
-            return
-        self._columns = columns
-        for card in self.cards.values():
-            self.card_grid.removeWidget(card)
-        for index, card in enumerate(self.cards.values()):
-            self.card_grid.addWidget(card, index // columns, index % columns)
-        for column in range(2):
-            self.card_grid.setColumnStretch(column, 1 if column < columns else 0)
+    def _update_card_info(self):
+        options = settings.load()
+        for preset in PRESETS.values():
+            reason = capabilities.unsupported_reason(preset, self.caps)
+            sections = describe.describe(preset, self.caps, options)
+            self.cards[preset.key].set_info(describe.to_html(preset.title, sections, reason), reason)
 
-    def _build_details(self):
-        panel = QFrame()
-        panel.setObjectName("panel")
-        layout = QVBoxLayout(panel)
-        layout.setContentsMargins(16, 14, 16, 14)
-        layout.setSpacing(8)
-
-        self.details_title = QLabel()
-        self.details_title.setStyleSheet("font-weight: 600; font-size: 15px;")
-        layout.addWidget(self.details_title)
-        layout.addWidget(muted("Uygula'ya basınca değişecek her şey:"))
-
-        self.details_body = QGridLayout()
-        self.details_body.setHorizontalSpacing(24)
-        self.details_body.setVerticalSpacing(3)
-        self.details_body.setColumnStretch(1, 1)
-        layout.addLayout(self.details_body)
-
+    def _build_external(self):
         self.external = QComboBox()
         for key, label in EXTERNAL_CHOICES.items():
-            self.external.addItem(label, key)
-        self.external.setToolTip("Harici ekranın bu modda açık kalıp kalmayacağı. "
-                                 "Harici ekranın Hz'i ve çözünürlüğü değişmez.")
+            self.external.addItem(_(label), key)
+        self.external.setToolTip(_("Whether external displays stay on in this mode. Their "
+                                   "refresh rate and resolution never change."))
+        self.external.currentIndexChanged.connect(lambda _index: self._refresh_preview())
+        self.external_label = QLabel(_("External displays"))
         self.external_hint = muted()
-        external_row = QHBoxLayout()
-        external_row.addWidget(QLabel("Harici ekran"))
-        external_row.addWidget(self.external, 1)
-        layout.addSpacing(6)
-        layout.addLayout(external_row)
-        layout.addWidget(self.external_hint)
-        return panel
-
-    def _build_charge(self):
-        panel = QFrame()
-        panel.setObjectName("panel")
-        layout = QVBoxLayout(panel)
-        layout.setContentsMargins(16, 14, 16, 14)
-        layout.setSpacing(6)
-
-        title = QLabel("Şarj sınırı")
-        title.setStyleSheet("font-weight: 600; font-size: 15px;")
-        self.charge_value = QLabel()
-        self.charge_value.setStyleSheet("font-weight: 600;")
-        top = QHBoxLayout()
-        top.addWidget(title)
-        top.addStretch()
-        top.addWidget(self.charge_value)
-        layout.addLayout(top)
-
-        self.charge_slider = QSlider(Qt.Horizontal)
-        self.charge_slider.setRange(0, len(CHARGE_LIMITS) - 1)
-        self.charge_slider.setPageStep(1)
-        self.charge_slider.setTickPosition(QSlider.TicksBelow)
-        self.charge_slider.setTickInterval(1)
-        self.charge_slider.setToolTip("Pilin dolacağı en yüksek seviye. Modlardan bağımsızdır ve "
-                                      "açılışta geri yüklenir. %60 ve %80 pil ömrünü uzatır.")
-        self.charge_slider.valueChanged.connect(self._on_charge_moved)
-        self.charge_slider.sliderReleased.connect(self._on_charge_moved)
-        layout.addWidget(self.charge_slider)
-
-        ticks = QHBoxLayout()
-        for limit, align in zip(CHARGE_LIMITS, (Qt.AlignLeft, Qt.AlignHCenter, Qt.AlignRight)):
-            label = muted(f"%{limit}")
-            label.setWordWrap(False)
-            ticks.addWidget(label, 1, align)
-        layout.addLayout(ticks)
-
-        self.charge_hint = muted()
-        layout.addWidget(self.charge_hint)
-
-        self.charge_timer = QTimer(self)
-        self.charge_timer.setSingleShot(True)
-        self.charge_timer.setInterval(CHARGE_DELAY_MS)
-        self.charge_timer.timeout.connect(self._apply_charge)
-        return panel
-
-    def _build_footer(self):
-        self.system_label = muted()
-        self.log_toggle = QToolButton()
-        self.log_toggle.setText("İşlem günlüğü")
-        self.log_toggle.setCheckable(True)
-        self.log_toggle.setArrowType(Qt.RightArrow)
-        self.log_toggle.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
-        self.log_toggle.setAutoRaise(True)
-        self.log_toggle.setToolTip("Son işlemde uygulanan adımlar ve hatalar.")
-        self.log_toggle.toggled.connect(self._show_log)
-
-        self.log = QPlainTextEdit()
-        self.log.setReadOnly(True)
-        self.log.setMaximumBlockCount(300)
-        self.log.setMinimumHeight(160)
-        self.log.setPlaceholderText("Uygulanan adımlar burada görünür.")
-        self.log.hide()
-
         row = QHBoxLayout()
-        row.addWidget(self.system_label, 1)
-        row.addWidget(self.log_toggle)
-        return row
+        row.addWidget(self.external_label)
+        row.addWidget(self.external, 1)
+        box = QVBoxLayout()
+        box.setSpacing(4)
+        box.addLayout(row)
+        box.addWidget(self.external_hint)
+        return box
 
     def _build_action_bar(self):
         bar = QFrame()
@@ -299,25 +211,27 @@ class MainWindow(QWidget):
         layout.setContentsMargins(20, 10, 20, 12)
         layout.setSpacing(8)
 
-        self.result = Banner()
+        self.result = Banner(_("Show log"))
+        self.result.action.connect(self.show_log)
         layout.addWidget(self.result)
 
         self.progress = QProgressBar()
         self.progress.setRange(0, 0)
         self.progress.setTextVisible(False)
-        self.progress.setMaximumHeight(6)
+        self.progress.setMaximumHeight(4)
         self.progress.hide()
         layout.addWidget(self.progress)
 
-        self.restore_button = QPushButton(QIcon.fromTheme("edit-undo"), "Önceki ayarlara dön")
-        self.restore_button.setToolTip(describe.to_html("Önceki ayarlara dön", describe.RESTORE))
-        self.restore_button.clicked.connect(lambda: self._run("geri"))
+        self.restore_button = link_button(_("Restore previous settings"), "edit-undo")
+        self.restore_button.setToolTip(describe.to_html(_("Restore previous settings"),
+                                                        describe.restore_sections()))
+        self.restore_button.clicked.connect(lambda: self._run(["geri"], _("Previous settings")))
 
-        self.apply_button = QPushButton(QIcon.fromTheme("dialog-ok-apply"), "Uygula")
-        self.apply_button.setMinimumWidth(140)
-        self.apply_button.setMinimumHeight(34)
-        self.apply_button.setStyleSheet("font-weight: 600;")
-        self.apply_button.clicked.connect(lambda: self._run(self.selected))
+        self.apply_button = QPushButton(QIcon.fromTheme("dialog-ok-apply"), _("Apply"))
+        self.apply_button.setObjectName("primary")
+        self.apply_button.setDefault(True)
+        self.apply_button.setMinimumHeight(36)
+        self.apply_button.clicked.connect(lambda: self.apply_mode(self.selected))
 
         row = QHBoxLayout()
         row.addWidget(self.restore_button)
@@ -344,144 +258,127 @@ class MainWindow(QWidget):
         height = min(max(self.height(), PREFERRED_SIZE[1]), area.height() - SCREEN_MARGIN)
         self.resize(max(width, self.minimumWidth()), max(height, self.minimumHeight()))
 
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self._layout_cards(1 if self.scroll.viewport().width() < ONE_COLUMN_BELOW else 2)
-
     # ---------- Durum ----------
 
     @property
     def busy(self):
         return self.runner.is_running()
 
+    def active_mode(self):
+        return (state.load_active() or {}).get("mod")
+
     def _select(self, key):
         self.selected = key
-        preset = PRESETS[key]
         self.cards[key].setChecked(True)
-        self.details_title.setText(preset.title)
-        self._fill_details(describe.describe(preset, self.caps, settings.load()))
-
-        self.external.setEnabled(not self.busy)
-        if preset.is_battery and self.caps.nvidia_outputs:
-            self.external_hint.setText(
-                f"NVIDIA'ya bağlı çıkışlar ({', '.join(self.caps.nvidia_outputs)}) batarya modunda "
-                "kapanır ve yeniden başlatınca kullanılamaz. Diğer ekranlar seçime göre açık kalır.")
-        else:
-            self.external_hint.setText("“Moda göre otomatik”: bağlı harici ekran açık kalır.")
         self.apply_button.setToolTip(self.cards[key].toolTip())
+        self._refresh_preview()
+
+    def _refresh_preview(self):
+        """Seçili modun şu anki duruma göre değiştireceklerini hesaplar (hiçbir şey uygulamaz)."""
+        if self.selected is None or self.busy:
+            return
+        preset = PRESETS[self.selected]
+        sections = describe.describe(preset, self.caps, settings.load())
+        try:
+            prepared = controller.prepare(self.selected, self.external.currentData())
+            rows = describe.changes(prepared.plan, prepared.before, status.gpu().blocked_next_boot)
+            error = None
+            outputs = prepared.before["outputs"]
+        except Exception as exc:
+            rows, error, outputs = [], str(exc), []
+        self._change_count = len(rows)
+        self.changes.show(rows, sections, error)
+        self.apply_button.setEnabled(error is None)
+        self._update_external(preset, outputs)
         self._update_apply_text()
 
-    def _fill_details(self, sections):
-        while self.details_body.count():
-            old = self.details_body.takeAt(0).widget()
-            old.hide()  # deleteLater bir sonraki döngüde siler; o ana kadar görünmesin
-            old.deleteLater()
-        row = 0
-        for section, items in sections:
-            self.details_body.addWidget(section_label(section), row, 0, 1, 2)
-            row += 1
-            for label, value in items:
-                name = muted(label)
-                name.setWordWrap(False)
-                text = QLabel(value)
-                text.setWordWrap(True)
-                self.details_body.addWidget(name, row, 0, Qt.AlignTop)
-                self.details_body.addWidget(text, row, 1, Qt.AlignTop)
-                row += 1
+    def _update_external(self, preset, outputs):
+        externals = [o for o in outputs if o["connected"] and not o["name"].startswith(("eDP", "LVDS", "DSI"))]
+        visible = bool(externals)
+        for widget in (self.external_label, self.external):
+            widget.setVisible(visible)
+        on_nvidia = [o["name"] for o in externals if o["name"] in self.caps.nvidia_outputs]
+        if preset.is_battery and on_nvidia:
+            self.external_hint.setText(_("{outputs} is wired to NVIDIA: it turns off in battery mode "
+                                         "and cannot be used until NVIDIA is back.").format(
+                                           outputs=", ".join(on_nvidia)))
+        else:
+            self.external_hint.setText("")
+        self.external_hint.setVisible(visible and bool(self.external_hint.text()))
 
     def _update_apply_text(self):
-        active = (state.load_active() or {}).get("mod")
-        self.apply_button.setText("Yeniden uygula" if active == self.selected else "Uygula")
+        again = self.active_mode() == self.selected
+        self.apply_button.setText(_("Apply again") if again else _("Apply"))
 
     def refresh(self):
-        self.battery_label.setText(battery_text(status.battery()))
-
-        active = (state.load_active() or {}).get("mod")
+        self.status_strip.refresh()
+        active = self.active_mode()
         for key, card in self.cards.items():
             card.set_active(key == active)
-        self.active_label.setText("Aktif mod: " + (PRESETS[active].title if active in PRESETS
-                                                   else "seçilmedi (sistem ayarları)"))
+        active_text = (_("Active mode: {mode}").format(mode=PRESETS[active].title) if active in PRESETS
+                       else _("No mode applied yet (system settings)"))
+        self.subtitle.setText(" · ".join(x for x in (self.caps.model, active_text) if x))
 
         gpu = status.gpu()
-        parts = []
-        if self.caps.nvidia:
-            parts.append("NVIDIA: " + (GPU_RUNTIME.get(gpu.runtime, gpu.runtime) if gpu.present
-                                       else "Devre dışı"))
-        if self.caps.ec:
-            parts.append("EC: " + status.ec_shift_mode())
-        turbo = status.turbo_enabled()
-        if turbo is not None:
-            parts.append("CPU turbo: " + ("açık" if turbo else "kapalı"))
-        self.system_label.setText("  ·  ".join(parts))
-
         if self.caps.nvidia and gpu.reboot_pending and not self.busy:
-            what = "devre dışı kalacak" if gpu.blocked_next_boot else "yeniden kullanılabilir olacak"
-            self.reboot_banner.show_message("warn", f"Yeniden başlatınca NVIDIA {what}.")
+            message = (_("NVIDIA will be disabled after a restart.") if gpu.blocked_next_boot
+                       else _("NVIDIA will be available again after a restart."))
+            self.reboot_banner.show_message("warn", message)
         else:
             self.reboot_banner.hide()
 
         self.restore_button.setEnabled(not self.busy and state.has_original())
+        self.charge.refresh(self.busy)
         self._update_apply_text()
-        self._refresh_charge()
+        self._ticks += 1
+        if self._ticks % PREVIEW_EVERY == 0:
+            self._refresh_preview()
 
-    def _refresh_charge(self):
-        start, limit = status.charge_limits()
-        self.charge_slider.setEnabled(limit is not None and not self.busy)
-        if limit is None:
-            self.charge_value.setText("—")
-            self.charge_hint.setText("Bu bilgisayarda şarj sınırı desteklenmiyor.")
-            return
-        self.charge_hint.setText(charge_text(status.battery(), start, limit))
-        # Kullanıcı kaydırırken ya da uygulanmayı beklerken gerçek değerle ezme.
-        if self.busy or self.charge_slider.isSliderDown() or self.charge_timer.isActive():
-            return
-        self.charge_value.setText(f"%{limit}")
-        if str(limit) in CHARGE_LIMITS:
-            self.charge_slider.blockSignals(True)
-            self.charge_slider.setValue(CHARGE_LIMITS.index(str(limit)))
-            self.charge_slider.blockSignals(False)
+    # ---------- İşlemler (tepsi ve otomatik mod da kullanır) ----------
 
-    def _on_charge_moved(self, *_):
-        self.charge_value.setText(f"%{CHARGE_LIMITS[self.charge_slider.value()]}")
-        if self.charge_slider.isSliderDown():
-            self.charge_timer.stop()
-        else:
-            self.charge_timer.start()
+    def apply_mode(self, key, external=None, keep_gpu=False):
+        external = external or self.external.currentData()
+        args = [key, "--harici", external] + (["--gpu-koru"] if keep_gpu else [])
+        count = self._change_count if key == self.selected else None
+        return self._run(args, PRESETS[key].title, count)
 
-    def _apply_charge(self):
-        limit = CHARGE_LIMITS[self.charge_slider.value()]
-        if str(status.charge_limits()[1]) != limit:
-            self._run("sarj", limit)
+    def apply_charge(self, limit):
+        if str(status.charge_limits()[1]) == limit:
+            return True
+        return self._run(["sarj", limit], _("{limit}% charge limit").format(limit=limit))
 
-    # ---------- İşlemler ----------
+    def set_passwordless(self, enabled):
+        state_text = _("on") if enabled else _("off")
+        return self._run(["passwordless", "on" if enabled else "off"],
+                         _("Password-free switching {state}").format(state=state_text))
 
-    def _run(self, mode, *extra):
+    def _run(self, args, name, count=None):
         if self.busy:
-            return
-        args = [mode, *extra]
-        if mode in PRESETS:
-            args += ["--harici", self.external.currentData()]
-        self.pending_args = args
-        self.log.clear()
-        self.result.show_message("warn", "Uygulanıyor… Yönetici parolası istenebilir.")
+            return False
+        self.pending = (args, name, count)
+        self.log_dialog.text.clear()
+        self.result.show_message("warn", _("Applying {name}… An administrator password may be "
+                                           "requested.").format(name=name))
         self._set_controls_enabled(False)
         self.progress.show()
         self.runner.start(args)
+        return True
 
     def _on_finished(self, ok):
         self.progress.hide()
         self._set_controls_enabled(True)
-        mode = self.pending_args[0]
-        if mode == "sarj":
-            name = f"%{self.pending_args[1]} şarj sınırı"
-        else:
-            name = PRESETS[mode].title if mode in PRESETS else "Önceki ayarlar"
+        _args, name, count = self.pending
         if ok:
-            self.result.show_message("ok", f"{name} uygulandı. Ayrıntılar işlem günlüğünde.")
+            text = _("{name} applied.").format(name=name)
+            if count:
+                text += " " + _("{count} settings changed.").format(count=count)
+            self.result.show_message("ok", text)
         else:
-            self.result.show_message("error", "İşlem tamamlanamadı. Ayrıntılar işlem günlüğünde.")
-            self.log_toggle.setChecked(True)
+            self.result.show_message("error", _("{name} could not be applied. See the log for "
+                                                "details.").format(name=name))
+        self.finished.emit(name, ok)
         self.refresh()
+        self._refresh_preview()
 
     def _set_controls_enabled(self, enabled):
         for card in self.cards.values():
@@ -489,29 +386,49 @@ class MainWindow(QWidget):
         self.apply_button.setEnabled(enabled)
         self.restore_button.setEnabled(enabled and state.has_original())
         self.external.setEnabled(enabled)
-        self.charge_slider.setEnabled(enabled and status.charge_limits()[1] is not None)
+        self.charge.refresh(not enabled)
 
     def _append_log(self, text):
-        self.log.appendPlainText(text)
+        self.log_dialog.text.appendPlainText(text)
 
-    def _show_log(self, visible):
-        self.log.setVisible(visible)
-        self.log_toggle.setArrowType(Qt.DownArrow if visible else Qt.RightArrow)
-        if visible:
-            QTimer.singleShot(0, lambda: self.scroll.ensureWidgetVisible(self.log))
+    def show_log(self):
+        self.log_dialog.show()
+        self.log_dialog.raise_()
+
+    def open_settings(self):
+        dialog = SettingsDialog(self)
+        if dialog.exec() != QDialog.Accepted:
+            return
+        before = settings.load()
+        values = dialog.values()
+        settings.save(values)
+        if values["tray_autostart"] != before["tray_autostart"]:
+            set_autostart(values["tray_autostart"])
+        self._update_card_info()
+        self._refresh_preview()
+        self.settings_changed(before, values)
+        if values["passwordless"] != before["passwordless"]:
+            if not self.set_passwordless(values["passwordless"]):
+                settings.save({"passwordless": before["passwordless"]})
+        if values["language"] != before["language"]:
+            QMessageBox.information(self, _("Language"),
+                                    _("The new language is used after the app restarts."))
+
+    def settings_changed(self, before, after):
+        """Tepsi/otomatik mod kancası; app.py bağlar."""
 
     def _reboot(self):
         # KDE'nin kendi onay penceresini açar; açık uygulamalar düzgün kapanır.
         if shutil.which("qdbus6"):
             QProcess.startDetached("qdbus6", ["org.kde.LogoutPrompt", "/LogoutPrompt", "promptReboot"])
-        elif QMessageBox.question(self, "Yeniden başlat", "Bilgisayar şimdi yeniden başlatılsın mı?") \
+        elif QMessageBox.question(self, _("Restart"), _("Restart the computer now?")) \
                 == QMessageBox.Yes:
             QProcess.startDetached("systemctl", ["reboot"])
 
     def closeEvent(self, event):
-        if self.busy:
-            QMessageBox.information(self, "İşlem sürüyor",
-                                    "Ayarların uygulanması bitince pencereyi kapatabilirsin.")
+        if self.busy and self.quit_on_close:
+            QMessageBox.information(self, _("Still working"),
+                                    _("You can close the window when the settings are applied."))
             event.ignore()
-        else:
-            event.accept()
+            return
+        event.accept()

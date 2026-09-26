@@ -7,6 +7,7 @@ from html import escape
 
 from . import capabilities, settings
 from .i18n import _, ngettext
+from .privileged import hardware as hw
 
 
 def profile_name(profile):
@@ -104,6 +105,79 @@ def restore_sections():
         ("NVIDIA", _("Available after a restart")),
         (_("Charge limit"), _("Unchanged (separate setting)")),
     ])]
+
+
+def _hardware_changes(target, current):
+    """sysfs farklarını okunur satırlara çevirir; PCI aygıtları tek satırda toplanır."""
+    rows = []
+    changed = {p: v for p, v in target.items() if current.get(p) != v}
+    labels = {
+        hw.EC + "shift_mode": (_("EC mode"), str),
+        hw.EC + "fan_mode": (_("Fan"), fan_name),
+        hw.EC + "cooler_boost": ("Cooler Boost", lambda v: on_off(v == "on")),
+        hw.CPU + "no_turbo": (_("CPU turbo"), lambda v: on_off(v == "0")),
+        hw.BOOST: (_("CPU turbo"), lambda v: on_off(v == "1")),
+        hw.LED: (_("Keyboard backlight"), lambda v: _("Off") if v == "0"
+                 else _("Level {level}").format(level=v)),
+        hw.SOUND_POWER_SAVE: (_("Sound card power saving"), lambda v: on_off(v != "0")),
+        hw.DIRTY_WRITEBACK: (_("Disk writes"), lambda v: _("Every {seconds} s").format(
+            seconds=int(v) // 100) if v.isdigit() else v),
+    }
+    if hw.NVIDIA_GPU:
+        labels[hw.NVIDIA_GPU + "/power/control"] = (
+            _("NVIDIA now"), lambda v: _("Always awake") if v == "on" else _("Sleeps when idle"))
+    for path, (label, show) in labels.items():
+        if path in changed:
+            rows.append((label, show(current[path]) if path in current else "—", show(changed[path])))
+
+    pci = [p for p in changed if p in hw.RUNTIME_PM]
+    if pci:
+        sleeping = sum(changed[p] == "auto" for p in pci)
+        count = ngettext("{count} device", "{count} devices", len(pci)).format(count=len(pci))
+        old, new = (_("Off"), _("On")) if sleeping * 2 >= len(pci) else (_("On"), _("Off"))
+        rows.append((_("PCI power saving"), old, f"{new} · {count}"))
+    if any(p in hw.BLUETOOTH for p in changed):
+        blocked = next(changed[p] for p in changed if p in hw.BLUETOOTH) == "1"
+        rows.append(("Bluetooth", on_off(blocked), on_off(not blocked)))
+    return rows
+
+
+def _screen_changes(args, outputs):
+    rows = []
+    by_name = {o["name"]: o for o in outputs}
+    for arg in args:
+        _prefix, name, setting, *value = arg.split(".")
+        value = ".".join(value)
+        output = by_name.get(name)
+        if output is None:
+            continue
+        if setting in ("enable", "disable") and output["enabled"] != (setting == "enable"):
+            rows.append((name, on_off(output["enabled"]), on_off(setting == "enable")))
+        elif setting == "mode" and value != output["currentModeId"]:
+            modes = {m["id"]: m for m in output["modes"]}
+            old, new = modes.get(output["currentModeId"]), modes.get(value)
+            if old and new and round(old["refreshRate"]) != round(new["refreshRate"]):
+                rows.append((_("{output} refresh rate").format(output=name),
+                             f"{round(old['refreshRate'])} Hz", f"{round(new['refreshRate'])} Hz"))
+        elif setting == "brightness" and "brightness" in output:
+            old = round(output["brightness"] * 100)
+            if abs(old - int(value)) > 1:
+                rows.append((_("{output} brightness").format(output=name), f"{old}%", f"{value}%"))
+    return rows
+
+
+def changes(plan, before, nvidia_blocked_next_boot=False):
+    """Planın şu anki duruma göre değiştireceği ayarlar: [(ayar, eski, yeni), ...]"""
+    rows = []
+    if plan.profile != before["profile"]:
+        rows.append((_("Power profile"), profile_name(before["profile"]), profile_name(plan.profile)))
+    rows += _screen_changes(plan.screen_args, before["outputs"])
+    rows += _hardware_changes(plan.hardware, before["hardware"])
+    if (plan.gpu_boot == "integrated") != nvidia_blocked_next_boot and (hw.NVIDIA_GPU or nvidia_blocked_next_boot):
+        rows.append((_("NVIDIA at boot"),
+                     _("Off") if nvidia_blocked_next_boot else _("Available"),
+                     _("Off (after a restart)") if plan.gpu_boot == "integrated" else _("Available")))
+    return rows
 
 
 def to_html(title, sections, note=None):

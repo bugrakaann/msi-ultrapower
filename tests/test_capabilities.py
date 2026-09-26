@@ -59,6 +59,26 @@ class DescribeTests(unittest.TestCase):
         self.assertIn("No NVIDIA GPU", text)
 
 
+class ChangesTests(unittest.TestCase):
+    def test_lists_only_real_changes(self):
+        from pil_modu.plan import Plan
+        from pil_modu.privileged import hardware as hw
+        panel = fake_output("eDP-1")
+        before = {"profile": "balanced", "outputs": [panel],
+                  "hardware": {hw.EC + "shift_mode": "comfort", hw.LED: "2"}}
+        plan = Plan(mode="batarya", restoring=False, profile="power-saver",
+                    screen_args=["output.eDP-1.enable", "output.eDP-1.mode.low",
+                                 "output.eDP-1.brightness.30"],
+                    rollback_args=[], hardware={hw.EC + "shift_mode": "eco", hw.LED: "2"},
+                    gpu_boot="hybrid")
+        rows = {label: (old, new) for label, old, new in describe.changes(plan, before)}
+        self.assertEqual(rows["Power profile"], ("Balanced", "Power saver"))
+        self.assertEqual(rows["eDP-1 refresh rate"], ("120 Hz", "48 Hz"))
+        self.assertEqual(rows["eDP-1 brightness"], ("100%", "30%"))
+        self.assertEqual(rows["EC mode"], ("comfort", "eco"))
+        self.assertNotIn("Keyboard backlight", rows)  # değişmiyor
+
+
 class RefreshTests(unittest.TestCase):
     def test_max_and_min(self):
         panel = fake_output("eDP-1")

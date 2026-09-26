@@ -77,3 +77,34 @@ def charge_limits():
     """(başlangıç, bitiş) şarj eşikleri; desteklenmiyorsa bitiş None."""
     start, end = read(hw.CHARGE_START), read(hw.CHARGE_LIMIT)
     return (int(start) if start.isdigit() else None, int(end) if end.isdigit() else None)
+
+
+@dataclass
+class Sensors:
+    cpu_temp: int | None     # °C
+    gpu_temp: int | None
+    cpu_fan: int | None      # msi-ec: yüzde
+    gpu_fan: int | None
+
+
+def _int(path):
+    value = read(path, "")
+    return int(value) if value.lstrip("-").isdigit() else None
+
+
+def _hwmon_temp(names):
+    """msi-ec yoksa işlemci sıcaklığı için coretemp/k10temp (millidereceden dereceye)."""
+    for folder in sorted(Path("/sys/class/hwmon").glob("hwmon*")):
+        if read(folder / "name", "") in names:
+            value = _int(folder / "temp1_input")
+            return round(value / 1000) if value is not None else None
+    return None
+
+
+def sensors():
+    return Sensors(
+        cpu_temp=_int(hw.EC + "cpu/realtime_temperature") or _hwmon_temp(("coretemp", "k10temp")),
+        gpu_temp=_int(hw.EC + "gpu/realtime_temperature"),
+        cpu_fan=_int(hw.EC + "cpu/realtime_fan_speed"),
+        gpu_fan=_int(hw.EC + "gpu/realtime_fan_speed"),
+    )

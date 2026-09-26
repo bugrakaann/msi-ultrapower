@@ -11,7 +11,8 @@ DEFAULTS = {
     "auto_mode": False,              # prize takınca/çekince mod değiştir
     "auto_ac": "dengeli",
     "auto_battery": "batarya",
-    "tray_autostart": False,
+    "passwordless": False,           # otomatik mod parola sormadan geçebilsin (polkit kuralı)
+    "tray_autostart": False,         # oturum açılınca tepside başla
 }
 
 
