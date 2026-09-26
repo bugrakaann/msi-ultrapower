@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<!-- pil-modu yardımcıları. Yetki yalnızca bu iki dosyaya verilir, python3'ün kendisine değil.
+     auth_admin_keep: parola bir kez sorulur, birkaç dakika hatırlanır. -->
+<policyconfig>
+  <vendor>pil-modu</vendor>
+  <vendor_url>https://github.com/</vendor_url>
+
+  <action id="io.github.pilmodu.hardware">
+    <description>Apply power mode hardware settings</description>
+    <description xml:lang="tr">Güç modu donanım ayarlarını uygula</description>
+    <description xml:lang="ru">Применить аппаратные настройки режима питания</description>
+    <description xml:lang="es">Aplicar la configuración de hardware del modo de energía</description>
+    <description xml:lang="ar">تطبيق إعدادات العتاد لوضع الطاقة</description>
+    <message>Authentication is required to change fan, CPU, battery and device power settings</message>
+    <message xml:lang="tr">Fan, işlemci, pil ve aygıt güç ayarlarını değiştirmek için kimlik doğrulama gerekiyor</message>
+    <message xml:lang="ru">Для изменения настроек вентилятора, процессора, батареи и питания устройств требуется аутентификация</message>
+    <message xml:lang="es">Se requiere autenticación para cambiar la configuración del ventilador, la CPU, la batería y la energía de los dispositivos</message>
+    <message xml:lang="ar">المصادقة مطلوبة لتغيير إعدادات المروحة والمعالج والبطارية وطاقة الأجهزة</message>
+    <icon_name>battery</icon_name>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/pil-modu/pil-modu-hardware</annotate>
+  </action>
+
+  <action id="io.github.pilmodu.gpu-boot">
+    <description>Configure the NVIDIA GPU for the next boot</description>
+    <description xml:lang="tr">NVIDIA ekran kartını sonraki açılış için ayarla</description>
+    <description xml:lang="ru">Настроить видеокарту NVIDIA для следующей загрузки</description>
+    <description xml:lang="es">Configurar la GPU NVIDIA para el próximo arranque</description>
+    <description xml:lang="ar">تهيئة بطاقة NVIDIA للإقلاع التالي</description>
+    <message>Authentication is required to enable or disable the NVIDIA GPU at boot</message>
+    <message xml:lang="tr">NVIDIA ekran kartını açılışta açıp kapatmak için kimlik doğrulama gerekiyor</message>
+    <message xml:lang="ru">Для включения или отключения видеокарты NVIDIA при загрузке требуется аутентификация</message>
+    <message xml:lang="es">Se requiere autenticación para activar o desactivar la GPU NVIDIA al arrancar</message>
+    <message xml:lang="ar">المصادقة مطلوبة لتفعيل بطاقة NVIDIA أو تعطيلها عند الإقلاع</message>
+    <icon_name>video-display</icon_name>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/pil-modu/pil-modu-gpu-boot</annotate>
+  </action>
+</policyconfig>

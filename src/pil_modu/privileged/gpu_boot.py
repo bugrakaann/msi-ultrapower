@@ -158,9 +158,14 @@ def configure(mode):
     print("Değişiklik yeniden başlatınca geçerli olacak. Oturum kapatılmadı.", flush=True)
 
 
-if __name__ == "__main__":
+def entry():
+    """/usr/lib/pil-modu/pil-modu-gpu-boot buradan başlar."""
     try:
         configure(sys.argv[1])
     except Exception as exc:
         print("GPU yapılandırma hatası:", exc, file=sys.stderr)
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    entry()

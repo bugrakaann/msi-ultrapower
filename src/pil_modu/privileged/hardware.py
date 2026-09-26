@@ -10,8 +10,10 @@ kalanından hiçbir şey import etmez, çünkü iki farklı şekilde çalıştı
         COMMIT gelirse ayarları açılışta geri yüklenmek üzere kaydeder.
   * pkexec ile şarj sınırı:  hardware.py --sarj 80
         Pilin şarj sınırını yazar, doğrular ve açılışta geri yüklenmek üzere kaydeder.
+  * pkexec ile parolasız otomatik mod:  hardware.py --parolasiz 1|0
+        Yalnızca bu yardımcının eylemi için polkit kuralı yazar/siler.
   * Açılışta systemd ile (pil-modu-restore.service):
-        python3 -P -m pil_modu.privileged.hardware --restore
+        /usr/lib/pil-modu/pil-modu-hardware --restore
 
 Kullanıcı tarafı (pil_modu paketi) ALLOWED, read_state, writable ve validate'i
 import ederek aynı izin listesini kullanır.
@@ -256,18 +258,50 @@ def transaction(target):
         raise
 
 
+POLKIT_ACTION = "io.github.pilmodu.hardware"
+POLKIT_RULE = Path("/etc/polkit-1/rules.d/49-pil-modu.rules")
+POLKIT_HEADER = "// Managed by pil-modu hardware.py\n"
+# Yalnızca bu yardımcının eylemi; yalnızca yerel, etkin oturumdaki yönetici (wheel) kullanıcılar.
+POLKIT_TEXT = POLKIT_HEADER + """polkit.addRule(function(action, subject) {
+    if (action.id == "%s" && subject.local && subject.active && subject.isInGroup("wheel")) {
+        return polkit.Result.YES;
+    }
+});
+""" % POLKIT_ACTION
+
+
+def set_passwordless(enabled):
+    """Otomatik mod parola sormadan geçebilsin diye polkit kuralını yazar ya da siler."""
+    if POLKIT_RULE.exists() and not POLKIT_RULE.read_text().startswith(POLKIT_HEADER):
+        raise RuntimeError(f"{POLKIT_RULE} bu araca ait değil; dokunulmadı")
+    if enabled:
+        temp = POLKIT_RULE.with_suffix(".tmp")
+        temp.write_text(POLKIT_TEXT)
+        temp.chmod(0o644)
+        temp.replace(POLKIT_RULE)
+    else:
+        POLKIT_RULE.unlink(missing_ok=True)
+
+
 def main(argv):
     if argv[1] == "--restore":
         restore()
     elif argv[1] == "--sarj":
         set_charge_limit(argv[2])
+    elif argv[1] == "--parolasiz":
+        set_passwordless(argv[2] == "1")
     else:
         transaction(json.loads(argv[1]))
 
 
-if __name__ == "__main__":
+def entry():
+    """/usr/lib/pil-modu/pil-modu-hardware ve systemd servisi buradan başlar."""
     try:
         main(sys.argv)
     except Exception as exc:
         print(exc, file=sys.stderr)
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    entry()

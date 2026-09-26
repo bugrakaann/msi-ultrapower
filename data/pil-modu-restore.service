@@ -6,7 +6,7 @@ ConditionPathExists=|/var/lib/pil-modu/charge
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/python3 -P -m pil_modu.privileged.hardware --restore
+ExecStart=/usr/lib/pil-modu/pil-modu-hardware --restore
 ProtectHome=yes
 ProtectSystem=full
 

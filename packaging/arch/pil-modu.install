@@ -26,10 +26,14 @@ post_upgrade() {
 pre_remove() {
     systemctl disable pil-modu-restore.service >/dev/null 2>&1 || true
     # Batarya modundan kalan NVIDIA engelini kaldır; paket gidince GPU kilitli kalmasın.
-    /usr/bin/python3 -P -m pil_modu.privileged.gpu_boot hybrid || true
+    /usr/lib/pil-modu/pil-modu-gpu-boot hybrid || true
 }
 
 post_remove() {
     rm -rf /var/lib/pil-modu
+    # Otomatik mod için yazılan parolasız kural (yalnızca bizimkiyse).
+    if grep -qs "Managed by pil-modu" /etc/polkit-1/rules.d/49-pil-modu.rules; then
+        rm -f /etc/polkit-1/rules.d/49-pil-modu.rules
+    fi
     echo "Kişisel kayıtlar ~/.local/share/pil-modu içinde duruyor; istersen silebilirsin."
 }
