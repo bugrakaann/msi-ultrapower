@@ -6,7 +6,7 @@ from .. import status
 from ..i18n import _, percent
 from ..presets import PRESETS
 from ..privileged.hardware import CHARGE_LIMITS
-from .status_strip import battery_text, sensor_text
+from .status_strip import battery_text, power_text, sensor_text
 
 
 class Tray(QSystemTrayIcon):
@@ -80,10 +80,15 @@ class Tray(QSystemTrayIcon):
         for value, action in self.limits.items():
             action.setChecked(str(limit) == value)
 
+        meter = self.window.power_meter
         battery = battery_text(status.battery())
-        lines = [preset.title if preset else _("Power Modes"), battery, *sensor_text(status.sensors())]
-        self.header.setText(" · ".join(lines[:2]))
-        self.setToolTip("\n".join(lines))
+        power = power_text(meter)
+        title = preset.title if preset else _("Power Modes")
+        self.header.setText(f"{battery} · {power}")
+        lines = [title, battery, power]
+        if meter.average is not None:
+            lines.append(_("Average over {minutes} min on battery").format(minutes=meter.minutes))
+        self.setToolTip("\n".join(lines + sensor_text(status.sensors())))
 
     def _notify(self, name, ok):
         if self.window.isVisible():

@@ -63,12 +63,12 @@ msgid "Power profile:"
 msgstr "Perfil de energía:"
 
 #: src/pil_modu/cli.py:46 src/pil_modu/controller.py:145
-#: src/pil_modu/ui/window.py:351
+#: src/pil_modu/ui/window.py:353
 msgid "on"
 msgstr "encendida"
 
 #: src/pil_modu/cli.py:46 src/pil_modu/controller.py:145
-#: src/pil_modu/ui/window.py:351
+#: src/pil_modu/ui/window.py:353
 msgid "off"
 msgstr "apagada"
 
@@ -385,7 +385,7 @@ msgstr "Brillo"
 msgid "Unchanged (needs Plasma 6.1+)"
 msgstr "Sin cambios (requiere Plasma 6.1+)"
 
-#: src/pil_modu/describe.py:49 src/pil_modu/ui/window.py:196
+#: src/pil_modu/describe.py:49 src/pil_modu/ui/window.py:197
 msgid "External displays"
 msgstr "Pantallas externas"
 
@@ -626,7 +626,7 @@ msgid "Hardware authorization or apply failed:"
 msgstr "Falló la autorización o la aplicación del hardware:"
 
 #. Translators: percent sign position, e.g. "%{value}" in Turkish
-#: src/pil_modu/i18n.py:59
+#: src/pil_modu/i18n.py:73
 #, python-brace-format
 msgid "{value}%"
 msgstr "{value}%"
@@ -760,9 +760,9 @@ msgid "{path} does not belong to pil-modu; not touched"
 msgstr "{path} no pertenece a pil-modu; no se tocó"
 
 #: src/pil_modu/ui/app.py:43 src/pil_modu/ui/tray.py:53
-#: src/pil_modu/ui/tray.py:84 src/pil_modu/ui/tray.py:92
-#: src/pil_modu/ui/tray.py:95 src/pil_modu/ui/window.py:72
-#: src/pil_modu/ui/window.py:136
+#: src/pil_modu/ui/tray.py:86 src/pil_modu/ui/tray.py:97
+#: src/pil_modu/ui/tray.py:100 src/pil_modu/ui/window.py:72
+#: src/pil_modu/ui/window.py:137
 msgid "Power Modes"
 msgstr "Modos de energía"
 
@@ -781,11 +781,11 @@ msgid_plural "{count} settings will change"
 msgstr[0] "Cambiará {count} ajuste"
 msgstr[1] "Cambiarán {count} ajustes"
 
-#: src/pil_modu/ui/changes.py:79
+#: src/pil_modu/ui/changes.py:80
 msgid "Nothing to change"
 msgstr "Nada que cambiar"
 
-#: src/pil_modu/ui/changes.py:80
+#: src/pil_modu/ui/changes.py:81
 msgid "This mode is already in effect."
 msgstr "Este modo ya está aplicado."
 
@@ -823,7 +823,7 @@ msgstr "El nivel máximo de carga de la batería. Es independiente de los modos 
 msgid "This computer does not support a charge limit."
 msgstr "Este equipo no admite límite de carga."
 
-#: src/pil_modu/ui/settings_dialog.py:34 src/pil_modu/ui/window.py:147
+#: src/pil_modu/ui/settings_dialog.py:34 src/pil_modu/ui/window.py:148
 msgid "Settings"
 msgstr "Ajustes"
 
@@ -855,7 +855,7 @@ msgstr "Añade una regla de polkit para que los administradores locales de esta 
 msgid "Start in the system tray when I log in"
 msgstr "Iniciar en la bandeja del sistema al iniciar sesión"
 
-#: src/pil_modu/ui/settings_dialog.py:65 src/pil_modu/ui/window.py:415
+#: src/pil_modu/ui/settings_dialog.py:65 src/pil_modu/ui/window.py:417
 msgid "Language"
 msgstr "Idioma"
 
@@ -903,53 +903,85 @@ msgstr "{level} · enchufado"
 
 #: src/pil_modu/ui/status_strip.py:18
 #, python-brace-format
-msgid "{level} · {watts} W"
-msgstr "{level} · {watts} W"
+msgid "{level} · on battery"
+msgstr "{level} · con batería"
 
-#: src/pil_modu/ui/status_strip.py:24
+#: src/pil_modu/ui/status_strip.py:23
+#, python-brace-format
+msgid "{watts} W"
+msgstr "{watts} W"
+
+#: src/pil_modu/ui/status_strip.py:29
+msgid "Power use: not measured while plugged in"
+msgstr "Consumo: no se mide enchufado"
+
+#: src/pil_modu/ui/status_strip.py:30
+#, python-brace-format
+msgid "Now {watts}"
+msgstr "Ahora {watts}"
+
+#: src/pil_modu/ui/status_strip.py:32
+#, python-brace-format
+msgid "average {watts}"
+msgstr "media {watts}"
+
+#: src/pil_modu/ui/status_strip.py:39
+msgid "Plugged in, the battery only reports its charging power, so the laptop's power use cannot be measured. Unplug to see it."
+msgstr "Enchufado, la batería solo informa de su potencia de carga, así que no se puede medir el consumo del portátil. Desenchúfalo para verlo."
+
+#: src/pil_modu/ui/status_strip.py:42
+msgid "The average appears after a few seconds on battery."
+msgstr "La media aparece tras unos segundos con batería."
+
+#: src/pil_modu/ui/status_strip.py:43
+#, python-brace-format
+msgid "Average since the charger was unplugged ({minutes} min). Resets when you plug it in."
+msgstr "Media desde que se desconectó el cargador ({minutes} min). Se reinicia al enchufarlo."
+
+#: src/pil_modu/ui/status_strip.py:49
 msgid "NVIDIA off"
 msgstr "NVIDIA apagada"
 
-#: src/pil_modu/ui/status_strip.py:25
+#: src/pil_modu/ui/status_strip.py:50
 msgid "NVIDIA sleeping"
 msgstr "NVIDIA en reposo"
 
-#: src/pil_modu/ui/status_strip.py:25
+#: src/pil_modu/ui/status_strip.py:50
 msgid "NVIDIA active"
 msgstr "NVIDIA activa"
 
-#: src/pil_modu/ui/status_strip.py:26
+#: src/pil_modu/ui/status_strip.py:51
 msgid "NVIDIA going to sleep"
 msgstr "NVIDIA entrando en reposo"
 
-#: src/pil_modu/ui/status_strip.py:26
+#: src/pil_modu/ui/status_strip.py:51
 msgid "NVIDIA waking up"
 msgstr "NVIDIA despertando"
 
-#: src/pil_modu/ui/status_strip.py:33
+#: src/pil_modu/ui/status_strip.py:58
 #, python-brace-format
 msgid "CPU {temp}°C"
 msgstr "CPU {temp}°C"
 
-#: src/pil_modu/ui/status_strip.py:35 src/pil_modu/ui/status_strip.py:40
+#: src/pil_modu/ui/status_strip.py:60 src/pil_modu/ui/status_strip.py:65
 #, python-brace-format
 msgid "fan {speed}%"
 msgstr "ventilador {speed}%"
 
-#: src/pil_modu/ui/status_strip.py:38
+#: src/pil_modu/ui/status_strip.py:63
 #, python-brace-format
 msgid "GPU {temp}°C"
 msgstr "GPU {temp}°C"
 
-#: src/pil_modu/ui/status_strip.py:110
-msgid "Battery level. While discharging, the battery's own power reading; it cannot be measured while plugged in."
-msgstr "Nivel de batería. Al descargar, la potencia que informa la batería; no se puede medir enchufado."
+#: src/pil_modu/ui/status_strip.py:135
+msgid "Battery level and charging state"
+msgstr "Nivel de batería y estado de carga"
 
-#: src/pil_modu/ui/status_strip.py:112 src/pil_modu/ui/status_strip.py:113
+#: src/pil_modu/ui/status_strip.py:137 src/pil_modu/ui/status_strip.py:138
 msgid "Temperature and fan speed reported by the EC"
 msgstr "Temperatura y velocidad del ventilador según el EC"
 
-#: src/pil_modu/ui/status_strip.py:114
+#: src/pil_modu/ui/status_strip.py:139
 msgid "Current state of the NVIDIA GPU"
 msgstr "Estado actual de la GPU NVIDIA"
 
@@ -965,12 +997,17 @@ msgstr "Salir"
 msgid "Another change is still being applied."
 msgstr "Todavía se está aplicando otro cambio."
 
-#: src/pil_modu/ui/tray.py:92 src/pil_modu/ui/window.py:372
+#: src/pil_modu/ui/tray.py:90
+#, python-brace-format
+msgid "Average over {minutes} min on battery"
+msgstr "Media de {minutes} min con batería"
+
+#: src/pil_modu/ui/tray.py:97 src/pil_modu/ui/window.py:374
 #, python-brace-format
 msgid "{name} applied."
 msgstr "{name} aplicado."
 
-#: src/pil_modu/ui/tray.py:95
+#: src/pil_modu/ui/tray.py:100
 #, python-brace-format
 msgid "{name} could not be applied. Open the window for the log."
 msgstr "No se pudo aplicar {name}. Abre la ventana para ver el registro."
@@ -1005,95 +1042,95 @@ msgstr "Registro de actividad"
 msgid "Applied steps appear here."
 msgstr "Aquí aparecen los pasos aplicados."
 
-#: src/pil_modu/ui/window.py:156 src/pil_modu/ui/window.py:425
+#: src/pil_modu/ui/window.py:157 src/pil_modu/ui/window.py:427
 msgid "Restart"
 msgstr "Reiniciar"
 
-#: src/pil_modu/ui/window.py:193
+#: src/pil_modu/ui/window.py:194
 msgid "Whether external displays stay on in this mode. Their refresh rate and resolution never change."
 msgstr "Si las pantallas externas siguen encendidas en este modo. Su frecuencia y resolución nunca cambian."
 
-#: src/pil_modu/ui/window.py:214
+#: src/pil_modu/ui/window.py:215
 msgid "Show log"
 msgstr "Ver registro"
 
-#: src/pil_modu/ui/window.py:225 src/pil_modu/ui/window.py:226
+#: src/pil_modu/ui/window.py:226 src/pil_modu/ui/window.py:227
 msgid "Restore previous settings"
 msgstr "Restaurar ajustes anteriores"
 
-#: src/pil_modu/ui/window.py:228
+#: src/pil_modu/ui/window.py:229
 msgid "Previous settings"
 msgstr "Ajustes anteriores"
 
-#: src/pil_modu/ui/window.py:230 src/pil_modu/ui/window.py:311
+#: src/pil_modu/ui/window.py:231 src/pil_modu/ui/window.py:312
 msgid "Apply"
 msgstr "Aplicar"
 
-#: src/pil_modu/ui/window.py:302
+#: src/pil_modu/ui/window.py:303
 #, python-brace-format
 msgid "{outputs} is wired to NVIDIA: it turns off in battery mode and cannot be used until NVIDIA is back."
 msgstr "{outputs} está conectada a NVIDIA: se apaga en modo batería y no se puede usar hasta que vuelva NVIDIA."
 
-#: src/pil_modu/ui/window.py:311
+#: src/pil_modu/ui/window.py:312
 msgid "Apply again"
 msgstr "Aplicar de nuevo"
 
-#: src/pil_modu/ui/window.py:318
+#: src/pil_modu/ui/window.py:320
 #, python-brace-format
 msgid "Active mode: {mode}"
 msgstr "Modo activo: {mode}"
 
-#: src/pil_modu/ui/window.py:319
+#: src/pil_modu/ui/window.py:321
 msgid "No mode applied yet (system settings)"
 msgstr "Aún no se aplicó ningún modo (ajustes del sistema)"
 
-#: src/pil_modu/ui/window.py:324
+#: src/pil_modu/ui/window.py:326
 msgid "NVIDIA will be disabled after a restart."
 msgstr "NVIDIA se desactivará tras reiniciar."
 
-#: src/pil_modu/ui/window.py:325
+#: src/pil_modu/ui/window.py:327
 msgid "NVIDIA will be available again after a restart."
 msgstr "NVIDIA volverá a estar disponible tras reiniciar."
 
-#: src/pil_modu/ui/window.py:348
+#: src/pil_modu/ui/window.py:350
 #, python-brace-format
 msgid "{limit}% charge limit"
 msgstr "Límite de carga del {limit}%"
 
-#: src/pil_modu/ui/window.py:353
+#: src/pil_modu/ui/window.py:355
 #, python-brace-format
 msgid "Password-free switching {state}"
 msgstr "Cambio sin contraseña: {state}"
 
-#: src/pil_modu/ui/window.py:360
+#: src/pil_modu/ui/window.py:362
 #, python-brace-format
 msgid "Applying {name}… An administrator password may be requested."
 msgstr "Aplicando {name}… Puede que se pida la contraseña de administrador."
 
-#: src/pil_modu/ui/window.py:374
+#: src/pil_modu/ui/window.py:376
 #, python-brace-format
 msgid "{count} setting changed."
 msgid_plural "{count} settings changed."
 msgstr[0] "Cambió {count} ajuste."
 msgstr[1] "Cambiaron {count} ajustes."
 
-#: src/pil_modu/ui/window.py:378
+#: src/pil_modu/ui/window.py:380
 #, python-brace-format
 msgid "{name} could not be applied. See the log for details."
 msgstr "No se pudo aplicar {name}. Consulta el registro para más detalles."
 
-#: src/pil_modu/ui/window.py:416
+#: src/pil_modu/ui/window.py:418
 msgid "The new language is used after the app restarts."
 msgstr "El nuevo idioma se usará al reiniciar la aplicación."
 
-#: src/pil_modu/ui/window.py:425
+#: src/pil_modu/ui/window.py:427
 msgid "Restart the computer now?"
 msgstr "¿Reiniciar el equipo ahora?"
 
-#: src/pil_modu/ui/window.py:435
+#: src/pil_modu/ui/window.py:437
 msgid "Still working"
 msgstr "Todavía trabajando"
 
-#: src/pil_modu/ui/window.py:436
+#: src/pil_modu/ui/window.py:438
 msgid "You can close the window when the settings are applied."
 msgstr "Puedes cerrar la ventana cuando se apliquen los ajustes."

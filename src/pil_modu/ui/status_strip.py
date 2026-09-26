@@ -3,7 +3,7 @@ from PySide6.QtCore import QPoint, QRect, QSize, Qt
 from PySide6.QtWidgets import QLabel, QLayout, QStyle, QWidget
 
 from .. import status
-from ..i18n import _, percent
+from ..i18n import _, decimal, percent
 
 
 def battery_text(bat):
@@ -14,9 +14,34 @@ def battery_text(bat):
         return _("{level} · charging").format(level=level)
     if bat.status in ("Full", "Not charging"):
         return _("{level} · plugged in").format(level=level)
-    if bat.discharging and bat.watts is not None:
-        return _("{level} · {watts} W").format(level=level, watts=f"{bat.watts:.1f}")
+    if bat.discharging:
+        return _("{level} · on battery").format(level=level)
     return level
+
+
+def watts(value):
+    return _("{watts} W").format(watts=decimal(value))
+
+
+def power_text(meter):
+    """Durum çipi ve tepsi için: "Şu an 12.3 W · ortalama 11.8 W"."""
+    if meter.current is None:
+        return _("Power use: not measured while plugged in")
+    text = _("Now {watts}").format(watts=watts(meter.current))
+    if meter.average is not None:
+        text += " · " + _("average {watts}").format(watts=watts(meter.average))
+    return text
+
+
+def power_details(meter):
+    """Ortalamanın hangi süreye ait olduğu (ipucu)."""
+    if meter.current is None:
+        return _("Plugged in, the battery only reports its charging power, so the laptop's "
+                 "power use cannot be measured. Unplug to see it.")
+    if meter.average is None:
+        return _("The average appears after a few seconds on battery.")
+    return _("Average since the charger was unplugged ({minutes} min). Resets when you plug "
+             "it in.").format(minutes=meter.minutes)
 
 
 def gpu_text(gpu):
@@ -107,8 +132,8 @@ class StatusStrip(QWidget):
         super().__init__()
         self.caps = caps
         self.layout_ = FlowLayout(self)
-        self.battery = self._chip(_("Battery level. While discharging, the battery's own power "
-                                    "reading; it cannot be measured while plugged in."))
+        self.battery = self._chip(_("Battery level and charging state"))
+        self.power = self._chip("")
         self.cpu = self._chip(_("Temperature and fan speed reported by the EC"))
         self.gpu = self._chip(_("Temperature and fan speed reported by the EC"))
         self.nvidia = self._chip(_("Current state of the NVIDIA GPU"))
@@ -121,8 +146,10 @@ class StatusStrip(QWidget):
         self.layout_.addWidget(label)
         return label
 
-    def refresh(self):
+    def refresh(self, meter):
         self.battery.setText(battery_text(status.battery()))
+        self.power.setText(power_text(meter))
+        self.power.setToolTip(power_details(meter))
         sensors = sensor_text(status.sensors())
         for chip, text in zip((self.cpu, self.gpu), sensors + ["", ""]):
             chip.setText(text)

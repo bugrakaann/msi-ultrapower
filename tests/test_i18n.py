@@ -39,6 +39,12 @@ class TranslationTests(unittest.TestCase):
         self.use("en")
         self.assertEqual(i18n.percent(80), "80%")
 
+    def test_decimal_separator_follows_language(self):
+        self.use("tr")
+        self.assertEqual(i18n.decimal(10.94), "10,9")
+        self.use("en")
+        self.assertEqual(i18n.decimal(10.94), "10.9")
+
     def test_russian_plural_forms(self):
         self.use("ru")
         forms = [i18n.ngettext("{count} device", "{count} devices", n).format(count=n) for n in (1, 3, 5)]

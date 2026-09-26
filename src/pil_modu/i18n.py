@@ -16,6 +16,7 @@ LANGUAGES = {  # kod → kendi dilindeki adı (ayarlar menüsü)
     "ar": "العربية",
 }
 RIGHT_TO_LEFT = {"ar"}
+DECIMAL_COMMA = {"tr", "ru", "es"}  # 10,9 W
 
 _translation = gettext.NullTranslations()
 
@@ -71,6 +72,12 @@ def percent(value):
     """Yüzde yazımı dile göre değişir: 80% (en), %80 (tr)."""
     # Translators: percent sign position, e.g. "%{value}" in Turkish
     return _("{value}%").format(value=value)
+
+
+def decimal(value, digits=1):
+    """Ondalık sayı; virgül kullanan dillerde "10,9"."""
+    text = f"{value:.{digits}f}"
+    return text.replace(".", ",") if current() in DECIMAL_COMMA else text
 
 
 def N_(message):

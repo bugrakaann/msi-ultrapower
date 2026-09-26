@@ -1,4 +1,5 @@
 """Sistemin anlık durumunu okur (pil, NVIDIA, EC). Hiçbir şey yazmaz."""
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -119,3 +120,45 @@ def on_ac():
                 return True
             found = False
     return found
+
+
+class PowerMeter:
+    """Pildeyken anlık ve ortalama güç tüketimi. Şarj aleti takılınca sıfırlanır.
+
+    Ortalama, ölçümler arasındaki enerjinin (trapez) toplam süreye bölümüdür; böylece
+    ölçüm aralığı değişse de doğru kalır. Prizdeyken pil yalnızca şarj akımını bildirdiği
+    için sistemin tüketimi ölçülemez.
+    """
+
+    MAX_GAP = 30     # saniye; daha uzun ara (uyku, askıya alma) ortalamaya katılmaz
+    MIN_SPAN = 10    # saniye; bundan kısa ölçümde ortalama gösterilmez
+
+    def __init__(self):
+        self.reset()
+
+    def reset(self):
+        self.current = None      # W
+        self.energy = 0.0        # J
+        self.span = 0.0          # ortalamaya katılan süre (sn)
+        self._last_time = None
+
+    def add(self, bat, now=None):
+        now = time.monotonic() if now is None else now
+        if bat is None or not bat.discharging or bat.watts is None:
+            self.reset()
+            return
+        if self._last_time is not None and self.current is not None:
+            gap = now - self._last_time
+            if 0 < gap <= self.MAX_GAP:
+                self.energy += (self.current + bat.watts) / 2 * gap
+                self.span += gap
+        self.current = bat.watts
+        self._last_time = now
+
+    @property
+    def average(self):
+        return self.energy / self.span if self.span >= self.MIN_SPAN else None
+
+    @property
+    def minutes(self):
+        return int(self.span // 60)

@@ -16,7 +16,7 @@ and the NVIDIA GPU together, and rolls everything back if any step fails.
   saving, and the NVIDIA GPU fully disabled at the next boot.
 - **Automatic mode.** Switches mode when you plug the charger in or out.
 - **System tray.** Change modes and the charge limit without opening the window.
-- **Live status.** Battery, CPU/GPU temperature and fan speed, NVIDIA state.
+- **Live status.** Battery, current and average power use on battery, CPU/GPU temperature and fan speed, NVIDIA state (also in the tray tooltip).
 - **Languages.** English, Türkçe, Русский, Español, العربية (right-to-left).
 
 ## Modes

@@ -17,7 +17,7 @@ Bir adım başarısız olursa hepsini geri alır.
   sonraki açılışta tamamen kapanır.
 - **Otomatik mod.** Şarj aleti takılınca/çekilince mod değiştirir.
 - **Sistem tepsisi.** Pencereyi açmadan mod ve şarj sınırı değiştir.
-- **Canlı durum.** Pil, CPU/GPU sıcaklığı ve fan hızı, NVIDIA durumu.
+- **Canlı durum.** Pil, pildeyken anlık ve ortalama güç tüketimi, CPU/GPU sıcaklığı ve fan hızı, NVIDIA durumu (tepsi ipucunda da).
 - **Diller.** English, Türkçe, Русский, Español, العربية (sağdan sola).
 
 ## Modlar

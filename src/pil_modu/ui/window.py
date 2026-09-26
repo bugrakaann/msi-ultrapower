@@ -79,6 +79,7 @@ class MainWindow(QWidget):
         self.keep_running = lambda: False  # app.py: tepsi varsa pencere kapanınca gizlenir
 
         self.caps = detect_capabilities()
+        self.power_meter = status.PowerMeter()  # pencere gizliyken de ölçer; tepsi de kullanır
         self.runner = ModeRunner(self)
         self.runner.output.connect(self._append_log)
         self.runner.finished.connect(self._on_finished)
@@ -311,7 +312,8 @@ class MainWindow(QWidget):
         self.apply_button.setText(_("Apply again") if again else _("Apply"))
 
     def refresh(self):
-        self.status_strip.refresh()
+        self.power_meter.add(status.battery())
+        self.status_strip.refresh(self.power_meter)
         active = self.active_mode()
         for key, card in self.cards.items():
             card.set_active(key == active)
