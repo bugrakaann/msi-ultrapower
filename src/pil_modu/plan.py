@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from . import capabilities, display, settings
+from .i18n import _
 from .presets import PRESETS
 from .privileged import hardware as hw
 
@@ -65,7 +66,8 @@ def build(mode, external, before, original, options=None, caps=None):
     if preset:
         reason = capabilities.unsupported_reason(preset, caps)
         if reason:
-            raise RuntimeError(f"{preset.title} bu bilgisayarda kullanılamıyor: {reason}")
+            raise RuntimeError(_("{mode} is not available on this computer: {reason}").format(
+                mode=preset.title, reason=reason))
     if restoring:
         hardware = hw.writable(original["hardware"])
     else:
@@ -89,4 +91,4 @@ def build(mode, external, before, original, options=None, caps=None):
 def verify_hardware(plan, actual):
     for path, value in plan.hardware.items():
         if actual.get(path) != value:
-            raise RuntimeError("Donanım ayarı değişti: " + path)
+            raise RuntimeError(_("A hardware setting did not stick: {path}").format(path=path))

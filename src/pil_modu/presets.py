@@ -6,18 +6,20 @@ tasarruf modu, "max" ise panelin desteklediği en yüksek yenileme hızı kullan
 """
 from dataclasses import dataclass
 
+from .i18n import N_, _
+
 EXTERNAL_CHOICES = {
-    "otomatik": "Moda göre otomatik",
-    "koru": "Açık tut",
-    "kapat": "Kapat",
+    "otomatik": N_("Automatic (by mode)"),
+    "koru": N_("Keep on"),
+    "kapat": N_("Turn off"),
 }
 
 
 @dataclass(frozen=True)
 class Preset:
     key: str             # komut satırındaki adı: pil-modu <key>
-    title: str           # arayüzde görünen ad
-    summary: str         # kartta görünen tek satırlık açıklama
+    title_source: str    # arayüzde görünen ad (İngilizce kaynak; .title çevrilmişi)
+    summary_source: str  # kartta görünen tek satırlık açıklama
     icon: str            # KDE/Breeze tema simgesi
     profile: str         # powerprofilesctl profili
     brightness: int      # dahili ekran parlaklığı (%)
@@ -29,6 +31,14 @@ class Preset:
     panel: str = "max"   # dahili ekran Hz'i: "max" en yüksek, "min" en düşük
 
     @property
+    def title(self):
+        return _(self.title_source)
+
+    @property
+    def summary(self):
+        return _(self.summary_source)
+
+    @property
     def is_battery(self):
         """Batarya modları NVIDIA'yı ve harici ekranı kapatır, aygıtları uyutur."""
         return self.profile == "power-saver"
@@ -38,18 +48,33 @@ _BATTERY = dict(profile="power-saver", brightness=30, shift="eco", boost="off", 
                 gpu="auto", icon="battery-profile-powersave")
 
 PRESETS = {p.key: p for p in [
-    Preset("performans", "Maksimum performans", "%100 parlaklık · Turbo · Cooler Boost",
+    Preset("performans", N_("Maximum performance"), N_("100% brightness · Turbo · Cooler Boost"),
            icon="battery-profile-performance", profile="performance",
            brightness=100, shift="turbo", boost="on", turbo="0", gpu="on"),
-    Preset("performans-manuel", "Performans · Manuel fan", "%100 parlaklık · Turbo · Fan eğrisi sende",
+    Preset("performans-manuel", N_("Performance · Manual fan"),
+           N_("100% brightness · Turbo · Your own fan curve"),
            icon="adjustlevels", profile="performance", brightness=100,
            shift="turbo", boost="off", turbo="0", gpu="on", fan="advanced"),
-    Preset("dengeli", "Dengeli", "%60 parlaklık · Otomatik fan · NVIDIA boşta uyur",
+    Preset("dengeli", N_("Balanced"), N_("60% brightness · Automatic fan · NVIDIA sleeps when idle"),
            icon="battery-profile-balanced", profile="balanced",
            brightness=60, shift="comfort", boost="off", turbo="0", gpu="auto"),
-    Preset("batarya", "Maksimum batarya", "%30 parlaklık · NVIDIA kapalı · Aygıtlar uyur", **_BATTERY),
-    Preset("batarya-48", "Maksimum batarya · Düşük Hz", "En düşük Hz · %30 parlaklık · NVIDIA kapalı",
+    Preset("batarya", N_("Maximum battery"), N_("30% brightness · NVIDIA off · Devices sleep"),
+           **_BATTERY),
+    Preset("batarya-48", N_("Maximum battery · Low Hz"), N_("Lowest Hz · 30% brightness · NVIDIA off"),
            panel="min", **{**_BATTERY, "icon": "monitor"}),
 ]}
 
 RESTORE_COMMANDS = ("geri", "normal")
+
+# İngilizce komut adları: pil-modu battery == pil-modu batarya
+ALIASES = {
+    "performance": "performans",
+    "performance-manual": "performans-manuel",
+    "balanced": "dengeli",
+    "battery": "batarya",
+    "battery-low-hz": "batarya-48",
+    "restore": "geri",
+    "status": "durum",
+    "charge": "sarj",
+}
+EXTERNAL_ALIASES = {"auto": "otomatik", "keep": "koru", "off": "kapat"}

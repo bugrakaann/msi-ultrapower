@@ -3,6 +3,7 @@
 Buradaki fonksiyonlar hiçbir şeyi değiştirmez; yalnızca veri alıp veri
 döndürür. Bu sayede testlerde gerçek ekran olmadan denenebilirler.
 """
+from .i18n import _
 
 
 def is_internal(output):
@@ -39,7 +40,7 @@ def mode_for(output, previous=None, hz=None):
     old = _old_mode(previous or output)
     candidates = [m for m in output["modes"] if m["size"] == old["size"]]
     if not candidates:
-        raise RuntimeError(output["name"] + ": eski çözünürlük bulunamadı")
+        raise RuntimeError(_("{output}: previous resolution not found").format(output=output["name"]))
     if hz == "max":
         return max(candidates, key=lambda m: m["refreshRate"])["id"]
     if hz == "min":
@@ -48,7 +49,7 @@ def mode_for(output, previous=None, hz=None):
     wanted = hz if hz is not None else old["refreshRate"]
     best = min(candidates, key=lambda m: abs(m["refreshRate"] - wanted))
     if abs(best["refreshRate"] - wanted) > 1:
-        raise RuntimeError(output["name"] + f": {wanted} Hz desteklenmiyor")
+        raise RuntimeError(_("{output}: {hz} Hz is not supported").format(output=output["name"], hz=wanted))
     return best["id"]
 
 
@@ -74,7 +75,7 @@ def screen_plan(current, original, preset=None, external="otomatik", nvidia_outp
         return []
     saved = {o["name"]: o for o in original}
     if preset and not any(o["connected"] and is_internal(o) for o in current):
-        raise RuntimeError("Dahili ekran bulunamadı")
+        raise RuntimeError(_("Built-in display not found"))
 
     args = []
     enabled_count = 0
@@ -114,7 +115,7 @@ def screen_plan(current, original, preset=None, external="otomatik", nvidia_outp
             args.append(prefix + f"brightness.{brightness}")
 
     if not enabled_count:
-        raise RuntimeError("En az bir bağlı ekran açık kalmalı")
+        raise RuntimeError(_("At least one connected display must stay on"))
     return args
 
 
@@ -126,7 +127,7 @@ def verify_screen(args, before_outputs, actual_outputs):
         output = next(o for o in actual_outputs if o["name"] == name)
 
         if setting in ("enable", "disable") and output["enabled"] != (setting == "enable"):
-            raise RuntimeError("Ekran durumu doğrulanamadı: " + name)
+            raise RuntimeError(_("Could not verify display state: {output}").format(output=name))
 
         if setting == "mode":
             previous = next(o for o in before_outputs if o["name"] == name)
@@ -134,7 +135,7 @@ def verify_screen(args, before_outputs, actual_outputs):
             observed = next(m for m in output["modes"] if m["id"] == output["currentModeId"])
             if (expected["size"] != observed["size"]
                     or abs(expected["refreshRate"] - observed["refreshRate"]) > 1):
-                raise RuntimeError("Ekran frekansı doğrulanamadı: " + name + " " + str(observed))
+                raise RuntimeError(_("Could not verify refresh rate: {output}").format(output=name) + f" {observed}")
 
         if setting == "brightness" and abs(output["brightness"] * 100 - float(value)) > 2:
-            raise RuntimeError("Parlaklık doğrulanamadı: " + name)
+            raise RuntimeError(_("Could not verify brightness: {output}").format(output=name))

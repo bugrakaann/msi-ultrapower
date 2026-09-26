@@ -18,12 +18,16 @@ kalanından hiçbir şey import etmez, çünkü iki farklı şekilde çalıştı
 Kullanıcı tarafı (pil_modu paketi) ALLOWED, read_state, writable ve validate'i
 import ederek aynı izin listesini kullanır.
 """
+import gettext
 import glob
 import json
 import subprocess
 import sys
 import time
 from pathlib import Path
+
+# Standart kütüphane gettext; pkexec LANGUAGE/LANG'ı korur, dil kullanıcınınkiyle aynı olur.
+_ = gettext.translation("pil-modu", fallback=True).gettext
 
 PCI = "/sys/bus/pci/devices/"
 EC = "/sys/devices/platform/msi-ec/"
@@ -140,7 +144,7 @@ def allowed(path, value):
 def validate(state):
     for path, value in state.items():
         if not allowed(path, value) or not Path(path).exists():
-            raise ValueError(f"Desteklenmeyen ayar: {path}={value}")
+            raise ValueError(_("Unsupported setting:") + f" {path}={value}")
 
 
 def apply(state):
@@ -155,13 +159,13 @@ def apply(state):
             Path(path).write_text(value + "\n")
             changed.append(path)
             if Path(path).read_text().strip() != value:
-                raise RuntimeError("Doğrulanamadı: " + path)
+                raise RuntimeError(_("Could not verify:") + " " + path)
     except BaseException:
         for path in reversed(changed):
             try:
                 Path(path).write_text(writable(before)[path] + "\n")
             except Exception as exc:
-                print("Geri alma hatası:", path, exc, file=sys.stderr)
+                print(_("Rollback error:"), path, exc, file=sys.stderr)
         raise
     return before
 
@@ -186,10 +190,10 @@ def enable_restore_service():
 
 def write_charge_limit(value):
     if value not in CHARGE_LIMITS or not Path(CHARGE_LIMIT).exists():
-        raise ValueError(f"Desteklenmeyen şarj sınırı: {value}")
+        raise ValueError(_("Unsupported charge limit:") + f" {value}")
     Path(CHARGE_LIMIT).write_text(value + "\n")
     if Path(CHARGE_LIMIT).read_text().strip() != value:
-        raise RuntimeError("Doğrulanamadı: " + CHARGE_LIMIT)
+        raise RuntimeError(_("Could not verify:") + " " + CHARGE_LIMIT)
 
 
 def set_charge_limit(value):
@@ -231,7 +235,7 @@ def restore():
         # gibi aygıtlar da henüz hazır olmayabilir. Olmayan dosyaları atla.
         missing = [p for p in state if not Path(p).exists()]
         if missing:
-            print("Atlandı (aygıt yok):", *missing, file=sys.stderr)
+            print(_("Skipped (device missing):"), *missing, file=sys.stderr)
         state = {p: v for p, v in state.items() if Path(p).exists() and p in ALLOWED}
         try:
             apply(state)
@@ -273,7 +277,7 @@ POLKIT_TEXT = POLKIT_HEADER + """polkit.addRule(function(action, subject) {
 def set_passwordless(enabled):
     """Otomatik mod parola sormadan geçebilsin diye polkit kuralını yazar ya da siler."""
     if POLKIT_RULE.exists() and not POLKIT_RULE.read_text().startswith(POLKIT_HEADER):
-        raise RuntimeError(f"{POLKIT_RULE} bu araca ait değil; dokunulmadı")
+        raise RuntimeError(_("{path} does not belong to pil-modu; not touched").format(path=POLKIT_RULE))
     if enabled:
         temp = POLKIT_RULE.with_suffix(".tmp")
         temp.write_text(POLKIT_TEXT)

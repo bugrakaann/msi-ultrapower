@@ -4,24 +4,29 @@ import sys
 import time
 
 from . import capabilities, display, elevated, plan, settings, state, status, system
+from .i18n import _
 from .presets import PRESETS
 from .privileged import gpu_boot
 from .privileged import hardware as hw
 
 
-def change_mode(mode, external="otomatik", dry_run=False):
-    """Bir modu uygular ya da mode "geri"/"normal" ise önceki ayarlara döner."""
+def change_mode(mode, external="otomatik", dry_run=False, keep_gpu=False):
+    """Bir modu uygular ya da mode "geri"/"normal" ise önceki ayarlara döner.
+
+    keep_gpu: NVIDIA açılış ayarına dokunma (otomatik mod; initramfs her seferinde yenilenmesin).
+    """
     before = system.capture()
     caps = capabilities.detect(before["outputs"])
     nvidia_screens = [o["name"] for o in before["outputs"]
                       if o["connected"] and o["enabled"] and o["name"] in caps.nvidia_outputs]
     if mode in PRESETS and PRESETS[mode].is_battery and external == "koru" and nvidia_screens:
-        raise RuntimeError(f"{', '.join(nvidia_screens)} NVIDIA'ya bağlı; batarya modunda NVIDIA "
-                           "kapandığı için açık tutulamaz. Çift ekran için dengeli modunu seç.")
+        raise RuntimeError(_("{outputs} is wired to NVIDIA and cannot stay on in battery mode, "
+                             "because NVIDIA is turned off. Use balanced mode for two screens.")
+                           .format(outputs=", ".join(nvidia_screens)))
 
     restoring = mode not in PRESETS
     if restoring and not state.has_original():
-        print("Geri dönüş kaydı yok; ayar değiştirilmedi.")
+        print(_("No saved settings to restore; nothing changed."))
         return
     original = state.load_original() if state.has_original() else before
     # Programın eski sürümüyle alınan kayıtta sonradan eklenen ayarlar yoktur; şu anki değerle tamamla.
@@ -34,7 +39,8 @@ def change_mode(mode, external="otomatik", dry_run=False):
         return
 
     if original["hardware"].get(hw.EC + "shift_mode") == "unspecified":
-        print("Not: Eski EC unspecified değeri yazılamaz; geri dönüşte comfort kullanılır.", flush=True)
+        print(_("Note: the old EC value 'unspecified' cannot be written back; the closest mode is used."),
+              flush=True)
     if not state.has_original() or missing:
         state.save_original(original)
 
@@ -45,10 +51,13 @@ def change_mode(mode, external="otomatik", dry_run=False):
     else:
         state.save_active(mode, external)
     state.log_history(mode, external)
-    print("CPU, ekran ve EC ayarları uygulandı:", mode, flush=True)
+    print(_("CPU, display and EC settings applied:"), mode, flush=True)
 
-    apply_gpu_boot(p.gpu_boot)
-    print("Durum: pil-modu durum | Geri dönüş: pil-modu geri")
+    if keep_gpu:
+        print(_("NVIDIA boot setting left unchanged."), flush=True)
+    else:
+        apply_gpu_boot(p.gpu_boot)
+    print(_("Status: pil-modu status | Restore: pil-modu restore"))
 
 
 def apply_plan(p, before):
@@ -64,7 +73,7 @@ def apply_plan(p, before):
 
         actual = system.capture()
         if actual["profile"] != p.profile:
-            raise RuntimeError("Güç profili başka bir uygulama tarafından değiştirildi")
+            raise RuntimeError(_("The power profile was changed by another program"))
         plan.verify_hardware(p, actual["hardware"])
         display.verify_screen(p.screen_args, before["outputs"], actual["outputs"])
         helper.commit()
@@ -81,33 +90,33 @@ def rollback_kde(profile, screen_args):
         try:
             step()
         except Exception as exc:
-            print("Geri alma hatası:", exc, file=sys.stderr)
+            print(_("Rollback error:"), exc, file=sys.stderr)
 
 
 def apply_gpu_boot(boot_mode):
     if status.NVIDIA_DEVICE is None and not gpu_boot.MOD.exists():
-        print("NVIDIA ekran kartı yok; GPU açılış ayarı atlandı.", flush=True)
+        print(_("No NVIDIA GPU; boot setting skipped."), flush=True)
         return
     if not elevated.configure_gpu_boot(boot_mode):
-        raise RuntimeError("CPU/ekran profili uygulandı, ancak GPU açılış tercihi tamamlanamadı. "
-                           "Aynı modu yeniden çalıştır.")
+        raise RuntimeError(_("CPU and display settings were applied, but the NVIDIA boot setting "
+                             "could not be completed. Apply the same mode again."))
     gpu_present = status.gpu().present
     if boot_mode == "integrated" and gpu_present:
-        print("NVIDIA henüz devre dışı değil. Tam batarya modu için yeniden başlatman gerekiyor.", flush=True)
+        print(_("NVIDIA is not disabled yet. Restart to finish battery mode."), flush=True)
     elif boot_mode == "hybrid" and not gpu_present:
-        print("NVIDIA şu anda devre dışı. Tekrar kullanmak için yeniden başlatman gerekiyor.", flush=True)
+        print(_("NVIDIA is currently disabled. Restart to use it again."), flush=True)
     else:
-        print("GPU durumu seçilen modla uyumlu.", flush=True)
+        print(_("The GPU state matches the selected mode."), flush=True)
 
 
 def print_plan(p):
-    print("Sonraki açılış GPU modu:", p.gpu_boot)
-    print("Profil:", p.profile)
+    print(_("GPU mode at next boot:"), p.gpu_boot)
+    print(_("Profile:"), p.profile)
     print("kscreen-doctor", *p.screen_args)
     print(json.dumps(p.hardware, indent=2))
 
 
 def set_charge_limit(limit):
     if not elevated.set_charge_limit(limit):
-        raise RuntimeError("Şarj sınırı ayarlanamadı.")
-    print(f"Şarj sınırı: %{limit}", flush=True)
+        raise RuntimeError(_("The charge limit could not be set."))
+    print(_("Charge limit:"), f"{limit}%", flush=True)

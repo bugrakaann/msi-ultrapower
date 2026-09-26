@@ -6,87 +6,104 @@ plan.py'nin gerçekte yaptığıyla aynı kuralları izler.
 from html import escape
 
 from . import capabilities, settings
+from .i18n import _, ngettext
 
-PROFILES = {"performance": "Performans", "balanced": "Dengeli", "power-saver": "Güç tasarrufu"}
-FANS = {"auto": "Otomatik", "silent": "Sessiz", "basic": "Temel",
-        "advanced": "Manuel eğri (MControlCenter)"}
-ON_OFF = {True: "Açık", False: "Kapalı"}
+
+def profile_name(profile):
+    return {"performance": _("Performance"), "balanced": _("Balanced"),
+            "power-saver": _("Power saver")}.get(profile, profile)
+
+
+def fan_name(fan):
+    return {"auto": _("Automatic"), "silent": _("Silent"), "basic": _("Basic"),
+            "advanced": _("Custom curve (MControlCenter)")}.get(fan, fan)
+
+
+def on_off(value):
+    return _("On") if value else _("Off")
 
 
 def _panel_hz(preset, caps):
     if not caps.panel_rates:
-        return "En yüksek Hz" if preset.panel == "max" else "En düşük Hz"
-    hz = max(caps.panel_rates) if preset.panel == "max" else min(caps.panel_rates)
-    return f"{hz} Hz ({'en yüksek' if preset.panel == 'max' else 'en düşük'})"
+        return _("Highest refresh rate") if preset.panel == "max" else _("Lowest refresh rate")
+    if preset.panel == "max":
+        return _("{hz} Hz (highest)").format(hz=max(caps.panel_rates))
+    return _("{hz} Hz (lowest)").format(hz=min(caps.panel_rates))
 
 
 def _external(preset, caps):
     if preset.is_battery and caps.nvidia_outputs:
-        return f"NVIDIA'ya bağlı olanlar ({', '.join(caps.nvidia_outputs)}) kapanır · diğerleri seçime göre"
-    return "Aşağıdaki seçime göre · Hz'i değişmez"
+        return _("Outputs wired to NVIDIA ({outputs}) turn off · others follow your choice").format(
+            outputs=", ".join(caps.nvidia_outputs))
+    return _("Follows your choice below · refresh rate unchanged")
 
 
 def describe(preset, caps, options=None):
     """[(bölüm, [(ayar, değer), ...]), ...]"""
     options = {**settings.DEFAULTS, **(options or {})}
     if caps.screen:
-        screen = [("Dahili ekran", _panel_hz(preset, caps)),
-                  ("Parlaklık", f"%{preset.brightness}" if caps.brightness
-                   else "Değişmez (Plasma 6.1+ gerekli)"),
-                  ("Harici ekran", _external(preset, caps))]
+        screen = [(_("Built-in display"), _panel_hz(preset, caps)),
+                  (_("Brightness"), f"{preset.brightness}%" if caps.brightness
+                   else _("Unchanged (needs Plasma 6.1+)")),
+                  (_("External displays"), _external(preset, caps))]
     else:
-        screen = [("Ekranlar", "Değişmez (KDE Plasma 6 gerekli)")]
+        screen = [(_("Displays"), _("Unchanged (needs KDE Plasma 6)"))]
 
-    cpu = [("Güç profili", PROFILES[preset.profile]),
-           ("CPU turbo", ON_OFF[preset.turbo == "0"] if caps.turbo else "Bu sistemde ayarlanamıyor")]
+    cpu = [(_("Power profile"), profile_name(preset.profile)),
+           (_("CPU turbo"), on_off(preset.turbo == "0") if caps.turbo
+            else _("Not adjustable on this system"))]
 
     if caps.ec:
         shift = capabilities.nearest_shift(preset.shift, caps.shift_modes)
-        ec = [("EC modu", shift if shift == preset.shift else f"{shift} ({preset.shift} yok)"),
-              ("Fan", FANS.get(preset.fan, preset.fan))]
+        ec = [(_("EC mode"), shift if shift == preset.shift
+               else _("{mode} ({wanted} not available)").format(mode=shift, wanted=preset.shift)),
+              (_("Fan"), fan_name(preset.fan))]
         if caps.cooler_boost:
-            ec.append(("Cooler Boost", ON_OFF[preset.boost == "on"]))
+            ec.append(("Cooler Boost", on_off(preset.boost == "on")))
     else:
-        ec = [("MSI EC", "msi-ec sürücüsü yok · fan ve EC modu atlanır")]
+        ec = [("MSI EC", _("No msi-ec driver · fan and EC mode are skipped"))]
 
     if caps.nvidia:
-        gpu = [("NVIDIA şimdi", "Hep uyanık" if preset.gpu == "on" else "Boştayken uyur"),
-               ("NVIDIA açılışta", "Tamamen kapanır · yeniden başlatma gerekir" if preset.is_battery
-                else "Kullanılabilir")]
+        gpu = [(_("NVIDIA now"), _("Always awake") if preset.gpu == "on" else _("Sleeps when idle")),
+               (_("NVIDIA at boot"), _("Fully off · needs a restart") if preset.is_battery
+                else _("Available"))]
     else:
-        gpu = [("NVIDIA", "Ekran kartı yok")]
+        gpu = [("NVIDIA", _("No NVIDIA GPU"))]
 
     if preset.is_battery:
         devices = []
         if caps.keyboard_light:
-            devices.append(("Klavye ışığı", "Kapalı"))
+            devices.append((_("Keyboard backlight"), _("Off")))
         if options["device_savings"]:
             if caps.runtime_pm:
-                devices.append(("PCI aygıtları", f"{caps.runtime_pm} aygıt boştayken uyur"))
+                devices.append((_("PCI devices"), ngettext(
+                    "{count} device sleeps when idle", "{count} devices sleep when idle",
+                    caps.runtime_pm).format(count=caps.runtime_pm)))
             if caps.sound_power_save:
-                devices.append(("Ses kartı", "1 sn sessizlikten sonra uyur"))
-            devices.append(("Diske yazma", "60 sn'de bir (disk daha uzun uyur)"))
+                devices.append((_("Sound card"), _("Sleeps after 1 s of silence")))
+            devices.append((_("Disk writes"), _("Every 60 s (the disk sleeps longer)")))
         else:
-            devices.append(("Aygıt tasarrufu", "Kapalı (ayarlardan açılabilir)"))
+            devices.append((_("Device power saving"), _("Off (can be enabled in settings)")))
         if caps.bluetooth:
-            devices.append(("Bluetooth", "Kapalı" if options["bluetooth_off_on_battery"]
-                            else "Değişmez"))
+            devices.append(("Bluetooth", _("Off") if options["bluetooth_off_on_battery"]
+                            else _("Unchanged")))
     else:
-        devices = [("Klavye ışığı", "İlk moddan önceki haline döner"),
-                   ("PCI, ses, Bluetooth, disk", "İlk moddan önceki haline döner")]
+        devices = [(_("Keyboard backlight"), _("Back to how it was before the first mode")),
+                   (_("PCI, sound, Bluetooth, disk"), _("Back to how it was before the first mode"))]
 
-    return [("Ekran", screen), ("İşlemci", cpu), ("Fan ve EC", ec),
-            ("Ekran kartı", gpu), ("Aygıtlar", devices)]
+    return [(_("Display"), screen), (_("Processor"), cpu), (_("Fan and EC"), ec),
+            (_("Graphics"), gpu), (_("Devices"), devices)]
 
 
-RESTORE = [("Geri yüklenenler", [
-    ("Güç profili", "İlk moddan önceki profil"),
-    ("Ekranlar", "Eski düzen, Hz, ölçek ve parlaklık"),
-    ("İşlemci ve EC", "Eski turbo, EC modu, fan ve Cooler Boost"),
-    ("Aygıtlar", "Eski klavye ışığı, PCI, ses, Bluetooth ve disk ayarları"),
-    ("NVIDIA", "Yeniden başlatınca kullanılabilir"),
-    ("Şarj sınırı", "Değişmez (ayrı ayar)"),
-])]
+def restore_sections():
+    return [(_("Restored"), [
+        (_("Power profile"), _("The profile before the first mode")),
+        (_("Displays"), _("Previous layout, refresh rate, scale and brightness")),
+        (_("Processor and EC"), _("Previous turbo, EC mode, fan and Cooler Boost")),
+        (_("Devices"), _("Previous keyboard backlight, PCI, sound, Bluetooth and disk settings")),
+        ("NVIDIA", _("Available after a restart")),
+        (_("Charge limit"), _("Unchanged (separate setting)")),
+    ])]
 
 
 def to_html(title, sections, note=None):

@@ -1,50 +1,67 @@
-"""Komut satırı arayüzü:  pil-modu <mod> [--harici ...] [--dene]  ·  pil-modu sarj [60|80|100]"""
+"""Komut satırı arayüzü:  pil-modu <mod> [--harici ...] [--dene]  ·  pil-modu sarj [60|80|100]
+
+Türkçe ve İngilizce komut adları birlikte çalışır (presets.ALIASES).
+"""
 import argparse
 import fcntl
 import sys
 
 from . import capabilities, controller, paths, state, status, system
-from .presets import EXTERNAL_CHOICES, PRESETS, RESTORE_COMMANDS
+from .i18n import _
+from .presets import ALIASES, EXTERNAL_ALIASES, EXTERNAL_CHOICES, PRESETS, RESTORE_COMMANDS
 from .privileged import hardware as hw
 
-DESCRIPTION = "MSI dizüstüleri / KDE: performans, dengeli, batarya ve geri dönüş."
+COMMANDS = [*PRESETS, *RESTORE_COMMANDS, "durum", "sarj", "doctor"]
 
 
 def parse_args(argv):
-    parser = argparse.ArgumentParser(prog="pil-modu", description=DESCRIPTION)
-    parser.add_argument("mod", choices=[*PRESETS, *RESTORE_COMMANDS, "durum", "sarj", "doctor"])
-    parser.add_argument("sinir", nargs="?", choices=hw.CHARGE_LIMITS,
-                        help="yalnızca sarj ile: pilin dolacağı en yüksek yüzde")
-    parser.add_argument("--harici", choices=list(EXTERNAL_CHOICES), default="otomatik",
-                        help="Bataryada varsayılan kapalı, diğer modlarda açık")
-    parser.add_argument("--dene", action="store_true", help="Ayar değiştirmeden planı göster")
-    return parser.parse_args(argv)
+    parser = argparse.ArgumentParser(
+        prog="pil-modu", description=_("Power modes for MSI laptops on KDE Plasma."))
+    parser.add_argument("mod", metavar="command", choices=[*COMMANDS, *ALIASES],
+                        help=_("mode, restore, status, charge or doctor") + ": "
+                        + ", ".join(sorted({*COMMANDS, *ALIASES})))
+    parser.add_argument("sinir", metavar="limit", nargs="?", choices=hw.CHARGE_LIMITS,
+                        help=_("charge only: highest percentage the battery charges to"))
+    parser.add_argument("--harici", "--external", dest="harici", default="otomatik",
+                        choices=[*EXTERNAL_CHOICES, *EXTERNAL_ALIASES],
+                        help=_("external displays: auto, keep or off"))
+    parser.add_argument("--dene", "--dry-run", dest="dene", action="store_true",
+                        help=_("show the plan without changing anything"))
+    parser.add_argument("--gpu-koru", "--keep-gpu", dest="gpu_koru", action="store_true",
+                        help=_("do not change the NVIDIA boot setting (used by automatic mode)"))
+    opt = parser.parse_args(argv)
+    opt.mod = ALIASES.get(opt.mod, opt.mod)
+    opt.harici = EXTERNAL_ALIASES.get(opt.harici, opt.harici)
+    return opt
 
 
 def print_status():
     snapshot = system.capture()
-    print("Seçilen mod:", state.load_active() or "henüz seçilmedi")
-    print("Gerçek güç profili:", snapshot["profile"])
+    active = state.load_active()
+    print(_("Selected mode:"), active["mod"] if active else _("none yet"))
+    print(_("Power profile:"), snapshot["profile"])
     for output in snapshot["outputs"]:
         if output["connected"]:
             mode = next((m for m in output["modes"] if m["id"] == output["currentModeId"]), {})
-            print(output["name"], "açık" if output["enabled"] else "kapalı", mode.get("name", ""),
-                  "parlaklık", output.get("brightness"))
+            print(output["name"], _("on") if output["enabled"] else _("off"), mode.get("name", ""),
+                  _("brightness"), output.get("brightness"))
     for path, value in snapshot["hardware"].items():
         print(path.removeprefix("/sys/"), "=", value)
 
     gpu = status.gpu()
-    print("NVIDIA gerçek durumu:", gpu.runtime if gpu.present else "PCI aygıtı yok / devre dışı")
-    print("NVIDIA sonraki açılış:", "devre dışı" if gpu.blocked_next_boot else "kullanılabilir")
+    print(_("NVIDIA now:"), gpu.runtime if gpu.present else _("no PCI device / disabled"))
+    print(_("NVIDIA next boot:"), _("disabled") if gpu.blocked_next_boot else _("available"))
 
     bat = status.battery()
     if bat:
-        print("Pil:", bat.status, f"{bat.capacity}%")
+        print(_("Battery:"), bat.status, f"{bat.capacity}%")
         start, end = status.charge_limits()
         if end is not None:
-            print("Şarj sınırı:", f"%{end}", f"(şarj %{start} altına inince başlar)" if start else "")
+            print(_("Charge limit:"), f"{end}%",
+                  _("(charging resumes below {start}%)").format(start=start) if start else "")
         if bat.watts is not None:
-            label = "Pil deşarj gücü:" if bat.discharging else "Pil şarj/akım gücü (sistem tüketimi değil):"
+            label = _("Battery discharge power:") if bat.discharging \
+                else _("Battery charge current power (not system usage):")
             print(label, round(bat.watts, 2), "W")
 
 
@@ -52,35 +69,35 @@ def print_doctor():
     """Uyumluluk raporu: hangi özellik var, hangisi neden yok. Hata bildirimine eklenir."""
     caps = capabilities.detect(system.get_outputs())
     plasma = system.plasma_version()
-    yes = {True: "var", False: "YOK"}
+    yes = {True: _("yes"), False: _("NO")}
     rows = [
-        ("Model", caps.model or "?"),
-        ("KDE Plasma", plasma or "YOK (ekran ayarları atlanır)"),
-        ("Ekran ayarı (kscreen-doctor)", yes[caps.screen]),
-        ("Parlaklık ayarı", yes[caps.brightness]),
-        ("Panel Hz", ", ".join(map(str, caps.panel_rates)) or "?"),
-        ("msi-ec", f"var · firmware {caps.ec_firmware or '?'}" if caps.ec
-         else "YOK (fan/EC ayarları atlanır; AUR: msi-ec-dkms-git)"),
-        ("EC modları", ", ".join(caps.shift_modes) or "—"),
-        ("Fan modları", ", ".join(caps.fan_modes) or "—"),
+        (_("Model"), caps.model or "?"),
+        ("KDE Plasma", plasma or _("NO (display settings are skipped)")),
+        (_("Display control (kscreen-doctor)"), yes[caps.screen]),
+        (_("Brightness control"), yes[caps.brightness]),
+        (_("Panel refresh rates"), ", ".join(f"{hz} Hz" for hz in caps.panel_rates) or "?"),
+        ("msi-ec", _("yes · firmware {version}").format(version=caps.ec_firmware or "?") if caps.ec
+         else _("NO (fan/EC settings are skipped; AUR: msi-ec-dkms-git)")),
+        (_("EC modes"), ", ".join(caps.shift_modes) or "—"),
+        (_("Fan modes"), ", ".join(caps.fan_modes) or "—"),
         ("Cooler Boost", yes[caps.cooler_boost]),
-        ("CPU turbo ayarı", yes[caps.turbo]),
-        ("Klavye ışığı", yes[caps.keyboard_light]),
-        ("Şarj sınırı", yes[caps.charge_limit]),
-        ("NVIDIA", "var" if caps.nvidia else "yok"),
-        ("NVIDIA'ya bağlı çıkışlar", ", ".join(caps.nvidia_outputs) or "—"),
-        ("PCI güç yönetimi", f"{caps.runtime_pm} aygıt"),
-        ("Ses güç tasarrufu", yes[caps.sound_power_save]),
+        (_("CPU turbo control"), yes[caps.turbo]),
+        (_("Keyboard backlight"), yes[caps.keyboard_light]),
+        (_("Charge limit"), yes[caps.charge_limit]),
+        ("NVIDIA", yes[caps.nvidia]),
+        (_("Outputs wired to NVIDIA"), ", ".join(caps.nvidia_outputs) or "—"),
+        (_("PCI power management"), _("{count} devices").format(count=caps.runtime_pm)),
+        (_("Audio power saving"), yes[caps.sound_power_save]),
         ("Bluetooth", yes[caps.bluetooth]),
-        ("Çakışan servisler", ", ".join(caps.conflicts) or "yok"),
+        (_("Conflicting services"), ", ".join(caps.conflicts) or _("none")),
     ]
-    width = max(len(k) for k, _ in rows)
+    width = max(len(k) for k, _v in rows)
     for key, value in rows:
         print(f"{key:<{width}}  {value}")
     for preset in PRESETS.values():
         reason = capabilities.unsupported_reason(preset, caps)
         if reason:
-            print(f"Kullanılamayan mod: {preset.key} ({reason})")
+            print(_("Unavailable mode: {mode} ({reason})").format(mode=preset.key, reason=reason))
 
 
 def main(argv=None):
@@ -91,9 +108,9 @@ def main(argv=None):
             try:
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
-                raise RuntimeError("Başka bir pil-modu işlemi zaten çalışıyor.") from None
+                raise RuntimeError(_("Another pil-modu process is already running.")) from None
             if opt.mod != "sarj" and opt.sinir:
-                raise RuntimeError("Yüzde yalnızca sarj komutuyla kullanılır.")
+                raise RuntimeError(_("A percentage can only be used with the charge command."))
             if opt.mod == "durum":
                 print_status()
             elif opt.mod == "doctor":
@@ -103,10 +120,10 @@ def main(argv=None):
                     controller.set_charge_limit(opt.sinir)
                 else:
                     limit = status.charge_limits()[1]
-                    print("Şarj sınırı:", f"%{limit}" if limit else "bu cihazda desteklenmiyor")
+                    print(_("Charge limit:"), f"{limit}%" if limit else _("not supported on this device"))
             else:
-                controller.change_mode(opt.mod, opt.harici, opt.dene)
+                controller.change_mode(opt.mod, opt.harici, opt.dene, keep_gpu=opt.gpu_koru)
     except Exception as exc:
-        print("HATA:", exc, file=sys.stderr)
+        print(_("ERROR:"), exc, file=sys.stderr)
         return 1
     return 0

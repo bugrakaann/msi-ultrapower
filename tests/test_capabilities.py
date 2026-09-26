@@ -39,24 +39,24 @@ class SupportTests(unittest.TestCase):
 class DescribeTests(unittest.TestCase):
     def test_battery_lists_device_savings(self):
         text = describe.to_html("x", describe.describe(PRESETS["batarya"], CAPS))
-        for word in ("Bluetooth", "PCI", "Ses kartı", "120 Hz", "HDMI-A-1"):
+        for word in ("Bluetooth", "PCI", "Sound card", "120 Hz", "HDMI-A-1"):
             self.assertIn(word, text)
 
     def test_options_change_battery_description(self):
         rows = dict(describe.describe(PRESETS["batarya"], CAPS, {
             "bluetooth_off_on_battery": True, "device_savings": False})[-1][1])
-        self.assertEqual(rows["Bluetooth"], "Kapalı")
-        self.assertNotIn("PCI aygıtları", rows)
+        self.assertEqual(rows["Bluetooth"], "Off")
+        self.assertNotIn("PCI devices", rows)
 
     def test_low_hz_shows_lowest_rate(self):
         screen = dict(describe.describe(PRESETS["batarya-48"], CAPS)[0][1])
-        self.assertTrue(screen["Dahili ekran"].startswith("48 Hz"))
+        self.assertTrue(screen["Built-in display"].startswith("48 Hz"))
 
     def test_without_ec_or_nvidia(self):
         caps = replace(CAPS, shift_modes=(), fan_modes=(), nvidia=False)
         text = describe.to_html("x", describe.describe(PRESETS["performans"], caps))
         self.assertIn("msi-ec", text)
-        self.assertIn("Ekran kartı yok", text)
+        self.assertIn("No NVIDIA GPU", text)
 
 
 class RefreshTests(unittest.TestCase):

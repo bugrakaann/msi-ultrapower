@@ -7,7 +7,7 @@ import sys
 
 from PySide6.QtCore import QObject, QProcess, QProcessEnvironment, Signal
 
-from .. import paths
+from .. import i18n, paths
 
 
 class ModeRunner(QObject):
@@ -20,6 +20,7 @@ class ModeRunner(QObject):
         env = QProcessEnvironment.systemEnvironment()
         env.insert("PYTHONPATH", str(paths.SOURCE_DIR))
         env.insert("PYTHONUNBUFFERED", "1")
+        self._env = env
         self.process.setProcessEnvironment(env)
         self.process.setProcessChannelMode(QProcess.MergedChannels)
         self.process.readyReadStandardOutput.connect(self._read)
@@ -30,6 +31,10 @@ class ModeRunner(QObject):
         return self.process.state() != QProcess.NotRunning
 
     def start(self, args):
+        # Dil ayarı pencere açıkken değişebilir; her çalıştırmada yeniden geçir.
+        for key, value in i18n.child_environment().items():
+            self._env.insert(key, value)
+        self.process.setProcessEnvironment(self._env)
         self.process.start(sys.executable, ["-m", "pil_modu", *args])
 
     def _read(self):

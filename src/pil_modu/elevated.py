@@ -4,6 +4,7 @@ import select
 import subprocess
 
 from . import paths
+from .i18n import _
 
 PYTHON = "/usr/bin/python3"
 
@@ -39,7 +40,7 @@ class HardwareHelper:
             if self.process.poll() is None:
                 self.process.terminate()
             error = self.process.communicate(timeout=10)[1]
-            raise RuntimeError("Donanım yetkilendirmesi/uygulaması başarısız: " + error)
+            raise RuntimeError(_("Hardware authorization or apply failed:") + " " + error)
 
     def commit(self):
         self.process.stdin.write("COMMIT\n")

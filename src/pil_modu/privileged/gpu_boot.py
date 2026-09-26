@@ -9,6 +9,7 @@ kütüphaneyi kullanır; paketin geri kalanından import yapmaz.
 
 Kurtarma (TTY):  sudo python3 -P -m pil_modu.privileged.gpu_boot hybrid
 """
+import gettext
 import glob
 import json
 import os
@@ -16,6 +17,9 @@ import shutil
 import subprocess
 import sys
 from pathlib import Path
+
+# Standart kütüphane gettext; pkexec LANGUAGE/LANG'ı korur, dil kullanıcınınkiyle aynı olur.
+_ = gettext.translation("pil-modu", fallback=True).gettext
 
 HEADER = "# Managed by pil-modu gpu_boot.py\n"
 MOD = Path("/etc/modprobe.d/90-pil-modu-nvidia.conf")
@@ -81,7 +85,7 @@ def rebuild_initramfs():
     elif shutil.which("dracut"):
         subprocess.run(["dracut", "--regenerate-all", "--force"], check=True)
     else:
-        print("mkinitcpio/dracut bulunamadı; açılış imajı yenilenmedi.", flush=True)
+        print(_("mkinitcpio/dracut not found; boot images were not rebuilt."), flush=True)
 
 
 def has_integrated_gpu():
@@ -115,26 +119,27 @@ def internal_panel_on_nvidia():
 
 def check_preconditions(mode):
     if mode not in MODES:
-        raise ValueError("Geçersiz GPU modu")
+        raise ValueError(_("Invalid GPU mode"))
     if os.geteuid() != 0:
-        raise RuntimeError("Yönetici yetkisi gerekiyor")
+        raise RuntimeError(_("Administrator rights are required"))
     if mode == "integrated" and not has_integrated_gpu():
-        raise RuntimeError("Tümleşik GPU bulunamadı; NVIDIA kapatılırsa ekran gider")
+        raise RuntimeError(_("No integrated GPU found; turning NVIDIA off would leave no display"))
     if mode == "integrated" and internal_panel_on_nvidia():
-        raise RuntimeError("Dahili ekranı NVIDIA sürüyor (BIOS'ta GPU modu 'Discrete'/MUX). "
-                           "NVIDIA kapatılırsa ekran kararır; BIOS'ta 'MSHybrid'/'Optimus' seç.")
+        raise RuntimeError(_("NVIDIA drives the built-in display (GPU mode 'Discrete'/MUX in the BIOS). "
+                             "Turning NVIDIA off would black out the screen; choose 'MSHybrid'/"
+                             "'Optimus' in the BIOS."))
 
 
 def configure(mode):
     check_preconditions(mode)
     before = {p: p.read_text() if p.exists() else None for p in MANAGED}
     if any(v is not None and not v.startswith(HEADER) for v in before.values()):
-        raise RuntimeError("Beklenmeyen yapılandırma; mevcut dosyalara dokunulmadı")
+        raise RuntimeError(_("Unexpected configuration; existing files were not touched"))
 
     wanted = integrated_config() if mode == "integrated" else {}
     desired = {p: wanted.get(p) for p in MANAGED}
     if before == desired:
-        print("GPU açılış tercihi zaten:", mode, flush=True)
+        print(_("GPU boot setting is already:"), mode, flush=True)
         return
 
     # Yalnızca bu aracın sahip olduğu dosyalar yedeklenir; dağıtımın ayarlarına dokunulmaz.
@@ -146,16 +151,16 @@ def configure(mode):
             if content is not None:
                 path.parent.mkdir(parents=True, exist_ok=True)
             write(path, content)
-        print("Açılış imajları hazırlanıyor; bu işlem birkaç dakika sürebilir...", flush=True)
+        print(_("Rebuilding boot images; this can take a few minutes..."), flush=True)
         rebuild_initramfs()
     except BaseException:
         for path, content in before.items():
             write(path, content)
-        print("GPU yapılandırması geri alındı; eski açılış imajları yeniden oluşturuluyor.", flush=True)
+        print(_("GPU configuration rolled back; rebuilding the previous boot images."), flush=True)
         rebuild_initramfs()
         raise
-    print("GPU açılış tercihi kaydedildi:", mode, flush=True)
-    print("Değişiklik yeniden başlatınca geçerli olacak. Oturum kapatılmadı.", flush=True)
+    print(_("GPU boot setting saved:"), mode, flush=True)
+    print(_("The change takes effect after a restart. Your session was not closed."), flush=True)
 
 
 def entry():
@@ -163,7 +168,7 @@ def entry():
     try:
         configure(sys.argv[1])
     except Exception as exc:
-        print("GPU yapılandırma hatası:", exc, file=sys.stderr)
+        print(_("GPU configuration error:"), exc, file=sys.stderr)
         sys.exit(1)
 
 

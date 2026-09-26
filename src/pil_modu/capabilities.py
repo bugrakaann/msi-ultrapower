@@ -10,6 +10,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from . import display
+from .i18n import _
 from .privileged import gpu_boot
 from .privileged import hardware as hw
 
@@ -122,9 +123,9 @@ def detect(outputs=None):
 def unsupported_reason(preset, caps):
     """Mod bu bilgisayarda uygulanamıyorsa nedeni, uygulanabiliyorsa None."""
     if preset.fan != "auto" and caps.ec and preset.fan not in caps.fan_modes:
-        return f"EC “{preset.fan}” fan modunu desteklemiyor"
+        return _("the EC does not support the “{fan}” fan mode").format(fan=preset.fan)
     if preset.fan == "advanced" and not caps.ec:
-        return "Manuel fan için msi-ec sürücüsü gerekli"
+        return _("manual fan needs the msi-ec driver")
     if preset.panel == "min" and len(caps.panel_rates) == 1:
-        return f"Dahili ekran yalnızca {caps.panel_rates[0]} Hz destekliyor"
+        return _("the built-in display only supports {hz} Hz").format(hz=caps.panel_rates[0])
     return None
