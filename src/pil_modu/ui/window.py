@@ -76,7 +76,7 @@ class MainWindow(QWidget):
         self.resize(*PREFERRED_SIZE)
         self._fitted = False
         self._ticks = 0
-        self.quit_on_close = True  # tepsi varsa False; pencere kapanınca gizlenir
+        self.keep_running = lambda: False  # app.py: tepsi varsa pencere kapanınca gizlenir
 
         self.caps = detect_capabilities()
         self.runner = ModeRunner(self)
@@ -426,7 +426,11 @@ class MainWindow(QWidget):
             QProcess.startDetached("systemctl", ["reboot"])
 
     def closeEvent(self, event):
-        if self.busy and self.quit_on_close:
+        if self.keep_running():
+            event.ignore()
+            self.hide()
+            return
+        if self.busy:
             QMessageBox.information(self, _("Still working"),
                                     _("You can close the window when the settings are applied."))
             event.ignore()

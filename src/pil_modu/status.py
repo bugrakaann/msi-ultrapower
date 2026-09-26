@@ -108,3 +108,14 @@ def sensors():
         cpu_fan=_int(hw.EC + "cpu/realtime_fan_speed"),
         gpu_fan=_int(hw.EC + "gpu/realtime_fan_speed"),
     )
+
+
+def on_ac():
+    """Şarj aleti takılı mı; güç kaynağı bilgisi yoksa None."""
+    found = None
+    for folder in paths.POWER_SUPPLY_DIR.glob("*"):
+        if read(folder / "type", "") == "Mains":
+            if read(folder / "online", "0") == "1":
+                return True
+            found = False
+    return found
