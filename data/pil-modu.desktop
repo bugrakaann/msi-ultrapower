@@ -1,9 +1,18 @@
 [Desktop Entry]
 Type=Application
-Name=Güç Modları
-Comment=Performans, dengeli ve batarya modlarını seç
+Name=Power Modes
+Name[tr]=Güç Modları
+Name[ru]=Режимы питания
+Name[es]=Modos de energía
+Name[ar]=أوضاع الطاقة
+Comment=Switch between performance, balanced and battery modes
+Comment[tr]=Performans, dengeli ve batarya modlarını seç
+Comment[ru]=Переключение между режимами производительности, баланса и батареи
+Comment[es]=Cambia entre los modos de rendimiento, equilibrado y batería
+Comment[ar]=التبديل بين أوضاع الأداء والتوازن والبطارية
 Exec=pil-modu-ui
 Icon=battery-profile-balanced
 Terminal=false
 Categories=Settings;HardwareSettings;
+Keywords=battery;power;fan;msi;nvidia;charge;pil;batarya;
 StartupNotify=true
