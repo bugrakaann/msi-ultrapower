@@ -2,8 +2,8 @@
 Type=Application
 Name=Güç Modları
 Comment=Performans, dengeli ve batarya modlarını seç
-Exec=/home/bugra/.local/bin/pil-modu-ui
-Icon=battery
+Exec=@BIN@/pil-modu-ui
+Icon=battery-profile-balanced
 Terminal=false
 Categories=Settings;HardwareSettings;
 StartupNotify=true

@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Güç: Maksimum Performans · Manuel Fan
-Comment=Turbo açık, Cooler Boost kapalı, fan modu advanced
-Exec=/home/bugra/.local/bin/pil-modu performans-manuel
-Icon=cpu
-Terminal=true
-Categories=Settings;HardwareSettings;

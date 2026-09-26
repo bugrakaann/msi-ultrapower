@@ -1,0 +1,15 @@
+[project]
+name = "pil-modu"
+version = "2.0.0"
+description = "MSI GF65 / KDE için güç modu yöneticisi"
+requires-python = ">=3.11"
+dependencies = ["PySide6"]  # Arch'ta pacman ile: pyside6
+
+[project.scripts]
+pil-modu = "pil_modu.cli:main"
+
+[project.gui-scripts]
+pil-modu-ui = "pil_modu.ui.app:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
