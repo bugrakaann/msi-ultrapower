@@ -14,3 +14,6 @@ HISTORY_LOG = DATA_DIR / "history.log"
 LOCK_FILE = DATA_DIR / "lock"
 
 POWER_SUPPLY_DIR = Path("/sys/class/power_supply")
+
+CONFIG_DIR = Path.home() / ".config/pil-modu"
+SETTINGS = CONFIG_DIR / "settings.json"          # kullanıcının tercihleri (dil, otomatik mod…)

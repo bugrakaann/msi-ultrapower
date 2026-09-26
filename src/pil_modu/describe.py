@@ -5,7 +5,7 @@ plan.py'nin gerçekte yaptığıyla aynı kuralları izler.
 """
 from html import escape
 
-from . import capabilities
+from . import capabilities, settings
 
 PROFILES = {"performance": "Performans", "balanced": "Dengeli", "power-saver": "Güç tasarrufu"}
 FANS = {"auto": "Otomatik", "silent": "Sessiz", "basic": "Temel",
@@ -20,13 +20,22 @@ def _panel_hz(preset, caps):
     return f"{hz} Hz ({'en yüksek' if preset.panel == 'max' else 'en düşük'})"
 
 
-def describe(preset, caps):
+def _external(preset, caps):
+    if preset.is_battery and caps.nvidia_outputs:
+        return f"NVIDIA'ya bağlı olanlar ({', '.join(caps.nvidia_outputs)}) kapanır · diğerleri seçime göre"
+    return "Aşağıdaki seçime göre · Hz'i değişmez"
+
+
+def describe(preset, caps, options=None):
     """[(bölüm, [(ayar, değer), ...]), ...]"""
-    screen = [
-        ("Dahili ekran", _panel_hz(preset, caps)),
-        ("Parlaklık", f"%{preset.brightness}"),
-        ("Harici ekran", "Kapatılır" if preset.is_battery else "Aşağıdaki seçime göre · Hz'i değişmez"),
-    ]
+    options = {**settings.DEFAULTS, **(options or {})}
+    if caps.screen:
+        screen = [("Dahili ekran", _panel_hz(preset, caps)),
+                  ("Parlaklık", f"%{preset.brightness}" if caps.brightness
+                   else "Değişmez (Plasma 6.1+ gerekli)"),
+                  ("Harici ekran", _external(preset, caps))]
+    else:
+        screen = [("Ekranlar", "Değişmez (KDE Plasma 6 gerekli)")]
 
     cpu = [("Güç profili", PROFILES[preset.profile]),
            ("CPU turbo", ON_OFF[preset.turbo == "0"] if caps.turbo else "Bu sistemde ayarlanamıyor")]
@@ -51,13 +60,17 @@ def describe(preset, caps):
         devices = []
         if caps.keyboard_light:
             devices.append(("Klavye ışığı", "Kapalı"))
-        if caps.runtime_pm:
-            devices.append(("PCI aygıtları", f"{caps.runtime_pm} aygıt boştayken uyur"))
-        if caps.sound_power_save:
-            devices.append(("Ses kartı", "1 sn sessizlikten sonra uyur"))
+        if options["device_savings"]:
+            if caps.runtime_pm:
+                devices.append(("PCI aygıtları", f"{caps.runtime_pm} aygıt boştayken uyur"))
+            if caps.sound_power_save:
+                devices.append(("Ses kartı", "1 sn sessizlikten sonra uyur"))
+            devices.append(("Diske yazma", "60 sn'de bir (disk daha uzun uyur)"))
+        else:
+            devices.append(("Aygıt tasarrufu", "Kapalı (ayarlardan açılabilir)"))
         if caps.bluetooth:
-            devices.append(("Bluetooth", "Kapalı"))
-        devices.append(("Diske yazma", "60 sn'de bir (disk daha uzun uyur)"))
+            devices.append(("Bluetooth", "Kapalı" if options["bluetooth_off_on_battery"]
+                            else "Değişmez"))
     else:
         devices = [("Klavye ışığı", "İlk moddan önceki haline döner"),
                    ("PCI, ses, Bluetooth, disk", "İlk moddan önceki haline döner")]

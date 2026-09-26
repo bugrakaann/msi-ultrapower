@@ -21,6 +21,7 @@ HEADER = "# Managed by pil-modu gpu_boot.py\n"
 MOD = Path("/etc/modprobe.d/90-pil-modu-nvidia.conf")
 RULE = Path("/etc/udev/rules.d/50-pil-modu-nvidia.rules")
 INIT = Path("/etc/mkinitcpio.conf.d/99-pil-modu-gpu.conf")
+DRACUT = Path("/etc/dracut.conf.d/99-pil-modu-gpu.conf")
 BACKUP_DIR = Path("/var/lib/pil-modu")
 IGPU_VENDORS = ("0x8086", "0x1002")  # Intel, AMD
 MODES = ("integrated", "hybrid")
@@ -46,8 +47,21 @@ MODULES=("${pil_modu_modules[@]}")
 unset pil_modu_modules pil_modu_module
 '''
 
-# "integrated" modunda olması gereken dosyalar; "hybrid" modunda hepsi silinir.
-CONFIG = {MOD: MODPROBE_TEXT, RULE: UDEV_TEXT, INIT: MKINITCPIO_TEXT}
+DRACUT_TEXT = HEADER + 'omit_drivers+=" ' + " ".join(MODULES) + ' "\n'
+
+MANAGED = (MOD, RULE, INIT, DRACUT)  # bu aracın sahip olabileceği tüm dosyalar
+NVIDIA_VENDOR = "0x10de"
+INTERNAL_CONNECTORS = ("eDP", "LVDS", "DSI")
+
+
+def integrated_config():
+    """"integrated" modunda olması gereken dosyalar; "hybrid" modunda hepsi silinir."""
+    config = {MOD: MODPROBE_TEXT, RULE: UDEV_TEXT}
+    if shutil.which("mkinitcpio"):
+        config[INIT] = MKINITCPIO_TEXT
+    if shutil.which("dracut"):
+        config[DRACUT] = DRACUT_TEXT
+    return config
 
 
 def write(path, content):
@@ -83,6 +97,22 @@ def has_integrated_gpu():
     return False
 
 
+def internal_panel_on_nvidia():
+    """MUX'lu modellerde BIOS "Discrete" ise dahili ekranı NVIDIA sürer; o zaman kapatılamaz."""
+    for connector in glob.glob("/sys/class/drm/card*-*"):
+        name = Path(connector).name.split("-", 1)[1]
+        if not name.startswith(INTERNAL_CONNECTORS):
+            continue
+        try:
+            connected = Path(connector, "status").read_text().strip() == "connected"
+            vendor = Path(connector, "device", "device", "vendor").read_text().strip()
+        except OSError:
+            continue
+        if connected and vendor == NVIDIA_VENDOR:
+            return True
+    return False
+
+
 def check_preconditions(mode):
     if mode not in MODES:
         raise ValueError("Geçersiz GPU modu")
@@ -90,15 +120,19 @@ def check_preconditions(mode):
         raise RuntimeError("Yönetici yetkisi gerekiyor")
     if mode == "integrated" and not has_integrated_gpu():
         raise RuntimeError("Tümleşik GPU bulunamadı; NVIDIA kapatılırsa ekran gider")
+    if mode == "integrated" and internal_panel_on_nvidia():
+        raise RuntimeError("Dahili ekranı NVIDIA sürüyor (BIOS'ta GPU modu 'Discrete'/MUX). "
+                           "NVIDIA kapatılırsa ekran kararır; BIOS'ta 'MSHybrid'/'Optimus' seç.")
 
 
 def configure(mode):
     check_preconditions(mode)
-    before = {p: p.read_text() if p.exists() else None for p in CONFIG}
+    before = {p: p.read_text() if p.exists() else None for p in MANAGED}
     if any(v is not None and not v.startswith(HEADER) for v in before.values()):
         raise RuntimeError("Beklenmeyen yapılandırma; mevcut dosyalara dokunulmadı")
 
-    desired = CONFIG if mode == "integrated" else {p: None for p in CONFIG}
+    wanted = integrated_config() if mode == "integrated" else {}
+    desired = {p: wanted.get(p) for p in MANAGED}
     if before == desired:
         print("GPU açılış tercihi zaten:", mode, flush=True)
         return
@@ -109,6 +143,8 @@ def configure(mode):
         json.dumps({str(p): v for p, v in before.items()}, indent=2))
     try:
         for path, content in desired.items():
+            if content is not None:
+                path.parent.mkdir(parents=True, exist_ok=True)
             write(path, content)
         print("Açılış imajları hazırlanıyor; bu işlem birkaç dakika sürebilir...", flush=True)
         rebuild_initramfs()

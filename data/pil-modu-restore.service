@@ -1,7 +1,6 @@
 [Unit]
 Description=Restore hardware settings selected with pil-modu
 After=systemd-modules-load.service
-Before=display-manager.service
 ConditionPathExists=|/var/lib/pil-modu/hardware.json
 ConditionPathExists=|/var/lib/pil-modu/charge
 

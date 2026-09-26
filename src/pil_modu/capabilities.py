@@ -3,6 +3,9 @@
 MSI modelleri arasında EC modları, fan modları, ekran Hz'leri ve NVIDIA'nın
 varlığı değişir. Modlar buradaki bilgiyle makineye uyarlanır.
 """
+import glob
+import shutil
+import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -41,6 +44,31 @@ def nearest_shift(wanted, available):
     return min(available, key=lambda m: (abs(order.index(m) - order.index(wanted)), order.index(m)))
 
 
+# ppd ile aynı işi yapan ve onunla çakışan güç yöneticileri.
+CONFLICTING_SERVICES = ("tlp", "auto-cpufreq", "tuned", "system76-power", "powertop")
+
+
+def conflicts():
+    """Çalışan çakışan servislerin adları."""
+    if not shutil.which("systemctl"):
+        return ()
+    found = []
+    for name in CONFLICTING_SERVICES:
+        result = subprocess.run(["systemctl", "is-active", "--quiet", name + ".service"])
+        if result.returncode == 0:
+            found.append(name)
+    return tuple(found)
+
+
+def nvidia_outputs():
+    """NVIDIA'ya bağlı ekran çıkışlarının adları (kscreen adlarıyla aynı: HDMI-A-1 gibi)."""
+    names = []
+    for connector in glob.glob("/sys/class/drm/card*-*"):
+        if read(Path(connector, "device", "device", "vendor")) == "0x10de":
+            names.append(Path(connector).name.split("-", 1)[1])
+    return tuple(sorted(names))
+
+
 @dataclass(frozen=True)
 class Capabilities:
     model: str
@@ -55,6 +83,11 @@ class Capabilities:
     runtime_pm: int        # güç yönetimi yapılabilen PCI aygıtı sayısı
     sound_power_save: bool
     bluetooth: bool
+    screen: bool = True           # kscreen-doctor ile ekran ayarlanabiliyor mu (KDE Plasma)
+    brightness: bool = True       # parlaklık ayarlanabiliyor mu (Plasma 6.1+)
+    nvidia_outputs: tuple = ()    # NVIDIA'ya bağlı çıkışlar; batarya modunda kapanır
+    conflicts: tuple = ()         # ppd ile çakışan çalışan servisler
+    ec_firmware: str = ""
 
     @property
     def ec(self):
@@ -78,6 +111,11 @@ def detect(outputs=None):
         runtime_pm=len(hw.RUNTIME_PM),
         sound_power_save=Path(hw.SOUND_POWER_SAVE).exists(),
         bluetooth=bool(hw.BLUETOOTH),
+        screen=bool(outputs),
+        brightness=any("brightness" in o for o in outputs or []),
+        nvidia_outputs=nvidia_outputs(),
+        conflicts=conflicts(),
+        ec_firmware=read(hw.EC + "fw_version"),
     )
 
 

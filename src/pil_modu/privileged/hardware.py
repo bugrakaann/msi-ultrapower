@@ -20,6 +20,7 @@ import glob
 import json
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 PCI = "/sys/bus/pci/devices/"
@@ -41,42 +42,65 @@ def _first(pattern, default):
     return next(iter(sorted(glob.glob(pattern))), default)
 
 
-# Model farkları: aygıt adresleri ve adları makineden makineye değişir, bu yüzden aranır.
-NVIDIA = sorted(d for d in glob.glob(PCI + "*") if _read(d + "/vendor") == "0x10de")
-NVIDIA_GPU = next((d for d in NVIDIA if _read(d + "/class").startswith("0x03")), None)
-GPU_PM = [d + "/power/control" for d in NVIDIA]
-LED = _first("/sys/class/leds/*::kbd_backlight/brightness",
-             "/sys/class/leds/msiacpi::kbd_backlight/brightness")
-BAT = str(Path(_first("/sys/class/power_supply/BAT*/charge_control_end_threshold",
-                      "/sys/class/power_supply/BAT1/x")).parent) + "/"
-
-# NVIDIA dışındaki PCI aygıtlarının çalışma zamanı güç yönetimi. Sürücüsü desteklemeyen
-# aygıt "auto"da da uyanık kalır; sürücüsü olmayan (kullanılmayan Wi-Fi kartı gibi) uyur.
-RUNTIME_PM = sorted(p for p in glob.glob(PCI + "*/power/control") if p not in GPU_PM)
-BLUETOOTH = sorted(glob.glob("/sys/class/bluetooth/hci*/rfkill*/soft"))  # 1 = kapalı
-
-# Şarj sınırı modlardan bağımsızdır; bu yüzden ALLOWED'da değil.
-# msi-ec başlangıç eşiğini kendisi sınırın 10 altına ayarlar.
-CHARGE_LIMIT = BAT + "charge_control_end_threshold"
-CHARGE_START = BAT + "charge_control_start_threshold"
-CHARGE_LIMITS = ("60", "80", "100")
-
 SHIFT_MODES = ("eco", "comfort", "sport", "turbo")  # tasarruftan performansa
 FAN_MODES = ("auto", "silent", "basic", "advanced")
+CHARGE_LIMITS = ("60", "80", "100")
+# Runtime PM'i kendi yöneten ya da "auto"da sorun çıkardığı bilinen sürücüler (TLP'deki gibi).
+RUNTIME_PM_DENY = {"mei_me", "nouveau", "radeon", "amdgpu", "nvidia", "nvidia-gpu"}
+CHARGE_PATTERN = "/sys/class/power_supply/BAT*/charge_control_end_threshold"
 
-# Yazılmasına izin verilen dosyalar ve kabul edilen değerler.
-ALLOWED = {
-    EC + "shift_mode": set(SHIFT_MODES),
-    EC + "fan_mode": set(FAN_MODES),
-    EC + "cooler_boost": {"on", "off"},
-    CPU + "no_turbo": {"0", "1"},
-    BOOST: {"0", "1"},
-    LED: str.isdigit,
-    **{path: {"auto", "on"} for path in GPU_PM + RUNTIME_PM},
-    **{path: {"0", "1"} for path in BLUETOOTH},
-    SOUND_POWER_SAVE: str.isdigit,
-    DIRTY_WRITEBACK: str.isdigit,
-}
+
+def _driver(device):
+    try:
+        return Path(device, "driver").resolve().name
+    except OSError:
+        return ""
+
+
+def detect():
+    """Model farkları: aygıt adresleri ve adları makineden makineye değişir, bu yüzden aranır.
+
+    İçe aktarılırken çalışır; açılışta modüller geç yüklenirse restore() yeniden çağırır.
+    """
+    global NVIDIA, NVIDIA_GPU, GPU_PM, LED, BAT, RUNTIME_PM, BLUETOOTH
+    global CHARGE_LIMIT, CHARGE_START, ALLOWED
+    NVIDIA = sorted(d for d in glob.glob(PCI + "*") if _read(d + "/vendor") == "0x10de")
+    NVIDIA_GPU = next((d for d in NVIDIA if _read(d + "/class").startswith("0x03")), None)
+    GPU_PM = [d + "/power/control" for d in NVIDIA]
+    LED = _first("/sys/class/leds/*::kbd_backlight/brightness",
+                 "/sys/class/leds/msiacpi::kbd_backlight/brightness")
+    BAT = str(Path(_first(CHARGE_PATTERN,
+                          "/sys/class/power_supply/BAT1/x")).parent) + "/"
+
+    # NVIDIA dışındaki PCI aygıtlarının çalışma zamanı güç yönetimi. Sürücüsü desteklemeyen
+    # aygıt "auto"da da uyanık kalır; sürücüsü olmayan (kullanılmayan Wi-Fi kartı gibi) uyur.
+    RUNTIME_PM = sorted(d + "/power/control" for d in glob.glob(PCI + "*")
+                        if d + "/power/control" not in GPU_PM
+                        and Path(d, "power/control").exists()
+                        and _driver(d) not in RUNTIME_PM_DENY)
+    BLUETOOTH = sorted(glob.glob("/sys/class/bluetooth/hci*/rfkill*/soft"))  # 1 = kapalı
+
+    # Şarj sınırı modlardan bağımsızdır; bu yüzden ALLOWED'da değil.
+    # msi-ec başlangıç eşiğini kendisi sınırın 10 altına ayarlar.
+    CHARGE_LIMIT = BAT + "charge_control_end_threshold"
+    CHARGE_START = BAT + "charge_control_start_threshold"
+
+    # Yazılmasına izin verilen dosyalar ve kabul edilen değerler.
+    ALLOWED = {
+        EC + "shift_mode": set(SHIFT_MODES),
+        EC + "fan_mode": set(FAN_MODES),
+        EC + "cooler_boost": {"on", "off"},
+        CPU + "no_turbo": {"0", "1"},
+        BOOST: {"0", "1"},
+        LED: str.isdigit,
+        **{path: {"auto", "on"} for path in GPU_PM + RUNTIME_PM},
+        **{path: {"0", "1"} for path in BLUETOOTH},
+        SOUND_POWER_SAVE: str.isdigit,
+        DIRTY_WRITEBACK: str.isdigit,
+    }
+
+
+detect()
 
 STATE_DIR = Path("/var/lib/pil-modu")
 RESTORE_SERVICE = "pil-modu-restore.service"
@@ -88,11 +112,19 @@ def read_state():
     return {p: Path(p).read_text().strip() for p in ALLOWED if Path(p).exists()}
 
 
+def available_shift_modes():
+    listed = _read(EC + "available_shift_modes").split()
+    return [m for m in SHIFT_MODES if m in listed] or list(SHIFT_MODES)
+
+
 def writable(state):
     """Okunabilen ama geri yazılamayan değerleri yazılabilir karşılığına çevirir."""
     state = dict(state)
     if state.get(EC + "shift_mode") == "unspecified":
-        state[EC + "shift_mode"] = "comfort"
+        # Modelde "comfort" yoksa ona en yakın mod (capabilities.nearest_shift ile aynı kural).
+        order = SHIFT_MODES
+        state[EC + "shift_mode"] = min(available_shift_modes(), key=lambda m: (
+            abs(order.index(m) - order.index("comfort")), order.index(m)))
     return state
 
 
@@ -169,13 +201,36 @@ def set_charge_limit(value):
     temp.replace(STATE_DIR / "charge")
 
 
+# Açılışta msi-ec ve pil eklentisi sistem servisinden sonra yüklenebilir; bu yollar gelene kadar bekle.
+LATE_PREFIXES = (EC, "/sys/class/leds/", "/sys/class/power_supply/")
+RESTORE_WAIT = 20  # saniye
+
+
+def wait_until(ready, timeout=RESTORE_WAIT):
+    deadline = time.monotonic() + timeout
+    while not ready() and time.monotonic() < deadline:
+        time.sleep(0.5)
+
+
 def restore():
     errors = []
+    saved = {}
     if (STATE_DIR / "hardware.json").exists():
-        state = json.loads((STATE_DIR / "hardware.json").read_text())
-        # Yalnızca Intel ile açılışta GPU işlevleri kasıtlı olarak ortadan kalkar; Bluetooth
+        saved = json.loads((STATE_DIR / "hardware.json").read_text())
+    late = [p for p in saved if p.startswith(LATE_PREFIXES)]
+    charge_saved = (STATE_DIR / "charge").exists()
+    wait_until(lambda: all(Path(p).exists() for p in late)
+               and (not charge_saved or glob.glob(CHARGE_PATTERN)))
+    detect()  # geç gelen aygıtlarla izin listesini yenile
+
+    if saved:
+        state = saved
+        # Yalnızca tümleşik GPU ile açılışta NVIDIA dosyaları kasıtlı olarak yoktur; Bluetooth
         # gibi aygıtlar da henüz hazır olmayabilir. Olmayan dosyaları atla.
-        state = {p: v for p, v in state.items() if Path(p).exists()}
+        missing = [p for p in state if not Path(p).exists()]
+        if missing:
+            print("Atlandı (aygıt yok):", *missing, file=sys.stderr)
+        state = {p: v for p, v in state.items() if Path(p).exists() and p in ALLOWED}
         try:
             apply(state)
         except Exception as exc:

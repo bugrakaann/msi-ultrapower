@@ -8,7 +8,7 @@ from PySide6.QtWidgets import (QButtonGroup, QComboBox, QFrame, QGridLayout,
                                QPushButton, QScrollArea, QSlider, QToolButton, QVBoxLayout,
                                QWidget)
 
-from .. import capabilities, describe, state, status, system
+from .. import capabilities, describe, settings, state, status, system
 from ..presets import EXTERNAL_CHOICES, PRESETS
 from ..privileged.hardware import CHARGE_LIMITS
 from .runner import ModeRunner
@@ -65,8 +65,11 @@ def missing_features(caps):
     if not caps.ec:
         notes.append("msi-ec sürücüsü bulunamadı: fan, EC modu ve Cooler Boost ayarlanamaz "
                      "(AUR: msi-ec-dkms-git).")
-    if not caps.charge_limit:
-        notes.append("Pil şarj sınırı bu bilgisayarda desteklenmiyor.")
+    if not caps.screen:
+        notes.append("KDE Plasma 6 bulunamadı: ekran Hz'i ve parlaklığı değiştirilmez.")
+    if caps.conflicts:
+        notes.append(f"{', '.join(caps.conflicts)} çalışıyor ve güç profilleriyle çakışır; "
+                     "modlar doğrulanamayabilir. Birini devre dışı bırak.")
     return " ".join(notes)
 
 
@@ -170,7 +173,7 @@ class MainWindow(QWidget):
             card = ModeCard(preset)
             card.clicked.connect(lambda _=False, key=preset.key: self._select(key))
             reason = capabilities.unsupported_reason(preset, self.caps)
-            sections = describe.describe(preset, self.caps)
+            sections = describe.describe(preset, self.caps, settings.load())
             card.set_info(describe.to_html(preset.title, sections, reason), reason)
             self.group.addButton(card)
             self.cards[preset.key] = card
@@ -356,12 +359,13 @@ class MainWindow(QWidget):
         preset = PRESETS[key]
         self.cards[key].setChecked(True)
         self.details_title.setText(preset.title)
-        self._fill_details(describe.describe(preset, self.caps))
+        self._fill_details(describe.describe(preset, self.caps, settings.load()))
 
-        self.external.setEnabled(not preset.is_battery and not self.busy)
-        if preset.is_battery:
-            self.external_hint.setText("Batarya modlarında harici ekran kapanır. NVIDIA'ya bağlı "
-                                       "çıkışlar (çoğunlukla HDMI) yeniden başlatınca kullanılamaz.")
+        self.external.setEnabled(not self.busy)
+        if preset.is_battery and self.caps.nvidia_outputs:
+            self.external_hint.setText(
+                f"NVIDIA'ya bağlı çıkışlar ({', '.join(self.caps.nvidia_outputs)}) batarya modunda "
+                "kapanır ve yeniden başlatınca kullanılamaz. Diğer ekranlar seçime göre açık kalır.")
         else:
             self.external_hint.setText("“Moda göre otomatik”: bağlı harici ekran açık kalır.")
         self.apply_button.setToolTip(self.cards[key].toolTip())
@@ -456,8 +460,7 @@ class MainWindow(QWidget):
             return
         args = [mode, *extra]
         if mode in PRESETS:
-            external = "kapat" if PRESETS[mode].is_battery else self.external.currentData()
-            args += ["--harici", external]
+            args += ["--harici", self.external.currentData()]
         self.pending_args = args
         self.log.clear()
         self.result.show_message("warn", "Uygulanıyor… Yönetici parolası istenebilir.")
@@ -485,7 +488,7 @@ class MainWindow(QWidget):
             card.setEnabled(enabled and card.unsupported is None)
         self.apply_button.setEnabled(enabled)
         self.restore_button.setEnabled(enabled and state.has_original())
-        self.external.setEnabled(enabled and not PRESETS[self.selected].is_battery)
+        self.external.setEnabled(enabled)
         self.charge_slider.setEnabled(enabled and status.charge_limits()[1] is not None)
 
     def _append_log(self, text):

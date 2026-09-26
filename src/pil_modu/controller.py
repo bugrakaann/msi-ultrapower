@@ -3,7 +3,7 @@ import json
 import sys
 import time
 
-from . import display, elevated, plan, state, status, system
+from . import capabilities, display, elevated, plan, settings, state, status, system
 from .presets import PRESETS
 from .privileged import gpu_boot
 from .privileged import hardware as hw
@@ -11,11 +11,14 @@ from .privileged import hardware as hw
 
 def change_mode(mode, external="otomatik", dry_run=False):
     """Bir modu uygular ya da mode "geri"/"normal" ise önceki ayarlara döner."""
-    if mode in PRESETS and PRESETS[mode].is_battery and external == "koru":
-        raise RuntimeError("Tam batarya modu NVIDIA ve HDMI çıkışını devre dışı bırakır. "
-                           "Çift ekran için dengeli modunu seç.")
-
     before = system.capture()
+    caps = capabilities.detect(before["outputs"])
+    nvidia_screens = [o["name"] for o in before["outputs"]
+                      if o["connected"] and o["enabled"] and o["name"] in caps.nvidia_outputs]
+    if mode in PRESETS and PRESETS[mode].is_battery and external == "koru" and nvidia_screens:
+        raise RuntimeError(f"{', '.join(nvidia_screens)} NVIDIA'ya bağlı; batarya modunda NVIDIA "
+                           "kapandığı için açık tutulamaz. Çift ekran için dengeli modunu seç.")
+
     restoring = mode not in PRESETS
     if restoring and not state.has_original():
         print("Geri dönüş kaydı yok; ayar değiştirilmedi.")
@@ -24,7 +27,7 @@ def change_mode(mode, external="otomatik", dry_run=False):
     # Programın eski sürümüyle alınan kayıtta sonradan eklenen ayarlar yoktur; şu anki değerle tamamla.
     missing = {k: v for k, v in before["hardware"].items() if k not in original["hardware"]}
     original["hardware"].update(missing)
-    p = plan.build(mode, external, before, original)
+    p = plan.build(mode, external, before, original, settings.load(), caps)
 
     if dry_run:
         print_plan(p)

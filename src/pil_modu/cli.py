@@ -3,7 +3,7 @@ import argparse
 import fcntl
 import sys
 
-from . import controller, paths, state, status, system
+from . import capabilities, controller, paths, state, status, system
 from .presets import EXTERNAL_CHOICES, PRESETS, RESTORE_COMMANDS
 from .privileged import hardware as hw
 
@@ -12,7 +12,7 @@ DESCRIPTION = "MSI dizüstüleri / KDE: performans, dengeli, batarya ve geri dö
 
 def parse_args(argv):
     parser = argparse.ArgumentParser(prog="pil-modu", description=DESCRIPTION)
-    parser.add_argument("mod", choices=[*PRESETS, *RESTORE_COMMANDS, "durum", "sarj"])
+    parser.add_argument("mod", choices=[*PRESETS, *RESTORE_COMMANDS, "durum", "sarj", "doctor"])
     parser.add_argument("sinir", nargs="?", choices=hw.CHARGE_LIMITS,
                         help="yalnızca sarj ile: pilin dolacağı en yüksek yüzde")
     parser.add_argument("--harici", choices=list(EXTERNAL_CHOICES), default="otomatik",
@@ -48,6 +48,41 @@ def print_status():
             print(label, round(bat.watts, 2), "W")
 
 
+def print_doctor():
+    """Uyumluluk raporu: hangi özellik var, hangisi neden yok. Hata bildirimine eklenir."""
+    caps = capabilities.detect(system.get_outputs())
+    plasma = system.plasma_version()
+    yes = {True: "var", False: "YOK"}
+    rows = [
+        ("Model", caps.model or "?"),
+        ("KDE Plasma", plasma or "YOK (ekran ayarları atlanır)"),
+        ("Ekran ayarı (kscreen-doctor)", yes[caps.screen]),
+        ("Parlaklık ayarı", yes[caps.brightness]),
+        ("Panel Hz", ", ".join(map(str, caps.panel_rates)) or "?"),
+        ("msi-ec", f"var · firmware {caps.ec_firmware or '?'}" if caps.ec
+         else "YOK (fan/EC ayarları atlanır; AUR: msi-ec-dkms-git)"),
+        ("EC modları", ", ".join(caps.shift_modes) or "—"),
+        ("Fan modları", ", ".join(caps.fan_modes) or "—"),
+        ("Cooler Boost", yes[caps.cooler_boost]),
+        ("CPU turbo ayarı", yes[caps.turbo]),
+        ("Klavye ışığı", yes[caps.keyboard_light]),
+        ("Şarj sınırı", yes[caps.charge_limit]),
+        ("NVIDIA", "var" if caps.nvidia else "yok"),
+        ("NVIDIA'ya bağlı çıkışlar", ", ".join(caps.nvidia_outputs) or "—"),
+        ("PCI güç yönetimi", f"{caps.runtime_pm} aygıt"),
+        ("Ses güç tasarrufu", yes[caps.sound_power_save]),
+        ("Bluetooth", yes[caps.bluetooth]),
+        ("Çakışan servisler", ", ".join(caps.conflicts) or "yok"),
+    ]
+    width = max(len(k) for k, _ in rows)
+    for key, value in rows:
+        print(f"{key:<{width}}  {value}")
+    for preset in PRESETS.values():
+        reason = capabilities.unsupported_reason(preset, caps)
+        if reason:
+            print(f"Kullanılamayan mod: {preset.key} ({reason})")
+
+
 def main(argv=None):
     try:
         opt = parse_args(argv)
@@ -61,6 +96,8 @@ def main(argv=None):
                 raise RuntimeError("Yüzde yalnızca sarj komutuyla kullanılır.")
             if opt.mod == "durum":
                 print_status()
+            elif opt.mod == "doctor":
+                print_doctor()
             elif opt.mod == "sarj":
                 if opt.sinir:
                     controller.set_charge_limit(opt.sinir)

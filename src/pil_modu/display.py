@@ -52,15 +52,26 @@ def mode_for(output, previous=None, hz=None):
     return best["id"]
 
 
-def _should_enable(internal, preset, external):
-    return internal or external == "koru" or (external == "otomatik" and not preset.is_battery)
+def _should_enable(internal, preset, external, on_nvidia):
+    if internal:
+        return True
+    if preset.is_battery and on_nvidia:
+        return False  # NVIDIA kapanacak; bu çıkış zaten çalışmayacak
+    if external == "kapat":
+        return False
+    # Bataryada "otomatik": NVIDIA'ya bağlı olmayan (iGPU/USB-C) ekranlar açık kalır.
+    return True
 
 
-def screen_plan(current, original, preset=None, external="otomatik"):
+def screen_plan(current, original, preset=None, external="otomatik", nvidia_outputs=()):
     """kscreen-doctor argümanları.
 
     preset verilirse mod uygulanır; None ise `original` içindeki düzen geri yüklenir.
+    nvidia_outputs: NVIDIA'ya bağlı bağlantı adları; batarya modunda bunlar kapanır.
+    Ekran bilgisi yoksa (KDE dışı) boş liste döner ve ekran adımı atlanır.
     """
+    if not current:
+        return []
     saved = {o["name"]: o for o in original}
     if preset and not any(o["connected"] and is_internal(o) for o in current):
         raise RuntimeError("Dahili ekran bulunamadı")
@@ -76,7 +87,8 @@ def screen_plan(current, original, preset=None, external="otomatik"):
         internal = is_internal(output)
         prefix = f"output.{output['name']}."
 
-        enabled = _should_enable(internal, preset, external) if preset else previous["enabled"]
+        enabled = (_should_enable(internal, preset, external, output["name"] in nvidia_outputs)
+                   if preset else previous["enabled"])
         args.append(prefix + ("enable" if enabled else "disable"))
         if not enabled:
             continue
@@ -96,7 +108,8 @@ def screen_plan(current, original, preset=None, external="otomatik"):
             args.append(prefix + f"position.{previous['pos']['x']},{previous['pos']['y']}")
             args.append(prefix + f"priority.{previous.get('priority', enabled_count)}")
 
-        if internal:
+        # Plasma 6.1 öncesi parlaklık bilgisi vermez; o zaman parlaklığa dokunulmaz.
+        if internal and "brightness" in output and "brightness" in previous:
             brightness = preset.brightness if preset else round(previous["brightness"] * 100)
             args.append(prefix + f"brightness.{brightness}")
 
