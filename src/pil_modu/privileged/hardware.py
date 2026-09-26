@@ -8,7 +8,8 @@ kalanından hiçbir şey import etmez, çünkü iki farklı şekilde çalıştı
         Ayarları uygular, "READY" yazar ve stdin'den COMMIT bekler.
         COMMIT gelmezse eski değerlere döner ("ROLLED_BACK").
         COMMIT gelirse ayarları açılışta geri yüklenmek üzere kaydeder.
-  * Açılışta systemd ile:  /usr/local/lib/pil-modu/hardware.py --restore
+  * Açılışta systemd ile (pil-modu-restore.service):
+        python3 -P -m pil_modu.privileged.hardware --restore
 
 Kullanıcı tarafı (pil_modu paketi) ALLOWED, read_state, writable ve validate'i
 import ederek aynı izin listesini kullanır.
@@ -34,23 +35,8 @@ ALLOWED = {
 }
 
 STATE_DIR = Path("/var/lib/pil-modu")
-INSTALLED_COPY = Path("/usr/local/lib/pil-modu/hardware.py")
-RESTORE_UNIT = Path("/etc/systemd/system/pil-modu-restore.service")
-RESTORE_UNIT_TEXT = """[Unit]
-Description=Restore selected MSI power settings
-After=systemd-modules-load.service
-Before=display-manager.service
-ConditionPathExists=/var/lib/pil-modu/hardware.json
-
-[Service]
-Type=oneshot
-ExecStart=/usr/bin/python3 /usr/local/lib/pil-modu/hardware.py --restore
-ProtectHome=yes
-ProtectSystem=full
-
-[Install]
-WantedBy=multi-user.target
-"""
+RESTORE_SERVICE = "pil-modu-restore.service"
+RESTORE_UNIT = Path("/usr/lib/systemd/system") / RESTORE_SERVICE  # paketle kurulur
 
 
 def read_state():
@@ -96,21 +82,16 @@ def apply(state):
 
 
 def persist(state):
-    """Ayarları kaydeder ve açılışta geri yükleyecek systemd servisini kurar."""
+    """Ayarları kaydeder ve açılışta geri yükleyecek servisi etkinleştirir."""
     validate(state)
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     target = STATE_DIR / "hardware.json"
     temp = STATE_DIR / "hardware.tmp"
     temp.write_text(json.dumps(state, indent=2))
     temp.chmod(0o600)
-
-    INSTALLED_COPY.parent.mkdir(parents=True, exist_ok=True)
-    INSTALLED_COPY.write_text(Path(__file__).read_text())
-    INSTALLED_COPY.chmod(0o644)
-
-    RESTORE_UNIT.write_text(RESTORE_UNIT_TEXT)
-    subprocess.run(["systemctl", "daemon-reload"], check=True)
-    subprocess.run(["systemctl", "enable", "pil-modu-restore.service"], check=True)
+    # Paket kurulu değilse (kaynak koddan geliştirme) servis yoktur; yalnızca kaydet.
+    if RESTORE_UNIT.exists():
+        subprocess.run(["systemctl", "enable", RESTORE_SERVICE], check=True)
     temp.replace(target)
 
 

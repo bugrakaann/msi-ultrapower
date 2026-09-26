@@ -7,7 +7,7 @@ Canlı GPU'yu asla sökmez ve bilgisayarı yeniden başlatmaz. Yalnızca kendi
 oluşturduğu üç dosyayı (HEADER ile işaretli) yönetir. Yalnızca standart
 kütüphaneyi kullanır; paketin geri kalanından import yapmaz.
 
-Kurtarma (TTY):  sudo /usr/bin/python3 <bu dosya> hybrid
+Kurtarma (TTY):  sudo python3 -P -m pil_modu.privileged.gpu_boot hybrid
 """
 import json
 import os

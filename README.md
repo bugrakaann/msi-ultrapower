@@ -30,18 +30,30 @@ pil-modu geri                    # ilk moddan önceki ayarlara dön
 
 ## Kurulum
 
+Arch / CachyOS paketi olarak kurulur; diğer programlar gibi pacman takip eder.
+
 ```
-cd ~/Projeler/pil-modu
-make install     # ~/.local/bin/pil-modu, pil-modu-ui ve menü girdisini oluşturur
-make test        # testleri çalıştırır
-make run         # arayüzü kurmadan buradan çalıştırır
+git clone https://github.com/<kullanıcı-adın>/pil-modu.git
+cd pil-modu
+make install      # paketi derler ve pacman ile kurar (güncellemek için de aynı komut)
+make uninstall    # kaldırır (sudo pacman -R pil-modu)
 ```
 
-Bağımlılıklar (pacman): `python`, `pyside6`, `power-profiles-daemon`, `kscreen`
-(`kscreen-doctor`), `polkit` (`pkexec`), `msi-ec` çekirdek modülü.
+Kaldırırken NVIDIA engeli varsa otomatik silinir ve açılış servisi kapatılır.
+Ekran ve donanım ayarlarını da eski haline getirmek için kaldırmadan önce
+`pil-modu geri` çalıştır. Kişisel kayıtlar `~/.local/share/pil-modu` içinde kalır.
 
-Başlatıcılar yalnızca bu klasördeki `src/`'yi gösterir. Kodu düzenlediğinde
-yeniden kurman gerekmez.
+Paketin kurduğu dosyaları görmek için: `pacman -Ql pil-modu`
+
+Python sürümü büyük güncelleme alırsa (örn. 3.14 → 3.15) `make install` ile yeniden kur.
+
+### Geliştirme
+
+```
+make test   # birim testleri
+make run    # arayüzü kurmadan doğrudan src/ içinden çalıştır
+make clean  # paket derleme artıklarını sil
+```
 
 ## Proje yapısı
 
@@ -66,11 +78,12 @@ pil-modu/
 │       ├── window.py      ← ana pencere
 │       ├── widgets.py     ← mod kartı, bilgi şeridi, stil
 │       └── runner.py      ← CLI'yi arka planda çalıştırır
+├── bin/                   ← /usr/bin/pil-modu ve pil-modu-ui başlatıcıları
+├── data/                  ← menü girdisi (.desktop) ve açılış servisi (.service)
+├── packaging/arch/        ← PKGBUILD ve pacman kancaları (pil-modu.install)
 ├── tests/                 ← birim testleri (make test)
-├── data/                  ← .desktop menü girdisi şablonu
-├── scripts/               ← install.sh / uninstall.sh
 ├── Makefile               ← kısa komutlar: make install, make test
-└── pyproject.toml         ← paketin kimlik kartı (ad, sürüm, bağımlılıklar)
+└── pyproject.toml         ← Python paketinin kimlik kartı (ad, sürüm, bağımlılıklar)
 ```
 
 Katmanlar tek yönde birbirini kullanır:
@@ -89,22 +102,24 @@ ui ──(alt süreç)──▶ cli ──▶ controller ──▶ plan / displa
 * **Root kodu küçük ve bağımsızdır.** `privileged/` paketin geri kalanını import
   etmez. Yalnızca izin listesindeki (`ALLOWED`) dosyalara yazar.
 
-## Nereye ne kaydedilir
+## Nereye ne kurulur / kaydedilir
 
-| Yol | Sahibi | Ne |
-|---|---|---|
-| `~/.local/share/pil-modu/original-v2.json` | sen | İlk moddan önceki ayarlar (`geri` bunu kullanır) |
-| `~/.local/share/pil-modu/active.json` | sen | Son seçilen mod |
-| `~/.local/share/pil-modu/history.log` | sen | Geçiş günlüğü |
-| `/var/lib/pil-modu/hardware.json` | root | Açılışta geri yüklenecek donanım değerleri |
-| `/usr/local/lib/pil-modu/hardware.py` | root | `hardware.py`'nin açılış servisi için kopyası |
-| `/etc/systemd/system/pil-modu-restore.service` | root | Açılışta bir kez çalışır |
-| `/etc/modprobe.d/90-pil-modu-nvidia.conf`, `/etc/udev/rules.d/50-pil-modu-nvidia.rules`, `/etc/mkinitcpio.conf.d/99-pil-modu-gpu.conf` | root | Yalnızca batarya modunda: NVIDIA'yı açılışta devre dışı bırakır |
+| Yol | Ne |
+|---|---|
+| `/usr/bin/pil-modu`, `/usr/bin/pil-modu-ui` | Komutlar (paket) |
+| `/usr/lib/python3.X/site-packages/pil_modu/` | Program kodu (paket, root'a ait) |
+| `/usr/share/applications/pil-modu.desktop` | Uygulama menüsü girdisi (paket) |
+| `/usr/lib/systemd/system/pil-modu-restore.service` | Açılışta donanım ayarlarını geri yükler (paket) |
+| `~/.local/share/pil-modu/original-v2.json` | İlk moddan önceki ayarlar (`geri` bunu kullanır) |
+| `~/.local/share/pil-modu/active.json`, `history.log` | Son seçilen mod, geçiş günlüğü |
+| `/var/lib/pil-modu/hardware.json` | Açılışta geri yüklenecek donanım değerleri |
+| `/etc/modprobe.d/90-pil-modu-nvidia.conf`, `/etc/udev/rules.d/50-pil-modu-nvidia.rules`, `/etc/mkinitcpio.conf.d/99-pil-modu-gpu.conf` | Yalnızca batarya modunda: NVIDIA'yı açılışta devre dışı bırakır |
 
 ## Güvenlik ve geri alma
 
 * Yönetici parolası, donanımı yazan kısa süreli `pkexec` işlemi için istenir.
-  Parolasız sudo kuralı ya da sürekli çalışan root servisi yoktur.
+  Parolasız sudo kuralı ya da sürekli çalışan root servisi yoktur. Root olarak
+  çalışan kod paketle `/usr` altına kurulur; kullanıcı tarafından değiştirilemez.
 * Donanım yardımcısı ayarları uygular, sonra `COMMIT` bekler. KDE tarafı
   (profil, ekran) doğrulanamazsa her şey eski haline döner.
 * GPU yapılandırması başarısız olursa dosyalar geri alınır ve açılış imajları
@@ -114,7 +129,7 @@ ui ──(alt süreç)──▶ cli ──▶ controller ──▶ plan / displa
 **Kurtarma:** Grafik arayüz açılmazsa TTY'de (Ctrl+Alt+F3):
 
 ```
-sudo /usr/bin/python3 /home/bugra/Projeler/pil-modu/src/pil_modu/privileged/gpu_boot.py hybrid
+sudo python3 -P -m pil_modu.privileged.gpu_boot hybrid
 ```
 
 Başarıyla bitince yeniden başlat. Bu yalnızca bu aracın koyduğu NVIDIA engelini kaldırır.

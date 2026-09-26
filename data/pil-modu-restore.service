@@ -1,0 +1,14 @@
+[Unit]
+Description=Restore hardware settings selected with pil-modu
+After=systemd-modules-load.service
+Before=display-manager.service
+ConditionPathExists=/var/lib/pil-modu/hardware.json
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 -P -m pil_modu.privileged.hardware --restore
+ProtectHome=yes
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

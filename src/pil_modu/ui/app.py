@@ -9,7 +9,7 @@ from .window import MainWindow
 def main():
     app = QApplication(sys.argv)
     app.setApplicationName("Güç Modları")
-    app.setDesktopFileName("pil-modu-ui")
+    app.setDesktopFileName("pil-modu")
     window = MainWindow()
     window.show()
     return app.exec()

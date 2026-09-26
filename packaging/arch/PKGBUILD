@@ -1,0 +1,33 @@
+# Maintainer: bugra <bugrakaan02@gmail.com>
+#
+# Depo kökünden:  make install   (ya da bu klasörde: makepkg -sci)
+# Kaldırmak:      make uninstall (ya da: sudo pacman -R pil-modu)
+
+pkgname=pil-modu
+pkgver=2.0.0
+pkgrel=1
+pkgdesc="MSI GF65 / KDE için güç modu yöneticisi (performans, dengeli, batarya)"
+arch=('any')
+depends=('python' 'pyside6' 'power-profiles-daemon' 'kscreen' 'polkit' 'mkinitcpio' 'systemd')
+optdepends=('mcontrolcenter: performans-manuel modunda fan eğrisini ayarlamak için')
+install=pil-modu.install
+
+# Kaynak kod bu deponun kendisi (iki üst klasör).
+_repo="$startdir/../.."
+
+package() {
+    local site
+    site=$(python -c 'import sysconfig; print(sysconfig.get_path("purelib"))')
+
+    # Python paketi → /usr/lib/python3.X/site-packages/pil_modu
+    install -d "$pkgdir$site"
+    cp -r "$_repo/src/pil_modu" "$pkgdir$site/"
+    find "$pkgdir$site" -name __pycache__ -prune -exec rm -rf {} +
+    python -m compileall -q -s "$pkgdir" -p / "$pkgdir$site/pil_modu"
+
+    install -Dm755 "$_repo/bin/pil-modu"    "$pkgdir/usr/bin/pil-modu"
+    install -Dm755 "$_repo/bin/pil-modu-ui" "$pkgdir/usr/bin/pil-modu-ui"
+    install -Dm644 "$_repo/data/pil-modu.desktop" "$pkgdir/usr/share/applications/pil-modu.desktop"
+    install -Dm644 "$_repo/data/pil-modu-restore.service" "$pkgdir/usr/lib/systemd/system/pil-modu-restore.service"
+    install -Dm644 "$_repo/README.md" "$pkgdir/usr/share/doc/pil-modu/README.md"
+}

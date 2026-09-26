@@ -2,7 +2,7 @@
 Type=Application
 Name=Güç Modları
 Comment=Performans, dengeli ve batarya modlarını seç
-Exec=@BIN@/pil-modu-ui
+Exec=pil-modu-ui
 Icon=battery-profile-balanced
 Terminal=false
 Categories=Settings;HardwareSettings;

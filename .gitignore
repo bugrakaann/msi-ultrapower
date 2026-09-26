@@ -1,2 +1,6 @@
 __pycache__/
 *.pyc
+# makepkg artıkları
+packaging/arch/src/
+packaging/arch/pkg/
+packaging/arch/*.pkg.tar.*

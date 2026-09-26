@@ -1,0 +1,6 @@
+#!/usr/bin/python3
+import sys
+
+from pil_modu.cli import main
+
+sys.exit(main())
