@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 
-from . import display
+from . import capabilities, display
 from .presets import PRESETS
 from .privileged import hardware as hw
 
@@ -18,35 +18,55 @@ class Plan:
     gpu_boot: str        # "integrated" ya da "hybrid"
 
 
-def hardware_plan(original, preset):
-    result = dict(original)
-    result.update({
-        hw.EC + "shift_mode": preset.shift,
+def mode_settings(preset):
+    """Modun bu bilgisayarda yazılacak değerleri; olmayan ayarlar atlanır."""
+    wanted = {
+        hw.EC + "shift_mode": capabilities.nearest_shift(preset.shift, capabilities.shift_modes()),
         hw.EC + "fan_mode": preset.fan,
         hw.EC + "cooler_boost": preset.boost,
         hw.CPU + "no_turbo": preset.turbo,
-    })
-    for i in range(4):
-        path = hw.GPU + str(i) + "/power/control"
-        if Path(path).exists():
-            result[path] = preset.gpu if i == 0 else "auto"
-        else:
-            result.pop(path, None)
-    if preset.is_battery and hw.LED in result:
-        result[hw.LED] = "0"
+        hw.BOOST: "1" if preset.turbo == "0" else "0",
+        **{path: "auto" for path in hw.GPU_PM},
+    }
+    if hw.NVIDIA_GPU:
+        wanted[hw.NVIDIA_GPU + "/power/control"] = preset.gpu
+    return {path: value for path, value in wanted.items() if value and Path(path).exists()}
+
+
+def hardware_plan(original, preset):
+    result = dict(original)
+    result.update(mode_settings(preset))
+    if preset.is_battery:
+        result.update(battery_savings(result))
     return result
+
+
+def battery_savings(current):
+    """TLP'nin pilde yaptığı aygıt tasarrufları; yalnızca bu sistemde bulunan ayarlar."""
+    wanted = {
+        hw.LED: "0",
+        hw.SOUND_POWER_SAVE: "1",   # 1 sn sessizlikten sonra ses kartı uyur
+        hw.DIRTY_WRITEBACK: "6000", # diske 60 sn'de bir yaz; disk daha uzun uyur
+        **{path: "auto" for path in hw.RUNTIME_PM},
+        **{path: "1" for path in hw.BLUETOOTH},
+    }
+    return {path: value for path, value in wanted.items() if path in current}
 
 
 def build(mode, external, before, original):
     """before: şu anki anlık görüntü, original: ilk moddan önce kaydedilen görüntü."""
     preset = PRESETS.get(mode)
     restoring = preset is None
+    if preset:
+        reason = capabilities.unsupported_reason(preset, capabilities.detect(before["outputs"]))
+        if reason:
+            raise RuntimeError(f"{preset.title} bu bilgisayarda kullanılamıyor: {reason}")
     if restoring:
         hardware = hw.writable(original["hardware"])
     else:
         hardware = hardware_plan(original["hardware"], preset)
-    # NVIDIA devre dışıyken GPU dosyaları yoktur; onları atla.
-    hardware = {k: v for k, v in hardware.items() if not k.startswith(hw.GPU) or Path(k).exists()}
+    # NVIDIA devre dışıyken GPU dosyaları yoktur; çıkarılan aygıtlar da. Onları atla.
+    hardware = {k: v for k, v in hardware.items() if Path(k).exists()}
     hw.validate(hardware)
 
     return Plan(

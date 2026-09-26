@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 
 from pil_modu import plan
 from pil_modu.presets import PRESETS
@@ -11,15 +12,29 @@ class PresetTests(unittest.TestCase):
 
     def test_values_are_allowed_by_helper(self):
         for preset in PRESETS.values():
-            planned = plan.hardware_plan({}, preset)
+            planned = plan.hardware_plan(hw.read_state(), preset)
             for path, value in planned.items():
-                self.assertIn(value, hw.ALLOWED[path], f"{preset.key}: {path}={value}")
+                self.assertTrue(hw.allowed(path, value), f"{preset.key}: {path}={value}")
 
     def test_battery_turns_keyboard_light_off(self):
         planned = plan.hardware_plan({hw.LED: "2"}, PRESETS["batarya"])
         self.assertEqual(planned[hw.LED], "0")
         planned = plan.hardware_plan({hw.LED: "2"}, PRESETS["dengeli"])
         self.assertEqual(planned[hw.LED], "2")
+
+    def test_battery_enables_device_power_saving(self):
+        current = {hw.SOUND_POWER_SAVE: "0", hw.DIRTY_WRITEBACK: "1500", "/sys/bus/pci/x": "on"}
+        with patch.object(hw, "RUNTIME_PM", ["/sys/bus/pci/x"]):
+            planned = plan.hardware_plan(current, PRESETS["batarya"])
+            self.assertEqual(planned[hw.SOUND_POWER_SAVE], "1")
+            self.assertEqual(planned[hw.DIRTY_WRITEBACK], "6000")
+            self.assertEqual(planned["/sys/bus/pci/x"], "auto")
+            balanced = plan.hardware_plan(current, PRESETS["dengeli"])
+            self.assertEqual(balanced[hw.SOUND_POWER_SAVE], "0")
+            self.assertEqual(balanced["/sys/bus/pci/x"], "on")
+
+    def test_battery_skips_missing_settings(self):
+        self.assertNotIn(hw.SOUND_POWER_SAVE, plan.hardware_plan({}, PRESETS["batarya"]))
 
 
 if __name__ == "__main__":

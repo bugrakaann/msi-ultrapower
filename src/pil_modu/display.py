@@ -6,21 +6,46 @@ döndürür. Bu sayede testlerde gerçek ekran olmadan denenebilirler.
 
 
 def is_internal(output):
-    return output["name"].startswith("eDP")
+    return output["name"].startswith(("eDP", "LVDS", "DSI"))
 
 
-def mode_for(output, previous=None, hz=None):
-    """Eski çözünürlükte, istenen Hz'e (verilmezse eski Hz'e) en yakın modun kimliği."""
-    source = previous or output
+def _old_mode(source):
     old = next((m for m in source["modes"] if m["id"] == source["currentModeId"]), None)
     if old is None:
         preferred = source.get("preferredModes", [])
         old = next((m for m in source["modes"] if m["id"] in preferred), source["modes"][0])
+    return old
 
-    wanted = hz if hz is not None else old["refreshRate"]
+
+def refresh_rates(output):
+    """Ekranın şu anki çözünürlükte desteklediği yenileme hızları (küçükten büyüğe)."""
+    if not output.get("modes"):
+        return []
+    size = _old_mode(output)["size"]
+    return sorted({round(m["refreshRate"]) for m in output["modes"] if m["size"] == size})
+
+
+def panel_rates(outputs):
+    """Dahili ekranın yenileme hızları; dahili ekran yoksa boş liste."""
+    panel = next((o for o in outputs if o["connected"] and is_internal(o)), None)
+    return refresh_rates(panel) if panel else []
+
+
+def mode_for(output, previous=None, hz=None):
+    """Eski çözünürlükte istenen Hz'e en yakın modun kimliği.
+
+    hz: sayı, "max" (en yüksek), "min" (en düşük) ya da None (eski Hz korunur).
+    """
+    old = _old_mode(previous or output)
     candidates = [m for m in output["modes"] if m["size"] == old["size"]]
     if not candidates:
         raise RuntimeError(output["name"] + ": eski çözünürlük bulunamadı")
+    if hz == "max":
+        return max(candidates, key=lambda m: m["refreshRate"])["id"]
+    if hz == "min":
+        return min(candidates, key=lambda m: m["refreshRate"])["id"]
+
+    wanted = hz if hz is not None else old["refreshRate"]
     best = min(candidates, key=lambda m: abs(m["refreshRate"] - wanted))
     if abs(best["refreshRate"] - wanted) > 1:
         raise RuntimeError(output["name"] + f": {wanted} Hz desteklenmiyor")
@@ -57,7 +82,8 @@ def screen_plan(current, original, preset=None, external="otomatik"):
             continue
         enabled_count += 1
 
-        hz = (preset.internal_hz if internal else preset.hz) if preset else None
+        # Harici ekranın Hz'ine dokunulmaz; kullanıcının kendi seçimi korunur.
+        hz = preset.panel if preset and internal else None
         mode_id = mode_for(output, previous, hz)
         args += [prefix + "mode." + mode_id, prefix + "scale." + str(previous["scale"])]
 

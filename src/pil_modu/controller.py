@@ -5,6 +5,7 @@ import time
 
 from . import display, elevated, plan, state, status, system
 from .presets import PRESETS
+from .privileged import gpu_boot
 from .privileged import hardware as hw
 
 
@@ -20,6 +21,9 @@ def change_mode(mode, external="otomatik", dry_run=False):
         print("Geri dönüş kaydı yok; ayar değiştirilmedi.")
         return
     original = state.load_original() if state.has_original() else before
+    # Programın eski sürümüyle alınan kayıtta sonradan eklenen ayarlar yoktur; şu anki değerle tamamla.
+    missing = {k: v for k, v in before["hardware"].items() if k not in original["hardware"]}
+    original["hardware"].update(missing)
     p = plan.build(mode, external, before, original)
 
     if dry_run:
@@ -28,7 +32,7 @@ def change_mode(mode, external="otomatik", dry_run=False):
 
     if original["hardware"].get(hw.EC + "shift_mode") == "unspecified":
         print("Not: Eski EC unspecified değeri yazılamaz; geri dönüşte comfort kullanılır.", flush=True)
-    if not state.has_original():
+    if not state.has_original() or missing:
         state.save_original(original)
 
     apply_plan(p, before)
@@ -78,10 +82,13 @@ def rollback_kde(profile, screen_args):
 
 
 def apply_gpu_boot(boot_mode):
+    if status.NVIDIA_DEVICE is None and not gpu_boot.MOD.exists():
+        print("NVIDIA ekran kartı yok; GPU açılış ayarı atlandı.", flush=True)
+        return
     if not elevated.configure_gpu_boot(boot_mode):
         raise RuntimeError("CPU/ekran profili uygulandı, ancak GPU açılış tercihi tamamlanamadı. "
                            "Aynı modu yeniden çalıştır.")
-    gpu_present = status.NVIDIA_DEVICE.exists()
+    gpu_present = status.gpu().present
     if boot_mode == "integrated" and gpu_present:
         print("NVIDIA henüz devre dışı değil. Tam batarya modu için yeniden başlatman gerekiyor.", flush=True)
     elif boot_mode == "hybrid" and not gpu_present:
@@ -95,3 +102,9 @@ def print_plan(p):
     print("Profil:", p.profile)
     print("kscreen-doctor", *p.screen_args)
     print(json.dumps(p.hardware, indent=2))
+
+
+def set_charge_limit(limit):
+    if not elevated.set_charge_limit(limit):
+        raise RuntimeError("Şarj sınırı ayarlanamadı.")
+    print(f"Şarj sınırı: %{limit}", flush=True)

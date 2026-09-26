@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""Sonraki açılış için Yalnızca Intel / hibrit GPU modunu hazırlar.
+"""Sonraki açılış için yalnızca tümleşik GPU / hibrit modunu hazırlar.
 
 pkexec ile çalıştırılır:  gpu_boot.py integrated|hybrid
 
@@ -9,8 +9,10 @@ kütüphaneyi kullanır; paketin geri kalanından import yapmaz.
 
 Kurtarma (TTY):  sudo python3 -P -m pil_modu.privileged.gpu_boot hybrid
 """
+import glob
 import json
 import os
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -20,7 +22,7 @@ MOD = Path("/etc/modprobe.d/90-pil-modu-nvidia.conf")
 RULE = Path("/etc/udev/rules.d/50-pil-modu-nvidia.rules")
 INIT = Path("/etc/mkinitcpio.conf.d/99-pil-modu-gpu.conf")
 BACKUP_DIR = Path("/var/lib/pil-modu")
-INTEL_GPU = Path("/sys/bus/pci/devices/0000:00:02.0")
+IGPU_VENDORS = ("0x8086", "0x1002")  # Intel, AMD
 MODES = ("integrated", "hybrid")
 
 MODULES = ("nvidia", "nvidia_drm", "nvidia_modeset", "nvidia_uvm",
@@ -29,10 +31,9 @@ MODULES = ("nvidia", "nvidia_drm", "nvidia_modeset", "nvidia_uvm",
 MODPROBE_TEXT = HEADER + "".join(
     f"blacklist {m}\ninstall {m} /usr/bin/false\n" for m in MODULES)
 
-UDEV_TEXT = HEADER + "".join(
-    'ACTION=="add", SUBSYSTEM=="pci", KERNEL=="0000:01:00.' + str(i)
-    + '", ATTR{vendor}=="0x10de", ATTR{power/control}="auto", ATTR{remove}="1"\n'
-    for i in (1, 2, 3, 0))
+# Adres modelden modele değiştiği için NVIDIA'nın tüm işlevleri (GPU, ses, USB-C) üreticiye göre kaldırılır.
+UDEV_TEXT = HEADER + ('ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", '
+                      'ATTR{power/control}="auto", ATTR{remove}="1"\n')
 
 MKINITCPIO_TEXT = HEADER + '''pil_modu_modules=()
 for pil_modu_module in "${MODULES[@]}"; do
@@ -61,7 +62,25 @@ def write(path, content):
 
 
 def rebuild_initramfs():
-    subprocess.run(["/usr/bin/mkinitcpio", "-P"], check=True)
+    if shutil.which("mkinitcpio"):
+        subprocess.run(["mkinitcpio", "-P"], check=True)
+    elif shutil.which("dracut"):
+        subprocess.run(["dracut", "--regenerate-all", "--force"], check=True)
+    else:
+        print("mkinitcpio/dracut bulunamadı; açılış imajı yenilenmedi.", flush=True)
+
+
+def has_integrated_gpu():
+    """NVIDIA kapanınca ekranı sürecek Intel/AMD tümleşik GPU var mı."""
+    for device in glob.glob("/sys/bus/pci/devices/*"):
+        try:
+            vendor = Path(device, "vendor").read_text().strip()
+            display_class = Path(device, "class").read_text().startswith("0x03")
+        except OSError:
+            continue
+        if display_class and vendor in IGPU_VENDORS:
+            return True
+    return False
 
 
 def check_preconditions(mode):
@@ -69,8 +88,8 @@ def check_preconditions(mode):
         raise ValueError("Geçersiz GPU modu")
     if os.geteuid() != 0:
         raise RuntimeError("Yönetici yetkisi gerekiyor")
-    if not INTEL_GPU.exists() or (INTEL_GPU / "vendor").read_text().strip() != "0x8086":
-        raise RuntimeError("Intel GPU doğrulanamadı")
+    if mode == "integrated" and not has_integrated_gpu():
+        raise RuntimeError("Tümleşik GPU bulunamadı; NVIDIA kapatılırsa ekran gider")
 
 
 def configure(mode):

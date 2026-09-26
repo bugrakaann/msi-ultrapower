@@ -31,5 +31,20 @@ class ApplyTests(unittest.TestCase):
             hw.validate({"/etc/passwd": "x"})
 
 
+class ChargeLimitTests(unittest.TestCase):
+    def test_writes_and_verifies(self):
+        with tempfile.NamedTemporaryFile("w", delete=False) as f:
+            f.write("100\n")
+        with patch.object(hw, "CHARGE_LIMIT", f.name):
+            hw.write_charge_limit("80")
+        self.assertEqual(Path(f.name).read_text().strip(), "80")
+        Path(f.name).unlink()
+
+    def test_rejects_other_values(self):
+        for value in ("50", "0", "../x"):
+            with self.assertRaises(ValueError):
+                hw.write_charge_limit(value)
+
+
 if __name__ == "__main__":
     unittest.main()

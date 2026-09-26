@@ -1,18 +1,44 @@
-# pil-modu — MSI GF65 / KDE güç modları
+# pil-modu — MSI dizüstüleri / KDE güç modları
 
 Tek tıkla performans, dengeli ya da batarya moduna geçer. Güç profilini,
 ekran Hz'ini ve parlaklığını, MSI EC (fan, shift mode), CPU turbo, klavye
-ışığı ve NVIDIA GPU'yu birlikte ayarlar. Bir şey ters giderse hepsini geri alır.
+ışığı, aygıt güç tasarrufunu ve NVIDIA GPU'yu birlikte ayarlar. Bir şey ters
+giderse hepsini geri alır.
 
 | Mod | Güç profili / turbo | EC / fan | Dahili ekran | NVIDIA |
 |---|---|---|---|---|
-| `performans` | performance / açık | turbo / Cooler Boost | 120 Hz · %100 | hep uyanık |
-| `performans-manuel` | performance / açık | turbo / `advanced` (MControlCenter eğrisi) | 120 Hz · %100 | hep uyanık |
-| `dengeli` | balanced / açık | comfort / otomatik | 120 Hz · %60 | boşta uyur |
-| `batarya` | power-saver / kapalı | eco / otomatik | 120 Hz · %30 | yeniden başlatınca kapalı |
-| `batarya-48` | power-saver / kapalı | eco / otomatik | 48 Hz · %30 | yeniden başlatınca kapalı |
+| `performans` | performance / açık | turbo / Cooler Boost | en yüksek Hz · %100 | hep uyanık |
+| `performans-manuel` | performance / açık | turbo / `advanced` (MControlCenter eğrisi) | en yüksek Hz · %100 | hep uyanık |
+| `dengeli` | balanced / açık | comfort / otomatik | en yüksek Hz · %60 | boşta uyur |
+| `batarya` | power-saver / kapalı | eco / otomatik | en yüksek Hz · %30 | yeniden başlatınca kapalı |
+| `batarya-48` | power-saver / kapalı | eco / otomatik | en düşük Hz (örn. 48) · %30 | yeniden başlatınca kapalı |
 
-Batarya modlarında klavye ışığı ve harici ekran (NVIDIA'ya bağlı HDMI) kapanır.
+Harici ekranın Hz'i ve çözünürlüğü hiçbir modda değişmez.
+
+Batarya modlarında klavye ışığı ve harici ekran (NVIDIA'ya bağlı çıkışlar) kapanır. Ayrıca
+TLP'nin pilde yaptığı aygıt tasarrufları uygulanır: PCI aygıtları boştayken uyur (sürücüsü
+olmayan Wi-Fi kartı dahil), ses kartı 1 sn sessizlikten sonra uyur, Bluetooth kapanır ve
+diske 60 sn'de bir yazılır. Diğer modlar ve `pil-modu geri` bunları eski değerlerine döndürür.
+
+Arayüzde bir mod kartının üzerine gelince ya da kartı seçince o modun bu bilgisayarda
+değiştireceği her şey listelenir.
+
+### Desteklenen bilgisayarlar
+
+GF65 Thin 9SEXR üzerinde geliştirildi; diğer MSI modellerine kendini uyarlar:
+
+* **EC:** [msi-ec](https://github.com/BeardOverflow/msi-ec) sürücüsü gerekir (AUR:
+  `msi-ec-dkms-git`). Modelde olmayan EC modu yerine en yakını kullanılır; manuel fan
+  (`advanced`) yoksa o mod gizlenir. msi-ec yoksa EC ayarları atlanır, geri kalanı çalışır.
+* **Ekran:** Sabit Hz yerine panelin en yüksek / en düşük Hz'i kullanılır (144, 165, 240 Hz
+  paneller de olur). Tek Hz'li panelde düşük Hz modu gizlenir.
+* **NVIDIA:** Adresi ve tümleşik GPU (Intel ya da AMD) aranarak bulunur. NVIDIA yoksa GPU
+  adımı atlanır. Açılış imajı için mkinitcpio ya da dracut kullanılır.
+* **CPU turbo:** Intel (`intel_pstate/no_turbo`) ve AMD (`cpufreq/boost`).
+* **Klavye ışığı, pil, Bluetooth:** Adları aranır; olmayan ayar atlanır.
+
+PCIe ASPM GF65'te BIOS tarafından kilitli ("FADT declares the system doesn't support
+PCIe ASPM"); çalışırken değiştirilemediği için programda yok.
 
 ## Kullanım
 
@@ -26,7 +52,12 @@ pil-modu dengeli --harici koru   # harici ekranı açık tut (otomatik | koru | 
 pil-modu batarya --dene          # hiçbir şeyi değiştirmeden planı göster
 pil-modu durum                   # gerçek değerleri göster
 pil-modu geri                    # ilk moddan önceki ayarlara dön
+pil-modu sarj 80                 # pil en fazla %80'e kadar dolsun (60 | 80 | 100)
 ```
+
+Pencerenin altındaki **Şarj sınırı** kaydırıcısıyla da aynı ayar yapılır. Sınır modlardan
+bağımsızdır, açılışta geri yüklenir. Pil sınıra ulaşınca prizde olsa da şarj durur ve
+sınırın 10 puan altına inince yeniden başlar; kaydırıcının altında şu anki durum yazar.
 
 ## Kurulum
 
@@ -64,6 +95,8 @@ pil-modu/
 │   ├── cli.py             ← komut satırı: argümanlar, kilit, hata mesajı
 │   ├── controller.py      ← bir mod geçişinin tamamı: planla → uygula → doğrula → kaydet / geri al
 │   ├── plan.py            ← neyin değişeceğini hesaplar (hiçbir şeye dokunmaz)
+│   ├── capabilities.py    ← bu bilgisayarda neyin ayarlanabildiğini bulur (model farkları)
+│   ├── describe.py        ← bir modun değişikliklerini arayüz için metne çevirir
 │   ├── display.py         ← ekran planı ve doğrulaması (kscreen-doctor)
 │   ├── system.py          ← dış komutlar: powerprofilesctl, kscreen-doctor
 │   ├── elevated.py        ← root yardımcılarını pkexec ile çağırır
@@ -72,7 +105,7 @@ pil-modu/
 │   ├── paths.py           ← tüm dosya yolları
 │   ├── privileged/        ← ROOT olarak çalışan kod; yalnızca standart kütüphane
 │   │   ├── hardware.py    ← sysfs'e yazar, açılışta geri yükler (systemd)
-│   │   └── gpu_boot.py    ← NVIDIA'yı sonraki açılış için kapatır/açar (mkinitcpio)
+│   │   └── gpu_boot.py    ← NVIDIA'yı sonraki açılış için kapatır/açar (mkinitcpio/dracut)
 │   └── ui/                ← grafik arayüz (PySide6)
 │       ├── app.py         ← giriş noktası
 │       ├── window.py      ← ana pencere
@@ -113,6 +146,7 @@ ui ──(alt süreç)──▶ cli ──▶ controller ──▶ plan / displa
 | `~/.local/share/pil-modu/original-v2.json` | İlk moddan önceki ayarlar (`geri` bunu kullanır) |
 | `~/.local/share/pil-modu/active.json`, `history.log` | Son seçilen mod, geçiş günlüğü |
 | `/var/lib/pil-modu/hardware.json` | Açılışta geri yüklenecek donanım değerleri |
+| `/var/lib/pil-modu/charge` | Açılışta geri yüklenecek şarj sınırı |
 | `/etc/modprobe.d/90-pil-modu-nvidia.conf`, `/etc/udev/rules.d/50-pil-modu-nvidia.rules`, `/etc/mkinitcpio.conf.d/99-pil-modu-gpu.conf` | Yalnızca batarya modunda: NVIDIA'yı açılışta devre dışı bırakır |
 
 ## Güvenlik ve geri alma

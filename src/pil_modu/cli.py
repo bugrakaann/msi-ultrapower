@@ -1,17 +1,20 @@
-"""Komut satırı arayüzü:  pil-modu <mod> [--harici ...] [--dene]"""
+"""Komut satırı arayüzü:  pil-modu <mod> [--harici ...] [--dene]  ·  pil-modu sarj [60|80|100]"""
 import argparse
 import fcntl
 import sys
 
 from . import controller, paths, state, status, system
 from .presets import EXTERNAL_CHOICES, PRESETS, RESTORE_COMMANDS
+from .privileged import hardware as hw
 
-DESCRIPTION = "MSI GF65 / KDE: performans, dengeli, batarya ve geri dönüş."
+DESCRIPTION = "MSI dizüstüleri / KDE: performans, dengeli, batarya ve geri dönüş."
 
 
 def parse_args(argv):
     parser = argparse.ArgumentParser(prog="pil-modu", description=DESCRIPTION)
-    parser.add_argument("mod", choices=[*PRESETS, *RESTORE_COMMANDS, "durum"])
+    parser.add_argument("mod", choices=[*PRESETS, *RESTORE_COMMANDS, "durum", "sarj"])
+    parser.add_argument("sinir", nargs="?", choices=hw.CHARGE_LIMITS,
+                        help="yalnızca sarj ile: pilin dolacağı en yüksek yüzde")
     parser.add_argument("--harici", choices=list(EXTERNAL_CHOICES), default="otomatik",
                         help="Bataryada varsayılan kapalı, diğer modlarda açık")
     parser.add_argument("--dene", action="store_true", help="Ayar değiştirmeden planı göster")
@@ -37,6 +40,9 @@ def print_status():
     bat = status.battery()
     if bat:
         print("Pil:", bat.status, f"{bat.capacity}%")
+        start, end = status.charge_limits()
+        if end is not None:
+            print("Şarj sınırı:", f"%{end}", f"(şarj %{start} altına inince başlar)" if start else "")
         if bat.watts is not None:
             label = "Pil deşarj gücü:" if bat.discharging else "Pil şarj/akım gücü (sistem tüketimi değil):"
             print(label, round(bat.watts, 2), "W")
@@ -51,8 +57,16 @@ def main(argv=None):
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
                 raise RuntimeError("Başka bir pil-modu işlemi zaten çalışıyor.") from None
+            if opt.mod != "sarj" and opt.sinir:
+                raise RuntimeError("Yüzde yalnızca sarj komutuyla kullanılır.")
             if opt.mod == "durum":
                 print_status()
+            elif opt.mod == "sarj":
+                if opt.sinir:
+                    controller.set_charge_limit(opt.sinir)
+                else:
+                    limit = status.charge_limits()[1]
+                    print("Şarj sınırı:", f"%{limit}" if limit else "bu cihazda desteklenmiyor")
             else:
                 controller.change_mode(opt.mod, opt.harici, opt.dene)
     except Exception as exc:

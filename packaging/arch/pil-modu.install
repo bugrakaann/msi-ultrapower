@@ -13,7 +13,7 @@ _remove_legacy_install() {
 post_install() {
     _remove_legacy_install
     # Daha önce bir mod seçildiyse ayarlar açılışta geri yüklenmeye devam etsin.
-    if [ -e /var/lib/pil-modu/hardware.json ]; then
+    if [ -e /var/lib/pil-modu/hardware.json ] || [ -e /var/lib/pil-modu/charge ]; then
         systemctl enable pil-modu-restore.service >/dev/null 2>&1 || true
     fi
     echo "pil-modu kuruldu. Uygulama menüsü: Güç Modları · Terminal: pil-modu --help"

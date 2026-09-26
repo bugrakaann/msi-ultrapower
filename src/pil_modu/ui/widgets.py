@@ -19,6 +19,9 @@ QLabel#badge {
     border-radius: 8px; padding: 1px 8px; font-size: 11px; font-weight: 600;
 }
 QFrame#panel { background: palette(alternate-base); border-radius: 10px; }
+QFrame#actionBar { border-top: 1px solid palette(mid); }
+QLabel#section { color: palette(highlight); }
+QScrollArea, QScrollArea > QWidget > QWidget#content { background: transparent; }
 QFrame#banner { border-radius: 8px; }
 QFrame#banner[kind="ok"]    { background: rgba(39, 174, 96, 0.15);  border: 1px solid rgba(39, 174, 96, 0.55); }
 QFrame#banner[kind="warn"]  { background: rgba(246, 116, 0, 0.15);  border: 1px solid rgba(246, 116, 0, 0.55); }
@@ -51,7 +54,6 @@ class ModeCard(QPushButton):
         self.setCursor(Qt.PointingHandCursor)
         self.setMinimumHeight(78)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
-        self.setToolTip("\n".join(f"{k}: {v}" for k, v in preset.details()))
 
         title = QLabel(preset.title)
         title.setObjectName("cardTitle")
@@ -67,7 +69,8 @@ class ModeCard(QPushButton):
         text = QVBoxLayout()
         text.setSpacing(2)
         text.addLayout(top)
-        text.addWidget(muted(preset.summary))
+        self.summary = muted(preset.summary)
+        text.addWidget(self.summary)
 
         row = QHBoxLayout(self)
         row.setContentsMargins(14, 10, 14, 10)
@@ -80,6 +83,23 @@ class ModeCard(QPushButton):
 
     def set_active(self, active):
         self.badge.setVisible(active)
+
+    def set_info(self, tooltip, unsupported=None):
+        """Üzerine gelince görünen tam değişiklik listesi; desteklenmiyorsa kart kapanır."""
+        self.setToolTip(tooltip)
+        self.setEnabled(unsupported is None)
+        self.unsupported = unsupported
+        self.summary.setText(self.preset.summary if unsupported is None
+                             else "Bu bilgisayarda yok: " + unsupported)
+
+
+def section_label(text):
+    label = QLabel(text)
+    label.setObjectName("section")
+    label.setContentsMargins(0, 8, 0, 2)
+    label.setStyleSheet("font-weight: 600;")  # kalın yazının yüksekliği yerleşimden önce bilinsin
+    label.setMinimumHeight(label.sizeHint().height())
+    return label
 
 
 class Banner(QFrame):

@@ -6,7 +6,7 @@ from . import paths
 from .privileged import gpu_boot
 from .privileged import hardware as hw
 
-NVIDIA_DEVICE = Path(hw.GPU + "0")
+NVIDIA_DEVICE = Path(hw.NVIDIA_GPU) if hw.NVIDIA_GPU else None
 
 
 def read(path, default="—"):
@@ -55,8 +55,9 @@ class Gpu:
 
 
 def gpu():
-    return Gpu(NVIDIA_DEVICE.exists(),
-               read(NVIDIA_DEVICE / "power/runtime_status", "yok"),
+    present = NVIDIA_DEVICE is not None and NVIDIA_DEVICE.exists()
+    return Gpu(present,
+               read(NVIDIA_DEVICE / "power/runtime_status", "yok") if present else "yok",
                gpu_boot.MOD.exists())
 
 
@@ -66,4 +67,13 @@ def ec_shift_mode():
 
 def turbo_enabled():
     value = read(hw.CPU + "no_turbo")
-    return None if value not in ("0", "1") else value == "0"
+    if value in ("0", "1"):
+        return value == "0"
+    value = read(hw.BOOST)
+    return None if value not in ("0", "1") else value == "1"
+
+
+def charge_limits():
+    """(başlangıç, bitiş) şarj eşikleri; desteklenmiyorsa bitiş None."""
+    start, end = read(hw.CHARGE_START), read(hw.CHARGE_LIMIT)
+    return (int(start) if start.isdigit() else None, int(end) if end.isdigit() else None)

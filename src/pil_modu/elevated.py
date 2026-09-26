@@ -45,3 +45,9 @@ def configure_gpu_boot(mode):
     """Sonraki açılışın GPU modunu hazırlar. Başarılıysa True."""
     result = subprocess.run(["pkexec", PYTHON, str(paths.GPU_BOOT_HELPER), mode])
     return result.returncode == 0
+
+
+def set_charge_limit(value):
+    """Pilin şarj sınırını ayarlar. Başarılıysa True."""
+    result = subprocess.run(["pkexec", PYTHON, str(paths.HARDWARE_HELPER), "--sarj", value])
+    return result.returncode == 0

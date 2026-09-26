@@ -6,10 +6,11 @@
 pkgname=pil-modu
 pkgver=2.0.0
 pkgrel=1
-pkgdesc="MSI GF65 / KDE için güç modu yöneticisi (performans, dengeli, batarya)"
+pkgdesc="MSI dizüstüleri / KDE için güç modu yöneticisi (performans, dengeli, batarya)"
 arch=('any')
-depends=('python' 'pyside6' 'power-profiles-daemon' 'kscreen' 'polkit' 'mkinitcpio' 'systemd')
-optdepends=('mcontrolcenter: performans-manuel modunda fan eğrisini ayarlamak için')
+depends=('python' 'pyside6' 'power-profiles-daemon' 'kscreen' 'polkit' 'initramfs' 'systemd')
+optdepends=('msi-ec-dkms-git: fan, EC modu, Cooler Boost ve şarj sınırı için'
+            'mcontrolcenter: performans-manuel modunda fan eğrisini ayarlamak için')
 install=pil-modu.install
 
 # Kaynak kod bu deponun kendisi (iki üst klasör).
