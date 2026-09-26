@@ -249,6 +249,9 @@ class MainWindow(QWidget):
             self._fitted = True
             self.windowHandle().screenChanged.connect(self._fit_to_screen)
             self._fit_to_screen(self.screen())
+        # Gizliyken pencere güncellenmez; açılınca her şeyi bir kez tazele.
+        self.refresh()
+        self._refresh_preview()
 
     def _fit_to_screen(self, screen):
         """Pencere, ölçeği daha büyük bir ekrana taşınınca da ekrana sığsın."""
@@ -275,13 +278,16 @@ class MainWindow(QWidget):
         self._refresh_preview()
 
     def _refresh_preview(self):
-        """Seçili modun şu anki duruma göre değiştireceklerini hesaplar (hiçbir şey uygulamaz)."""
-        if self.selected is None or self.busy:
+        """Seçili modun şu anki duruma göre değiştireceklerini hesaplar (hiçbir şey uygulamaz).
+
+        kscreen-doctor ve powerprofilesctl çalıştırdığı için yalnızca pencere açıkken yapılır.
+        """
+        if self.selected is None or self.busy or not self.isVisible():
             return
         preset = PRESETS[self.selected]
         sections = describe.describe(preset, self.caps, settings.load())
         try:
-            prepared = controller.prepare(self.selected, self.external.currentData())
+            prepared = controller.prepare(self.selected, self.external.currentData(), caps=self.caps)
             rows = describe.changes(prepared.plan, prepared.before, status.gpu().blocked_next_boot)
             error = None
             outputs = prepared.before["outputs"]
@@ -313,6 +319,8 @@ class MainWindow(QWidget):
 
     def refresh(self):
         self.power_meter.add(status.battery())
+        if not self.isVisible():
+            return  # tepside: yalnızca güç ölçülür; tepsi kendi ipucunu günceller
         self.status_strip.refresh(self.power_meter)
         active = self.active_mode()
         for key, card in self.cards.items():

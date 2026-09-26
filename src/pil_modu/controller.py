@@ -20,10 +20,13 @@ class Prepared:
     caps: capabilities.Capabilities
 
 
-def prepare(mode, external="otomatik", before=None):
-    """Hiçbir şeyi değiştirmeden planı hazırlar. Arayüzün "değişecekler" listesi de bunu kullanır."""
+def prepare(mode, external="otomatik", before=None, caps=None):
+    """Hiçbir şeyi değiştirmeden planı hazırlar. Arayüzün "değişecekler" listesi de bunu kullanır.
+
+    caps: arayüz açılışta bir kez algıladığını verir; her önizlemede yeniden algılanmaz.
+    """
     before = before or system.capture()
-    caps = capabilities.detect(before["outputs"])
+    caps = caps or capabilities.detect(before["outputs"])
     nvidia_screens = [o["name"] for o in before["outputs"]
                       if o["connected"] and o["enabled"] and o["name"] in caps.nvidia_outputs]
     if mode in PRESETS and PRESETS[mode].is_battery and external == "koru" and nvidia_screens:
