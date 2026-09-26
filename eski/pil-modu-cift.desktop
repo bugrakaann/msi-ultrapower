@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Pil: Çift Ekran
+Comment=Bağlı ekranları açar, dengeli profil ve en fazla %60 panel parlaklığı.
+Exec=/home/bugra/.local/bin/pil-modu cift
+Icon=battery
+Terminal=true
+Categories=Settings;HardwareSettings;

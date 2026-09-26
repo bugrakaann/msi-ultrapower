@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Pil: Önceki Ayarlara Dön
+Comment=Pil modundan önceki güç profilini, ekran durumunu ve panel parlaklığını geri getirir.
+Exec=/home/bugra/.local/bin/pil-modu normal
+Icon=battery
+Terminal=true
+Categories=Settings;HardwareSettings;

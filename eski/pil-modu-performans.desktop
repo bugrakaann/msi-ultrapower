@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Güç: Maksimum Performans
+Exec=/home/bugra/.local/bin/pil-modu performans
+Icon=battery
+Terminal=true
+Categories=Settings;HardwareSettings;

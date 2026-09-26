@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Güç: Dengeli
+Exec=/home/bugra/.local/bin/pil-modu dengeli
+Icon=battery
+Terminal=true
+Categories=Settings;HardwareSettings;

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Pil: Laptop Ekranı
+Comment=Harici ekranı kapatır, dengeli profil ve en fazla %60 panel parlaklığı.
+Exec=/home/bugra/.local/bin/pil-modu tek
+Icon=battery
+Terminal=true
+Categories=Settings;HardwareSettings;

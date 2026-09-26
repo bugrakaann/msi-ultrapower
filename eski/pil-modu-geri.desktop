@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Güç: Önceki Ayarlara Dön
+Exec=/home/bugra/.local/bin/pil-modu geri
+Icon=battery
+Terminal=true
+Categories=Settings;HardwareSettings;

@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=Güç: Maksimum Batarya
+Exec=/home/bugra/.local/bin/pil-modu batarya
+Icon=battery
+Terminal=true
+Categories=Settings;HardwareSettings;
