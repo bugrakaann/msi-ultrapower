@@ -97,9 +97,12 @@ yeterli; *Oturum açınca sistem tepsisinde başlat*'ı aç) şarj aleti takıl�
 değişir. Otomatik geçişler NVIDIA açılış ayarına dokunmaz; böylece her fiş çekişinde açılış
 imajı yeniden oluşturulmaz. NVIDIA'yı tamamen kapatmak için batarya modunu elle uygula.
 
-*Parola sormadan geç*, yalnızca yerel ve etkin oturumdaki yöneticilerin (`wheel`) yalnızca
-pil-modu donanım yardımcısını parolasız çalıştırmasına izin veren bir polkit kuralı ekler.
-Seçeneği kapatınca ya da paketi kaldırınca silinir.
+### Parola sormadan
+
+Ayarlar'daki *Yönetici parolasını sorma*, yerel ve etkin oturumdaki yöneticilerin (`wheel`)
+iki pil-modu yardımcısını parolasız çalıştırmasına izin veren bir polkit kuralı ekler: mod
+değiştirme, şarj sınırı ve otomatik mod artık parola sormaz. Başka hiçbir şeye izin verilmez.
+Seçeneği kapatınca ya da paketi kaldırınca kural silinir.
 
 ## Modelini bildir
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pil-modu\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 00:06+0300\n"
+"POT-Creation-Date: 2026-09-27 10:34+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -68,13 +68,13 @@ msgstr ""
 msgid "Power profile:"
 msgstr ""
 
-#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:145
-#: src/pil_modu/ui/window.py:353
+#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:150
+#: src/pil_modu/ui/window.py:361
 msgid "on"
 msgstr ""
 
-#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:145
-#: src/pil_modu/ui/window.py:353
+#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:150
+#: src/pil_modu/ui/window.py:361
 msgid "off"
 msgstr ""
 
@@ -107,7 +107,7 @@ msgid "Battery:"
 msgstr ""
 
 #: src/pil_modu/cli.py:60 src/pil_modu/cli.py:131
-#: src/pil_modu/controller.py:138
+#: src/pil_modu/controller.py:143
 msgid "Charge limit:"
 msgstr ""
 
@@ -240,82 +240,82 @@ msgstr ""
 msgid "ERROR:"
 msgstr ""
 
-#: src/pil_modu/controller.py:30
+#: src/pil_modu/controller.py:33
 #, python-brace-format
 msgid ""
 "{outputs} is wired to NVIDIA and cannot stay on in battery mode, because "
 "NVIDIA is turned off. Use balanced mode for two screens."
 msgstr ""
 
-#: src/pil_modu/controller.py:48
+#: src/pil_modu/controller.py:51
 msgid "No saved settings to restore; nothing changed."
 msgstr ""
 
-#: src/pil_modu/controller.py:58
+#: src/pil_modu/controller.py:61
 msgid ""
 "Note: the old EC value 'unspecified' cannot be written back; the closest "
 "mode is used."
 msgstr ""
 
-#: src/pil_modu/controller.py:70
+#: src/pil_modu/controller.py:75
 msgid "CPU, display and EC settings applied:"
 msgstr ""
 
-#: src/pil_modu/controller.py:73
+#: src/pil_modu/controller.py:78
 msgid "NVIDIA boot setting left unchanged."
 msgstr ""
 
-#: src/pil_modu/controller.py:76
+#: src/pil_modu/controller.py:81
 msgid "Status: pil-modu status | Restore: pil-modu restore"
 msgstr ""
 
-#: src/pil_modu/controller.py:92
+#: src/pil_modu/controller.py:97
 msgid "The power profile was changed by another program"
 msgstr ""
 
-#: src/pil_modu/controller.py:109 src/pil_modu/privileged/hardware.py:168
+#: src/pil_modu/controller.py:114 src/pil_modu/privileged/hardware.py:168
 msgid "Rollback error:"
 msgstr ""
 
-#: src/pil_modu/controller.py:114
+#: src/pil_modu/controller.py:119
 msgid "No NVIDIA GPU; boot setting skipped."
 msgstr ""
 
-#: src/pil_modu/controller.py:117
+#: src/pil_modu/controller.py:122
 msgid ""
 "CPU and display settings were applied, but the NVIDIA boot setting could not "
 "be completed. Apply the same mode again."
 msgstr ""
 
-#: src/pil_modu/controller.py:121
+#: src/pil_modu/controller.py:126
 msgid "NVIDIA is not disabled yet. Restart to finish battery mode."
 msgstr ""
 
-#: src/pil_modu/controller.py:123
+#: src/pil_modu/controller.py:128
 msgid "NVIDIA is currently disabled. Restart to use it again."
 msgstr ""
 
-#: src/pil_modu/controller.py:125
+#: src/pil_modu/controller.py:130
 msgid "The GPU state matches the selected mode."
 msgstr ""
 
-#: src/pil_modu/controller.py:129
+#: src/pil_modu/controller.py:134
 msgid "GPU mode at next boot:"
 msgstr ""
 
-#: src/pil_modu/controller.py:130
+#: src/pil_modu/controller.py:135
 msgid "Profile:"
 msgstr ""
 
-#: src/pil_modu/controller.py:137
+#: src/pil_modu/controller.py:142
 msgid "The charge limit could not be set."
 msgstr ""
 
-#: src/pil_modu/controller.py:143
+#: src/pil_modu/controller.py:148
 msgid "The password rule could not be changed."
 msgstr ""
 
-#: src/pil_modu/controller.py:144
+#: src/pil_modu/controller.py:149
 #, python-brace-format
 msgid "Automatic switching without a password: {state}"
 msgstr ""
@@ -611,25 +611,25 @@ msgstr ""
 msgid "{output}: {hz} Hz is not supported"
 msgstr ""
 
-#: src/pil_modu/display.py:78
+#: src/pil_modu/display.py:151
 msgid "Built-in display not found"
 msgstr ""
 
-#: src/pil_modu/display.py:118
+#: src/pil_modu/display.py:156 src/pil_modu/display.py:200
 msgid "At least one connected display must stay on"
 msgstr ""
 
-#: src/pil_modu/display.py:130
+#: src/pil_modu/display.py:212
 #, python-brace-format
 msgid "Could not verify display state: {output}"
 msgstr ""
 
-#: src/pil_modu/display.py:138
+#: src/pil_modu/display.py:220
 #, python-brace-format
 msgid "Could not verify refresh rate: {output}"
 msgstr ""
 
-#: src/pil_modu/display.py:141
+#: src/pil_modu/display.py:223
 #, python-brace-format
 msgid "Could not verify brightness: {output}"
 msgstr ""
@@ -639,7 +639,7 @@ msgid "Hardware authorization or apply failed:"
 msgstr ""
 
 #. Translators: percent sign position, e.g. "%{value}" in Turkish
-#: src/pil_modu/i18n.py:73
+#: src/pil_modu/i18n.py:74
 #, python-brace-format
 msgid "{value}%"
 msgstr ""
@@ -770,7 +770,7 @@ msgstr ""
 msgid "Skipped (device missing):"
 msgstr ""
 
-#: src/pil_modu/privileged/hardware.py:280
+#: src/pil_modu/privileged/hardware.py:283
 #, python-brace-format
 msgid "{path} does not belong to pil-modu; not touched"
 msgstr ""
@@ -862,52 +862,57 @@ msgid "Switch modes when the charger is plugged in or out"
 msgstr ""
 
 #: src/pil_modu/ui/settings_dialog.py:54
-msgid "Switch without asking for a password"
+msgid "Do not ask for the administrator password"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:56
-msgid ""
-"Adds a polkit rule so local administrators of this session can apply modes "
-"without a password. Only the pil-modu hardware helper is allowed, and only "
-"whitelisted settings."
-msgstr ""
-
-#: src/pil_modu/ui/settings_dialog.py:61
+#: src/pil_modu/ui/settings_dialog.py:58
 msgid "Start in the system tray when I log in"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:65 src/pil_modu/ui/window.py:417
+#: src/pil_modu/ui/settings_dialog.py:62 src/pil_modu/ui/window.py:425
 msgid "Language"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:67
+#: src/pil_modu/ui/settings_dialog.py:64
 msgid "A new language is used after the app restarts."
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:69
+#: src/pil_modu/ui/settings_dialog.py:66
 msgid "Battery modes"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:73
+#: src/pil_modu/ui/settings_dialog.py:70
 msgid "Automatic mode"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:76
+#: src/pil_modu/ui/settings_dialog.py:73
 msgid "Plugged in"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:77
+#: src/pil_modu/ui/settings_dialog.py:74
 msgid "On battery"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:80
+#: src/pil_modu/ui/settings_dialog.py:76
 msgid ""
 "Automatic switches do not change the NVIDIA boot setting, so the boot image "
 "is not rebuilt each time. Apply a battery mode by hand to turn NVIDIA fully "
 "off. The app must be running (tray is enough)."
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:84
+#: src/pil_modu/ui/settings_dialog.py:80
+msgid "Administrator password"
+msgstr ""
+
+#: src/pil_modu/ui/settings_dialog.py:82
+msgid ""
+"Applies to switching modes, the charge limit and automatic mode. Adds a "
+"polkit rule for local administrators (wheel) of an active session; only the "
+"two pil-modu helpers are allowed, and they only write whitelisted settings. "
+"You are asked for the password once to turn this on or off."
+msgstr ""
+
+#: src/pil_modu/ui/settings_dialog.py:88
 msgid "System tray"
 msgstr ""
 
@@ -1030,7 +1035,7 @@ msgstr ""
 msgid "Average over {minutes} min on battery"
 msgstr ""
 
-#: src/pil_modu/ui/tray.py:97 src/pil_modu/ui/window.py:374
+#: src/pil_modu/ui/tray.py:97 src/pil_modu/ui/window.py:382
 #, python-brace-format
 msgid "{name} applied."
 msgstr ""
@@ -1075,7 +1080,7 @@ msgstr ""
 msgid "Applied steps appear here."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:157 src/pil_modu/ui/window.py:427
+#: src/pil_modu/ui/window.py:157 src/pil_modu/ui/window.py:435
 msgid "Restart"
 msgstr ""
 
@@ -1097,77 +1102,77 @@ msgstr ""
 msgid "Previous settings"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:231 src/pil_modu/ui/window.py:312
+#: src/pil_modu/ui/window.py:231 src/pil_modu/ui/window.py:318
 msgid "Apply"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:303
+#: src/pil_modu/ui/window.py:309
 #, python-brace-format
 msgid ""
 "{outputs} is wired to NVIDIA: it turns off in battery mode and cannot be "
 "used until NVIDIA is back."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:312
+#: src/pil_modu/ui/window.py:318
 msgid "Apply again"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:320
+#: src/pil_modu/ui/window.py:328
 #, python-brace-format
 msgid "Active mode: {mode}"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:321
+#: src/pil_modu/ui/window.py:329
 msgid "No mode applied yet (system settings)"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:326
+#: src/pil_modu/ui/window.py:334
 msgid "NVIDIA will be disabled after a restart."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:327
+#: src/pil_modu/ui/window.py:335
 msgid "NVIDIA will be available again after a restart."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:350
+#: src/pil_modu/ui/window.py:358
 #, python-brace-format
 msgid "{limit}% charge limit"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:355
+#: src/pil_modu/ui/window.py:363
 #, python-brace-format
 msgid "Password-free switching {state}"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:362
+#: src/pil_modu/ui/window.py:370
 #, python-brace-format
 msgid "Applying {name}… An administrator password may be requested."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:376
+#: src/pil_modu/ui/window.py:384
 #, python-brace-format
 msgid "{count} setting changed."
 msgid_plural "{count} settings changed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/pil_modu/ui/window.py:380
+#: src/pil_modu/ui/window.py:388
 #, python-brace-format
 msgid "{name} could not be applied. See the log for details."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:418
+#: src/pil_modu/ui/window.py:426
 msgid "The new language is used after the app restarts."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:427
+#: src/pil_modu/ui/window.py:435
 msgid "Restart the computer now?"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:437
+#: src/pil_modu/ui/window.py:445
 msgid "Still working"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:438
+#: src/pil_modu/ui/window.py:446
 msgid "You can close the window when the settings are applied."
 msgstr ""

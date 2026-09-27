@@ -58,7 +58,7 @@ def battery_savings(current, options=settings.DEFAULTS):
     return {path: value for path, value in wanted.items() if path in current}
 
 
-def build(mode, external, before, original, options=None, caps=None):
+def build(mode, external, before, original, options=None, caps=None, layouts=None):
     """before: şu anki anlık görüntü, original: ilk moddan önce kaydedilen görüntü."""
     preset = PRESETS.get(mode)
     restoring = preset is None
@@ -81,7 +81,7 @@ def build(mode, external, before, original, options=None, caps=None):
         restoring=restoring,
         profile=original["profile"] if restoring else preset.profile,
         screen_args=display.screen_plan(before["outputs"], original["outputs"], preset, external,
-                                        caps.nvidia_outputs),
+                                        caps.nvidia_outputs, layouts),
         rollback_args=display.screen_plan(before["outputs"], before["outputs"]),
         hardware=hardware,
         gpu_boot="integrated" if preset and preset.is_battery else "hybrid",

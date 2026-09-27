@@ -96,9 +96,12 @@ charger is plugged in or out, as long as it is running (the tray is enough; enab
 so the boot image is not rebuilt every time you unplug; apply a battery mode by hand to turn
 NVIDIA fully off.
 
-*Switch without asking for a password* adds a polkit rule that lets local, active administrators
-(`wheel`) run only the pil-modu hardware helper without a password. It is removed when you turn
-the option off or uninstall.
+### No password prompts
+
+In Settings, *Do not ask for the administrator password* adds a polkit rule that lets local,
+active administrators (`wheel`) run the two pil-modu helpers without a password: switching modes,
+the charge limit and automatic mode no longer ask. Nothing else is allowed. The rule is removed
+when you turn the option off or uninstall.
 
 ## Reporting your model
 

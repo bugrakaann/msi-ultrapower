@@ -12,6 +12,7 @@ INSTALLED_HELPERS = Path("/usr/lib/pil-modu")
 DATA_DIR = Path.home() / ".local/share/pil-modu"
 ORIGINAL_STATE = DATA_DIR / "original-v2.json"  # ilk moddan önceki ayarlar
 ACTIVE_STATE = DATA_DIR / "active.json"         # son seçilen mod
+LAYOUTS = DATA_DIR / "layouts.json"             # ekran kombinasyonu başına kullanıcı düzeni
 HISTORY_LOG = DATA_DIR / "history.log"
 LOCK_FILE = DATA_DIR / "lock"
 

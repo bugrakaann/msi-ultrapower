@@ -37,7 +37,7 @@ def prepare(mode, external="otomatik", before=None, caps=None):
     # Programın eski sürümüyle alınan kayıtta sonradan eklenen ayarlar yoktur; şu anki değerle tamamla.
     missing = {k: v for k, v in before["hardware"].items() if k not in original["hardware"]}
     original["hardware"].update(missing)
-    p = plan.build(mode, external, before, original, settings.load(), caps)
+    p = plan.build(mode, external, before, original, settings.load(), caps, state.load_layouts())
     return Prepared(p, before, original, missing, caps)
 
 
@@ -62,6 +62,8 @@ def change_mode(mode, external="otomatik", dry_run=False, keep_gpu=False):
               flush=True)
     if not state.has_original() or missing:
         state.save_original(original)
+    # Kullanıcının şu anki ekran düzeni (ana ekran, konumlar): bu kombinasyona dönülünce kurulur.
+    state.save_layout(before["outputs"])
 
     apply_plan(p, before)
 

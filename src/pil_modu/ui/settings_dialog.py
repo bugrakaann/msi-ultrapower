@@ -1,7 +1,7 @@
-"""Ayarlar: dil, batarya modunun aygıt tasarrufları, otomatik mod ve sistem tepsisi."""
+"""Ayarlar: dil, batarya modunun aygıt tasarrufları, otomatik mod, parola ve sistem tepsisi."""
 from pathlib import Path
 
-from PySide6.QtWidgets import (QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFormLayout,
+from PySide6.QtWidgets import (QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFormLayout, QLabel,
                                QVBoxLayout)
 
 from .. import settings
@@ -28,11 +28,14 @@ def set_autostart(enabled):
         AUTOSTART.unlink(missing_ok=True)
 
 
+DIALOG_WIDTH = 520
+
+
 class SettingsDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle(_("Settings"))
-        self.setMinimumWidth(460)
+        self.setFixedWidth(DIALOG_WIDTH)
         values = settings.load()
         layout = QVBoxLayout(self)
 
@@ -51,11 +54,8 @@ class SettingsDialog(QDialog):
         self.auto.setChecked(values["auto_mode"])
         self.auto_ac = self._mode_combo(values["auto_ac"])
         self.auto_battery = self._mode_combo(values["auto_battery"])
-        self.passwordless = QCheckBox(_("Switch without asking for a password"))
+        self.passwordless = QCheckBox(_("Do not ask for the administrator password"))
         self.passwordless.setChecked(values["passwordless"])
-        self.passwordless.setToolTip(_("Adds a polkit rule so local administrators of this session "
-                                       "can apply modes without a password. Only the pil-modu "
-                                       "hardware helper is allowed, and only whitelisted settings."))
         self.auto.toggled.connect(self._update_enabled)
 
         self.tray_autostart = QCheckBox(_("Start in the system tray when I log in"))
@@ -76,10 +76,17 @@ class SettingsDialog(QDialog):
         auto_form.addRow(_("Plugged in"), self.auto_ac)
         auto_form.addRow(_("On battery"), self.auto_battery)
         layout.addLayout(auto_form)
-        layout.addWidget(self.passwordless)
         layout.addWidget(muted(_("Automatic switches do not change the NVIDIA boot setting, so the "
                                  "boot image is not rebuilt each time. Apply a battery mode by hand "
                                  "to turn NVIDIA fully off. The app must be running (tray is enough).")))
+
+        layout.addWidget(section_label(_("Administrator password")))
+        layout.addWidget(self.passwordless)
+        layout.addWidget(muted(_("Applies to switching modes, the charge limit and automatic mode. "
+                                 "Adds a polkit rule for local administrators (wheel) of an active "
+                                 "session; only the two pil-modu helpers are allowed, and they only "
+                                 "write whitelisted settings. You are asked for the password once "
+                                 "to turn this on or off.")))
 
         layout.addWidget(section_label(_("System tray")))
         layout.addWidget(self.tray_autostart)
@@ -90,6 +97,15 @@ class SettingsDialog(QDialog):
         layout.addStretch()
         layout.addWidget(buttons)
         self._update_enabled()
+        self._fit_wrapped_labels(layout)
+
+    def _fit_wrapped_labels(self, layout):
+        """Qt üst düzey pencerede kaydırmalı metnin yüksekliğini hesaplamaz; metin kesilmesin."""
+        margins = layout.contentsMargins()
+        width = DIALOG_WIDTH - margins.left() - margins.right()
+        for label in self.findChildren(QLabel):
+            if label.wordWrap():
+                label.setMinimumHeight(label.heightForWidth(width))
 
     def _mode_combo(self, selected):
         combo = QComboBox()
@@ -99,7 +115,7 @@ class SettingsDialog(QDialog):
         return combo
 
     def _update_enabled(self):
-        for widget in (self.auto_ac, self.auto_battery, self.passwordless):
+        for widget in (self.auto_ac, self.auto_battery):
             widget.setEnabled(self.auto.isChecked())
 
     def values(self):
@@ -110,6 +126,6 @@ class SettingsDialog(QDialog):
             "auto_mode": self.auto.isChecked(),
             "auto_ac": self.auto_ac.currentData(),
             "auto_battery": self.auto_battery.currentData(),
-            "passwordless": self.auto.isChecked() and self.passwordless.isChecked(),
+            "passwordless": self.passwordless.isChecked(),
             "tray_autostart": self.tray_autostart.isChecked(),
         }

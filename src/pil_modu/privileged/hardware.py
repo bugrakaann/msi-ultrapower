@@ -10,8 +10,8 @@ kalanından hiçbir şey import etmez, çünkü iki farklı şekilde çalıştı
         COMMIT gelirse ayarları açılışta geri yüklenmek üzere kaydeder.
   * pkexec ile şarj sınırı:  hardware.py --sarj 80
         Pilin şarj sınırını yazar, doğrular ve açılışta geri yüklenmek üzere kaydeder.
-  * pkexec ile parolasız otomatik mod:  hardware.py --parolasiz 1|0
-        Yalnızca bu yardımcının eylemi için polkit kuralı yazar/siler.
+  * pkexec ile parolasız geçiş:  hardware.py --parolasiz 1|0
+        Yalnızca pil-modu yardımcılarının eylemleri için polkit kuralı yazar/siler.
   * Açılışta systemd ile (pil-modu-restore.service):
         /usr/lib/pil-modu/pil-modu-hardware --restore
 
@@ -262,20 +262,23 @@ def transaction(target):
         raise
 
 
-POLKIT_ACTION = "io.github.pilmodu.hardware"
+# Donanım yardımcısı ve NVIDIA açılış yardımcısı; ikisi de yalnızca izin listesindeki işleri yapar.
+POLKIT_ACTIONS = ("io.github.pilmodu.hardware", "io.github.pilmodu.gpu-boot")
 POLKIT_RULE = Path("/etc/polkit-1/rules.d/49-pil-modu.rules")
 POLKIT_HEADER = "// Managed by pil-modu hardware.py\n"
-# Yalnızca bu yardımcının eylemi; yalnızca yerel, etkin oturumdaki yönetici (wheel) kullanıcılar.
+# Yalnızca pil-modu eylemleri; yalnızca yerel, etkin oturumdaki yönetici (wheel) kullanıcılar.
 POLKIT_TEXT = POLKIT_HEADER + """polkit.addRule(function(action, subject) {
-    if (action.id == "%s" && subject.local && subject.active && subject.isInGroup("wheel")) {
+    var actions = [%s];
+    if (actions.indexOf(action.id) >= 0 && subject.local && subject.active
+            && subject.isInGroup("wheel")) {
         return polkit.Result.YES;
     }
 });
-""" % POLKIT_ACTION
+""" % ", ".join(f'"{a}"' for a in POLKIT_ACTIONS)
 
 
 def set_passwordless(enabled):
-    """Otomatik mod parola sormadan geçebilsin diye polkit kuralını yazar ya da siler."""
+    """Modlar yönetici parolası sormadan uygulanabilsin diye polkit kuralını yazar ya da siler."""
     if POLKIT_RULE.exists() and not POLKIT_RULE.read_text().startswith(POLKIT_HEADER):
         raise RuntimeError(_("{path} does not belong to pil-modu; not touched").format(path=POLKIT_RULE))
     if enabled:

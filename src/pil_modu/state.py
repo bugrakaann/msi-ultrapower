@@ -41,6 +41,19 @@ def save_active(mode, external):
     write_json(paths.ACTIVE_STATE, {"mod": mode, "harici": external})
 
 
+def load_layouts():
+    """display.remember() kayıtları: ekran kombinasyonu → düzen."""
+    return read_json(paths.LAYOUTS, {})
+
+
+def save_layout(outputs):
+    """Kullanıcının şu anki ekran düzenini kendi kombinasyonu için saklar (diğerleri korunur)."""
+    from . import display
+    layouts = load_layouts()
+    layouts.update(display.remember(outputs))
+    write_json(paths.LAYOUTS, layouts)
+
+
 def forget_all():
     """Geri dönüş tamamlanınca kayıtları temizler."""
     paths.ORIGINAL_STATE.unlink()

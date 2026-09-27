@@ -3,6 +3,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: pil-modu\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 10:34+0300\n"
 "PO-Revision-Date: 2026-09-26 00:00+0000\n"
 "Last-Translator: pil-modu contributors\n"
 "Language-Team: Arabic\n"
@@ -10,7 +12,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
+"Plural-Forms: nplurals=6; plural=(n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
+"&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5);\n"
 
 #: src/pil_modu/capabilities.py:126
 #, python-brace-format
@@ -62,13 +65,13 @@ msgstr "لا شيء بعد"
 msgid "Power profile:"
 msgstr "ملف الطاقة:"
 
-#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:145
-#: src/pil_modu/ui/window.py:353
+#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:150
+#: src/pil_modu/ui/window.py:361
 msgid "on"
 msgstr "تشغيل"
 
-#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:145
-#: src/pil_modu/ui/window.py:353
+#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:150
+#: src/pil_modu/ui/window.py:361
 msgid "off"
 msgstr "إيقاف"
 
@@ -101,7 +104,7 @@ msgid "Battery:"
 msgstr "البطارية:"
 
 #: src/pil_modu/cli.py:60 src/pil_modu/cli.py:131
-#: src/pil_modu/controller.py:138
+#: src/pil_modu/controller.py:143
 msgid "Charge limit:"
 msgstr "حد الشحن:"
 
@@ -238,76 +241,87 @@ msgstr "غير مدعوم على هذا الجهاز"
 msgid "ERROR:"
 msgstr "خطأ:"
 
-#: src/pil_modu/controller.py:30
+#: src/pil_modu/controller.py:33
 #, python-brace-format
-msgid "{outputs} is wired to NVIDIA and cannot stay on in battery mode, because NVIDIA is turned off. Use balanced mode for two screens."
-msgstr "{outputs} موصولة بـ NVIDIA ولا يمكن إبقاؤها تعمل في وضع البطارية لأن NVIDIA تُطفأ. استخدم الوضع المتوازن لشاشتين."
+msgid ""
+"{outputs} is wired to NVIDIA and cannot stay on in battery mode, because "
+"NVIDIA is turned off. Use balanced mode for two screens."
+msgstr ""
+"{outputs} موصولة بـ NVIDIA ولا يمكن إبقاؤها تعمل في وضع البطارية لأن NVIDIA "
+"تُطفأ. استخدم الوضع المتوازن لشاشتين."
 
-#: src/pil_modu/controller.py:48
+#: src/pil_modu/controller.py:51
 msgid "No saved settings to restore; nothing changed."
 msgstr "لا توجد إعدادات محفوظة لاستعادتها؛ لم يتغير شيء."
 
-#: src/pil_modu/controller.py:58
-msgid "Note: the old EC value 'unspecified' cannot be written back; the closest mode is used."
-msgstr "ملاحظة: لا يمكن إعادة كتابة قيمة EC القديمة «unspecified»؛ يُستخدم أقرب وضع."
+#: src/pil_modu/controller.py:61
+msgid ""
+"Note: the old EC value 'unspecified' cannot be written back; the closest "
+"mode is used."
+msgstr ""
+"ملاحظة: لا يمكن إعادة كتابة قيمة EC القديمة «unspecified»؛ يُستخدم أقرب وضع."
 
-#: src/pil_modu/controller.py:70
+#: src/pil_modu/controller.py:75
 msgid "CPU, display and EC settings applied:"
 msgstr "تم تطبيق إعدادات المعالج والشاشة وEC:"
 
-#: src/pil_modu/controller.py:73
+#: src/pil_modu/controller.py:78
 msgid "NVIDIA boot setting left unchanged."
 msgstr "لم يتغير إعداد NVIDIA عند الإقلاع."
 
-#: src/pil_modu/controller.py:76
+#: src/pil_modu/controller.py:81
 msgid "Status: pil-modu status | Restore: pil-modu restore"
 msgstr "الحالة: pil-modu status | الاستعادة: pil-modu restore"
 
-#: src/pil_modu/controller.py:92
+#: src/pil_modu/controller.py:97
 msgid "The power profile was changed by another program"
 msgstr "غيّر برنامج آخر ملف الطاقة"
 
-#: src/pil_modu/controller.py:109 src/pil_modu/privileged/hardware.py:168
+#: src/pil_modu/controller.py:114 src/pil_modu/privileged/hardware.py:168
 msgid "Rollback error:"
 msgstr "خطأ في التراجع:"
 
-#: src/pil_modu/controller.py:114
+#: src/pil_modu/controller.py:119
 msgid "No NVIDIA GPU; boot setting skipped."
 msgstr "لا توجد بطاقة NVIDIA؛ تم تخطي إعداد الإقلاع."
 
-#: src/pil_modu/controller.py:117
-msgid "CPU and display settings were applied, but the NVIDIA boot setting could not be completed. Apply the same mode again."
-msgstr "تم تطبيق إعدادات المعالج والشاشة، لكن تعذر إكمال إعداد NVIDIA عند الإقلاع. طبّق الوضع نفسه مرة أخرى."
+#: src/pil_modu/controller.py:122
+msgid ""
+"CPU and display settings were applied, but the NVIDIA boot setting could not "
+"be completed. Apply the same mode again."
+msgstr ""
+"تم تطبيق إعدادات المعالج والشاشة، لكن تعذر إكمال إعداد NVIDIA عند الإقلاع. "
+"طبّق الوضع نفسه مرة أخرى."
 
-#: src/pil_modu/controller.py:121
+#: src/pil_modu/controller.py:126
 msgid "NVIDIA is not disabled yet. Restart to finish battery mode."
 msgstr "لم تُعطَّل NVIDIA بعد. أعد التشغيل لإكمال وضع البطارية."
 
-#: src/pil_modu/controller.py:123
+#: src/pil_modu/controller.py:128
 msgid "NVIDIA is currently disabled. Restart to use it again."
 msgstr "NVIDIA معطلة حاليًا. أعد التشغيل لاستخدامها مجددًا."
 
-#: src/pil_modu/controller.py:125
+#: src/pil_modu/controller.py:130
 msgid "The GPU state matches the selected mode."
 msgstr "حالة بطاقة الرسوميات تطابق الوضع المحدد."
 
-#: src/pil_modu/controller.py:129
+#: src/pil_modu/controller.py:134
 msgid "GPU mode at next boot:"
 msgstr "وضع بطاقة الرسوميات في الإقلاع التالي:"
 
-#: src/pil_modu/controller.py:130
+#: src/pil_modu/controller.py:135
 msgid "Profile:"
 msgstr "الملف:"
 
-#: src/pil_modu/controller.py:137
+#: src/pil_modu/controller.py:142
 msgid "The charge limit could not be set."
 msgstr "تعذر ضبط حد الشحن."
 
-#: src/pil_modu/controller.py:143
+#: src/pil_modu/controller.py:148
 msgid "The password rule could not be changed."
 msgstr "تعذر تغيير قاعدة كلمة المرور."
 
-#: src/pil_modu/controller.py:144
+#: src/pil_modu/controller.py:149
 #, python-brace-format
 msgid "Automatic switching without a password: {state}"
 msgstr "التبديل التلقائي دون كلمة مرور: {state}"
@@ -370,7 +384,8 @@ msgstr "{hz} هرتز (الأدنى)"
 
 #: src/pil_modu/describe.py:37
 #, python-brace-format
-msgid "Outputs wired to NVIDIA ({outputs}) turn off · others follow your choice"
+msgid ""
+"Outputs wired to NVIDIA ({outputs}) turn off · others follow your choice"
 msgstr "مخارج NVIDIA ({outputs}) تُطفأ · والبقية حسب اختيارك"
 
 #: src/pil_modu/describe.py:39
@@ -606,25 +621,25 @@ msgstr "{output}: لم يُعثر على الدقة السابقة"
 msgid "{output}: {hz} Hz is not supported"
 msgstr "{output}: التردد {hz} هرتز غير مدعوم"
 
-#: src/pil_modu/display.py:78
+#: src/pil_modu/display.py:151
 msgid "Built-in display not found"
 msgstr "لم يُعثر على الشاشة المدمجة"
 
-#: src/pil_modu/display.py:118
+#: src/pil_modu/display.py:156 src/pil_modu/display.py:200
 msgid "At least one connected display must stay on"
 msgstr "يجب أن تبقى شاشة موصولة واحدة على الأقل تعمل"
 
-#: src/pil_modu/display.py:130
+#: src/pil_modu/display.py:212
 #, python-brace-format
 msgid "Could not verify display state: {output}"
 msgstr "تعذر التحقق من حالة الشاشة: {output}"
 
-#: src/pil_modu/display.py:138
+#: src/pil_modu/display.py:220
 #, python-brace-format
 msgid "Could not verify refresh rate: {output}"
 msgstr "تعذر التحقق من معدل التحديث: {output}"
 
-#: src/pil_modu/display.py:141
+#: src/pil_modu/display.py:223
 #, python-brace-format
 msgid "Could not verify brightness: {output}"
 msgstr "تعذر التحقق من السطوع: {output}"
@@ -634,7 +649,7 @@ msgid "Hardware authorization or apply failed:"
 msgstr "فشل تفويض العتاد أو تطبيقه:"
 
 #. Translators: percent sign position, e.g. "%{value}" in Turkish
-#: src/pil_modu/i18n.py:73
+#: src/pil_modu/i18n.py:74
 #, python-brace-format
 msgid "{value}%"
 msgstr "{value}%"
@@ -714,8 +729,13 @@ msgid "No integrated GPU found; turning NVIDIA off would leave no display"
 msgstr "لم يُعثر على بطاقة رسوميات مدمجة؛ إطفاء NVIDIA سيترك الجهاز بلا شاشة"
 
 #: src/pil_modu/privileged/gpu_boot.py:128
-msgid "NVIDIA drives the built-in display (GPU mode 'Discrete'/MUX in the BIOS). Turning NVIDIA off would black out the screen; choose 'MSHybrid'/'Optimus' in the BIOS."
-msgstr "بطاقة NVIDIA تشغّل الشاشة المدمجة (وضع الرسوميات «Discrete»/MUX في BIOS). إطفاء NVIDIA سيجعل الشاشة سوداء؛ اختر «MSHybrid»/«Optimus» في BIOS."
+msgid ""
+"NVIDIA drives the built-in display (GPU mode 'Discrete'/MUX in the BIOS). "
+"Turning NVIDIA off would black out the screen; choose 'MSHybrid'/'Optimus' "
+"in the BIOS."
+msgstr ""
+"بطاقة NVIDIA تشغّل الشاشة المدمجة (وضع الرسوميات «Discrete»/MUX في BIOS). "
+"إطفاء NVIDIA سيجعل الشاشة سوداء؛ اختر «MSHybrid»/«Optimus» في BIOS."
 
 #: src/pil_modu/privileged/gpu_boot.py:137
 msgid "Unexpected configuration; existing files were not touched"
@@ -731,7 +751,8 @@ msgstr "تتم إعادة بناء صور الإقلاع؛ قد يستغرق ذ�
 
 #: src/pil_modu/privileged/gpu_boot.py:159
 msgid "GPU configuration rolled back; rebuilding the previous boot images."
-msgstr "تم التراجع عن إعدادات بطاقة الرسوميات؛ تتم إعادة بناء صور الإقلاع السابقة."
+msgstr ""
+"تم التراجع عن إعدادات بطاقة الرسوميات؛ تتم إعادة بناء صور الإقلاع السابقة."
 
 #: src/pil_modu/privileged/gpu_boot.py:162
 msgid "GPU boot setting saved:"
@@ -762,7 +783,7 @@ msgstr "حد شحن غير مدعوم:"
 msgid "Skipped (device missing):"
 msgstr "تم التخطي (الجهاز غير موجود):"
 
-#: src/pil_modu/privileged/hardware.py:280
+#: src/pil_modu/privileged/hardware.py:283
 #, python-brace-format
 msgid "{path} does not belong to pil-modu; not touched"
 msgstr "{path} لا يخص pil-modu؛ لم يُمَس"
@@ -828,8 +849,12 @@ msgid "Plugged in, waiting to charge."
 msgstr "موصول بالكهرباء، بانتظار الشحن."
 
 #: src/pil_modu/ui/charge.py:34
-msgid "The highest level the battery charges to. Independent of modes and restored at boot. 60% and 80% extend battery life."
-msgstr "أعلى مستوى تُشحن إليه البطارية. مستقل عن الأوضاع ويُستعاد عند الإقلاع. قيمتا 60% و80% تطيلان عمر البطارية."
+msgid ""
+"The highest level the battery charges to. Independent of modes and restored "
+"at boot. 60% and 80% extend battery life."
+msgstr ""
+"أعلى مستوى تُشحن إليه البطارية. مستقل عن الأوضاع ويُستعاد عند الإقلاع. قيمتا "
+"60% و80% تطيلان عمر البطارية."
 
 #: src/pil_modu/ui/charge.py:62
 msgid "This computer does not support a charge limit."
@@ -856,46 +881,64 @@ msgid "Switch modes when the charger is plugged in or out"
 msgstr "تبديل الوضع عند توصيل الشاحن أو فصله"
 
 #: src/pil_modu/ui/settings_dialog.py:54
-msgid "Switch without asking for a password"
-msgstr "التبديل دون طلب كلمة المرور"
+msgid "Do not ask for the administrator password"
+msgstr "عدم طلب كلمة مرور المسؤول"
 
-#: src/pil_modu/ui/settings_dialog.py:56
-msgid "Adds a polkit rule so local administrators of this session can apply modes without a password. Only the pil-modu hardware helper is allowed, and only whitelisted settings."
-msgstr "يضيف قاعدة polkit تسمح للمسؤولين المحليين في هذه الجلسة بتطبيق الأوضاع دون كلمة مرور. يُسمح فقط لمساعد العتاد في pil-modu وبالإعدادات المدرجة في القائمة المسموح بها فقط."
-
-#: src/pil_modu/ui/settings_dialog.py:61
+#: src/pil_modu/ui/settings_dialog.py:58
 msgid "Start in the system tray when I log in"
 msgstr "البدء في علبة النظام عند تسجيل الدخول"
 
-#: src/pil_modu/ui/settings_dialog.py:65 src/pil_modu/ui/window.py:417
+#: src/pil_modu/ui/settings_dialog.py:62 src/pil_modu/ui/window.py:425
 msgid "Language"
 msgstr "اللغة"
 
-#: src/pil_modu/ui/settings_dialog.py:67
+#: src/pil_modu/ui/settings_dialog.py:64
 msgid "A new language is used after the app restarts."
 msgstr "تُستخدم اللغة الجديدة بعد إعادة تشغيل التطبيق."
 
-#: src/pil_modu/ui/settings_dialog.py:69
+#: src/pil_modu/ui/settings_dialog.py:66
 msgid "Battery modes"
 msgstr "أوضاع البطارية"
 
-#: src/pil_modu/ui/settings_dialog.py:73
+#: src/pil_modu/ui/settings_dialog.py:70
 msgid "Automatic mode"
 msgstr "الوضع التلقائي"
 
-#: src/pil_modu/ui/settings_dialog.py:76
+#: src/pil_modu/ui/settings_dialog.py:73
 msgid "Plugged in"
 msgstr "موصول بالكهرباء"
 
-#: src/pil_modu/ui/settings_dialog.py:77
+#: src/pil_modu/ui/settings_dialog.py:74
 msgid "On battery"
 msgstr "على البطارية"
 
-#: src/pil_modu/ui/settings_dialog.py:80
-msgid "Automatic switches do not change the NVIDIA boot setting, so the boot image is not rebuilt each time. Apply a battery mode by hand to turn NVIDIA fully off. The app must be running (tray is enough)."
-msgstr "التبديل التلقائي لا يغيّر إعداد NVIDIA عند الإقلاع، لذا لا تُعاد بناء صورة الإقلاع في كل مرة. طبّق وضع البطارية يدويًا لإطفاء NVIDIA تمامًا. يجب أن يكون التطبيق قيد التشغيل (تكفي علبة النظام)."
+#: src/pil_modu/ui/settings_dialog.py:76
+msgid ""
+"Automatic switches do not change the NVIDIA boot setting, so the boot image "
+"is not rebuilt each time. Apply a battery mode by hand to turn NVIDIA fully "
+"off. The app must be running (tray is enough)."
+msgstr ""
+"التبديل التلقائي لا يغيّر إعداد NVIDIA عند الإقلاع، لذا لا تُعاد بناء صورة "
+"الإقلاع في كل مرة. طبّق وضع البطارية يدويًا لإطفاء NVIDIA تمامًا. يجب أن يكون "
+"التطبيق قيد التشغيل (تكفي علبة النظام)."
 
-#: src/pil_modu/ui/settings_dialog.py:84
+#: src/pil_modu/ui/settings_dialog.py:80
+msgid "Administrator password"
+msgstr "كلمة مرور المسؤول"
+
+#: src/pil_modu/ui/settings_dialog.py:82
+msgid ""
+"Applies to switching modes, the charge limit and automatic mode. Adds a "
+"polkit rule for local administrators (wheel) of an active session; only the "
+"two pil-modu helpers are allowed, and they only write whitelisted settings. "
+"You are asked for the password once to turn this on or off."
+msgstr ""
+"ينطبق على تبديل الأوضاع وحد الشحن والوضع التلقائي. يضيف قاعدة polkit "
+"للمسؤولين المحليين (wheel) في جلسة نشطة؛ يُسمح فقط بمساعدَي pil-modu، وهما "
+"يكتبان الإعدادات المدرجة في القائمة المسموح بها فقط. تُطلب كلمة المرور مرة "
+"واحدة عند التفعيل أو التعطيل."
+
+#: src/pil_modu/ui/settings_dialog.py:88
 msgid "System tray"
 msgstr "علبة النظام"
 
@@ -938,8 +981,12 @@ msgid "average {watts}"
 msgstr "المتوسط {watts}"
 
 #: src/pil_modu/ui/status_strip.py:39
-msgid "Plugged in, the battery only reports its charging power, so the laptop's power use cannot be measured. Unplug to see it."
-msgstr "عند التوصيل بالكهرباء تُبلغ البطارية عن قدرة الشحن فقط، لذا لا يمكن قياس استهلاك الحاسوب. افصل الشاحن لرؤيته."
+msgid ""
+"Plugged in, the battery only reports its charging power, so the laptop's "
+"power use cannot be measured. Unplug to see it."
+msgstr ""
+"عند التوصيل بالكهرباء تُبلغ البطارية عن قدرة الشحن فقط، لذا لا يمكن قياس "
+"استهلاك الحاسوب. افصل الشاحن لرؤيته."
 
 #: src/pil_modu/ui/status_strip.py:42
 msgid "The average appears after a few seconds on battery."
@@ -947,7 +994,9 @@ msgstr "يظهر المتوسط بعد بضع ثوانٍ على البطارية
 
 #: src/pil_modu/ui/status_strip.py:43
 #, python-brace-format
-msgid "Average since the charger was unplugged ({minutes} min). Resets when you plug it in."
+msgid ""
+"Average since the charger was unplugged ({minutes} min). Resets when you "
+"plug it in."
 msgstr "المتوسط منذ فصل الشاحن ({minutes} دقيقة). يُعاد ضبطه عند التوصيل."
 
 #: src/pil_modu/ui/status_strip.py:49
@@ -1014,7 +1063,7 @@ msgstr "لا يزال تغيير آخر قيد التطبيق."
 msgid "Average over {minutes} min on battery"
 msgstr "المتوسط خلال {minutes} دقيقة على البطارية"
 
-#: src/pil_modu/ui/tray.py:97 src/pil_modu/ui/window.py:374
+#: src/pil_modu/ui/tray.py:97 src/pil_modu/ui/window.py:382
 #, python-brace-format
 msgid "{name} applied."
 msgstr "تم تطبيق {name}."
@@ -1034,17 +1083,26 @@ msgid "Not available here: {reason}"
 msgstr "غير متاح هنا: {reason}"
 
 #: src/pil_modu/ui/window.py:41
-msgid "The msi-ec driver was not found: fan, EC mode and Cooler Boost cannot be changed (AUR: msi-ec-dkms-git)."
-msgstr "لم يُعثر على برنامج التشغيل msi-ec: لا يمكن تغيير المروحة ووضع EC وCooler Boost (AUR: msi-ec-dkms-git)."
+msgid ""
+"The msi-ec driver was not found: fan, EC mode and Cooler Boost cannot be "
+"changed (AUR: msi-ec-dkms-git)."
+msgstr ""
+"لم يُعثر على برنامج التشغيل msi-ec: لا يمكن تغيير المروحة ووضع EC وCooler "
+"Boost (AUR: msi-ec-dkms-git)."
 
 #: src/pil_modu/ui/window.py:44
-msgid "KDE Plasma 6 was not found: refresh rate and brightness are not changed."
+msgid ""
+"KDE Plasma 6 was not found: refresh rate and brightness are not changed."
 msgstr "لم يُعثر على KDE Plasma 6: لا يتغير معدل التحديث والسطوع."
 
 #: src/pil_modu/ui/window.py:46
 #, python-brace-format
-msgid "{services} is running and conflicts with power profiles; modes may fail to verify. Disable one of them."
-msgstr "{services} قيد التشغيل ويتعارض مع ملفات الطاقة؛ قد يفشل التحقق من الأوضاع. عطّل أحدهما."
+msgid ""
+"{services} is running and conflicts with power profiles; modes may fail to "
+"verify. Disable one of them."
+msgstr ""
+"{services} قيد التشغيل ويتعارض مع ملفات الطاقة؛ قد يفشل التحقق من الأوضاع. "
+"عطّل أحدهما."
 
 #: src/pil_modu/ui/window.py:54
 msgid "Activity log"
@@ -1054,13 +1112,17 @@ msgstr "سجل النشاط"
 msgid "Applied steps appear here."
 msgstr "تظهر هنا الخطوات المطبّقة."
 
-#: src/pil_modu/ui/window.py:157 src/pil_modu/ui/window.py:427
+#: src/pil_modu/ui/window.py:157 src/pil_modu/ui/window.py:435
 msgid "Restart"
 msgstr "إعادة التشغيل"
 
 #: src/pil_modu/ui/window.py:194
-msgid "Whether external displays stay on in this mode. Their refresh rate and resolution never change."
-msgstr "هل تبقى الشاشات الخارجية تعمل في هذا الوضع. لا يتغير معدل تحديثها ولا دقتها أبدًا."
+msgid ""
+"Whether external displays stay on in this mode. Their refresh rate and "
+"resolution never change."
+msgstr ""
+"هل تبقى الشاشات الخارجية تعمل في هذا الوضع. لا يتغير معدل تحديثها ولا دقتها "
+"أبدًا."
 
 #: src/pil_modu/ui/window.py:215
 msgid "Show log"
@@ -1074,52 +1136,56 @@ msgstr "استعادة الإعدادات السابقة"
 msgid "Previous settings"
 msgstr "الإعدادات السابقة"
 
-#: src/pil_modu/ui/window.py:231 src/pil_modu/ui/window.py:312
+#: src/pil_modu/ui/window.py:231 src/pil_modu/ui/window.py:318
 msgid "Apply"
 msgstr "تطبيق"
 
-#: src/pil_modu/ui/window.py:303
+#: src/pil_modu/ui/window.py:309
 #, python-brace-format
-msgid "{outputs} is wired to NVIDIA: it turns off in battery mode and cannot be used until NVIDIA is back."
-msgstr "{outputs} موصولة بـ NVIDIA: تُطفأ في وضع البطارية ولا يمكن استخدامها حتى تعود NVIDIA."
+msgid ""
+"{outputs} is wired to NVIDIA: it turns off in battery mode and cannot be "
+"used until NVIDIA is back."
+msgstr ""
+"{outputs} موصولة بـ NVIDIA: تُطفأ في وضع البطارية ولا يمكن استخدامها حتى تعود "
+"NVIDIA."
 
-#: src/pil_modu/ui/window.py:312
+#: src/pil_modu/ui/window.py:318
 msgid "Apply again"
 msgstr "تطبيق مجددًا"
 
-#: src/pil_modu/ui/window.py:320
+#: src/pil_modu/ui/window.py:328
 #, python-brace-format
 msgid "Active mode: {mode}"
 msgstr "الوضع النشط: {mode}"
 
-#: src/pil_modu/ui/window.py:321
+#: src/pil_modu/ui/window.py:329
 msgid "No mode applied yet (system settings)"
 msgstr "لم يُطبَّق أي وضع بعد (إعدادات النظام)"
 
-#: src/pil_modu/ui/window.py:326
+#: src/pil_modu/ui/window.py:334
 msgid "NVIDIA will be disabled after a restart."
 msgstr "ستُعطَّل NVIDIA بعد إعادة التشغيل."
 
-#: src/pil_modu/ui/window.py:327
+#: src/pil_modu/ui/window.py:335
 msgid "NVIDIA will be available again after a restart."
 msgstr "ستعود NVIDIA متاحة بعد إعادة التشغيل."
 
-#: src/pil_modu/ui/window.py:350
+#: src/pil_modu/ui/window.py:358
 #, python-brace-format
 msgid "{limit}% charge limit"
 msgstr "حد الشحن {limit}%"
 
-#: src/pil_modu/ui/window.py:355
+#: src/pil_modu/ui/window.py:363
 #, python-brace-format
 msgid "Password-free switching {state}"
 msgstr "التبديل دون كلمة مرور: {state}"
 
-#: src/pil_modu/ui/window.py:362
+#: src/pil_modu/ui/window.py:370
 #, python-brace-format
 msgid "Applying {name}… An administrator password may be requested."
 msgstr "جارٍ تطبيق {name}… قد تُطلب كلمة مرور المسؤول."
 
-#: src/pil_modu/ui/window.py:376
+#: src/pil_modu/ui/window.py:384
 #, python-brace-format
 msgid "{count} setting changed."
 msgid_plural "{count} settings changed."
@@ -1130,23 +1196,23 @@ msgstr[3] "تغيّرت {count} إعدادات."
 msgstr[4] "تغيّر {count} إعدادًا."
 msgstr[5] "تغيّر {count} إعداد."
 
-#: src/pil_modu/ui/window.py:380
+#: src/pil_modu/ui/window.py:388
 #, python-brace-format
 msgid "{name} could not be applied. See the log for details."
 msgstr "تعذر تطبيق {name}. راجع السجل للتفاصيل."
 
-#: src/pil_modu/ui/window.py:418
+#: src/pil_modu/ui/window.py:426
 msgid "The new language is used after the app restarts."
 msgstr "تُستخدم اللغة الجديدة بعد إعادة تشغيل التطبيق."
 
-#: src/pil_modu/ui/window.py:427
+#: src/pil_modu/ui/window.py:435
 msgid "Restart the computer now?"
 msgstr "إعادة تشغيل الحاسوب الآن؟"
 
-#: src/pil_modu/ui/window.py:437
+#: src/pil_modu/ui/window.py:445
 msgid "Still working"
 msgstr "لا يزال العمل جاريًا"
 
-#: src/pil_modu/ui/window.py:438
+#: src/pil_modu/ui/window.py:446
 msgid "You can close the window when the settings are applied."
 msgstr "يمكنك إغلاق النافذة بعد تطبيق الإعدادات."

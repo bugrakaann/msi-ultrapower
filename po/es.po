@@ -3,6 +3,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: pil-modu\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-27 10:34+0300\n"
 "PO-Revision-Date: 2026-09-26 00:00+0000\n"
 "Last-Translator: pil-modu contributors\n"
 "Language-Team: Spanish\n"
@@ -62,13 +64,13 @@ msgstr "ninguno todavía"
 msgid "Power profile:"
 msgstr "Perfil de energía:"
 
-#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:145
-#: src/pil_modu/ui/window.py:353
+#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:150
+#: src/pil_modu/ui/window.py:361
 msgid "on"
 msgstr "encendida"
 
-#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:145
-#: src/pil_modu/ui/window.py:353
+#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:150
+#: src/pil_modu/ui/window.py:361
 msgid "off"
 msgstr "apagada"
 
@@ -101,7 +103,7 @@ msgid "Battery:"
 msgstr "Batería:"
 
 #: src/pil_modu/cli.py:60 src/pil_modu/cli.py:131
-#: src/pil_modu/controller.py:138
+#: src/pil_modu/controller.py:143
 msgid "Charge limit:"
 msgstr "Límite de carga:"
 
@@ -234,76 +236,89 @@ msgstr "no compatible con este dispositivo"
 msgid "ERROR:"
 msgstr "ERROR:"
 
-#: src/pil_modu/controller.py:30
+#: src/pil_modu/controller.py:33
 #, python-brace-format
-msgid "{outputs} is wired to NVIDIA and cannot stay on in battery mode, because NVIDIA is turned off. Use balanced mode for two screens."
-msgstr "{outputs} está conectada a NVIDIA y no puede seguir encendida en modo batería, porque NVIDIA se apaga. Usa el modo equilibrado para dos pantallas."
+msgid ""
+"{outputs} is wired to NVIDIA and cannot stay on in battery mode, because "
+"NVIDIA is turned off. Use balanced mode for two screens."
+msgstr ""
+"{outputs} está conectada a NVIDIA y no puede seguir encendida en modo "
+"batería, porque NVIDIA se apaga. Usa el modo equilibrado para dos pantallas."
 
-#: src/pil_modu/controller.py:48
+#: src/pil_modu/controller.py:51
 msgid "No saved settings to restore; nothing changed."
 msgstr "No hay ajustes guardados que restaurar; no se cambió nada."
 
-#: src/pil_modu/controller.py:58
-msgid "Note: the old EC value 'unspecified' cannot be written back; the closest mode is used."
-msgstr "Nota: el valor anterior del EC «unspecified» no se puede volver a escribir; se usa el modo más cercano."
+#: src/pil_modu/controller.py:61
+msgid ""
+"Note: the old EC value 'unspecified' cannot be written back; the closest "
+"mode is used."
+msgstr ""
+"Nota: el valor anterior del EC «unspecified» no se puede volver a escribir; "
+"se usa el modo más cercano."
 
-#: src/pil_modu/controller.py:70
+#: src/pil_modu/controller.py:75
 msgid "CPU, display and EC settings applied:"
 msgstr "Ajustes de CPU, pantalla y EC aplicados:"
 
-#: src/pil_modu/controller.py:73
+#: src/pil_modu/controller.py:78
 msgid "NVIDIA boot setting left unchanged."
 msgstr "El ajuste de arranque de NVIDIA no se cambió."
 
-#: src/pil_modu/controller.py:76
+#: src/pil_modu/controller.py:81
 msgid "Status: pil-modu status | Restore: pil-modu restore"
 msgstr "Estado: pil-modu status | Restaurar: pil-modu restore"
 
-#: src/pil_modu/controller.py:92
+#: src/pil_modu/controller.py:97
 msgid "The power profile was changed by another program"
 msgstr "Otro programa cambió el perfil de energía"
 
-#: src/pil_modu/controller.py:109 src/pil_modu/privileged/hardware.py:168
+#: src/pil_modu/controller.py:114 src/pil_modu/privileged/hardware.py:168
 msgid "Rollback error:"
 msgstr "Error al revertir:"
 
-#: src/pil_modu/controller.py:114
+#: src/pil_modu/controller.py:119
 msgid "No NVIDIA GPU; boot setting skipped."
 msgstr "No hay GPU NVIDIA; se omitió el ajuste de arranque."
 
-#: src/pil_modu/controller.py:117
-msgid "CPU and display settings were applied, but the NVIDIA boot setting could not be completed. Apply the same mode again."
-msgstr "Se aplicaron los ajustes de CPU y pantalla, pero no se pudo completar el ajuste de arranque de NVIDIA. Aplica el mismo modo otra vez."
+#: src/pil_modu/controller.py:122
+msgid ""
+"CPU and display settings were applied, but the NVIDIA boot setting could not "
+"be completed. Apply the same mode again."
+msgstr ""
+"Se aplicaron los ajustes de CPU y pantalla, pero no se pudo completar el "
+"ajuste de arranque de NVIDIA. Aplica el mismo modo otra vez."
 
-#: src/pil_modu/controller.py:121
+#: src/pil_modu/controller.py:126
 msgid "NVIDIA is not disabled yet. Restart to finish battery mode."
-msgstr "NVIDIA aún no está desactivada. Reinicia para completar el modo batería."
+msgstr ""
+"NVIDIA aún no está desactivada. Reinicia para completar el modo batería."
 
-#: src/pil_modu/controller.py:123
+#: src/pil_modu/controller.py:128
 msgid "NVIDIA is currently disabled. Restart to use it again."
 msgstr "NVIDIA está desactivada. Reinicia para volver a usarla."
 
-#: src/pil_modu/controller.py:125
+#: src/pil_modu/controller.py:130
 msgid "The GPU state matches the selected mode."
 msgstr "El estado de la GPU coincide con el modo seleccionado."
 
-#: src/pil_modu/controller.py:129
+#: src/pil_modu/controller.py:134
 msgid "GPU mode at next boot:"
 msgstr "Modo de GPU en el próximo arranque:"
 
-#: src/pil_modu/controller.py:130
+#: src/pil_modu/controller.py:135
 msgid "Profile:"
 msgstr "Perfil:"
 
-#: src/pil_modu/controller.py:137
+#: src/pil_modu/controller.py:142
 msgid "The charge limit could not be set."
 msgstr "No se pudo establecer el límite de carga."
 
-#: src/pil_modu/controller.py:143
+#: src/pil_modu/controller.py:148
 msgid "The password rule could not be changed."
 msgstr "No se pudo cambiar la regla de contraseña."
 
-#: src/pil_modu/controller.py:144
+#: src/pil_modu/controller.py:149
 #, python-brace-format
 msgid "Automatic switching without a password: {state}"
 msgstr "Cambio automático sin contraseña: {state}"
@@ -366,8 +381,10 @@ msgstr "{hz} Hz (la más baja)"
 
 #: src/pil_modu/describe.py:37
 #, python-brace-format
-msgid "Outputs wired to NVIDIA ({outputs}) turn off · others follow your choice"
-msgstr "Las salidas de NVIDIA ({outputs}) se apagan · las demás según tu elección"
+msgid ""
+"Outputs wired to NVIDIA ({outputs}) turn off · others follow your choice"
+msgstr ""
+"Las salidas de NVIDIA ({outputs}) se apagan · las demás según tu elección"
 
 #: src/pil_modu/describe.py:39
 msgid "Follows your choice below · refresh rate unchanged"
@@ -598,25 +615,25 @@ msgstr "{output}: no se encontró la resolución anterior"
 msgid "{output}: {hz} Hz is not supported"
 msgstr "{output}: no admite {hz} Hz"
 
-#: src/pil_modu/display.py:78
+#: src/pil_modu/display.py:151
 msgid "Built-in display not found"
 msgstr "No se encontró la pantalla integrada"
 
-#: src/pil_modu/display.py:118
+#: src/pil_modu/display.py:156 src/pil_modu/display.py:200
 msgid "At least one connected display must stay on"
 msgstr "Al menos una pantalla conectada debe seguir encendida"
 
-#: src/pil_modu/display.py:130
+#: src/pil_modu/display.py:212
 #, python-brace-format
 msgid "Could not verify display state: {output}"
 msgstr "No se pudo verificar el estado de la pantalla: {output}"
 
-#: src/pil_modu/display.py:138
+#: src/pil_modu/display.py:220
 #, python-brace-format
 msgid "Could not verify refresh rate: {output}"
 msgstr "No se pudo verificar la frecuencia: {output}"
 
-#: src/pil_modu/display.py:141
+#: src/pil_modu/display.py:223
 #, python-brace-format
 msgid "Could not verify brightness: {output}"
 msgstr "No se pudo verificar el brillo: {output}"
@@ -626,7 +643,7 @@ msgid "Hardware authorization or apply failed:"
 msgstr "Falló la autorización o la aplicación del hardware:"
 
 #. Translators: percent sign position, e.g. "%{value}" in Turkish
-#: src/pil_modu/i18n.py:73
+#: src/pil_modu/i18n.py:74
 #, python-brace-format
 msgid "{value}%"
 msgstr "{value}%"
@@ -691,7 +708,8 @@ msgstr "Hz mínimos · Brillo 30% · NVIDIA apagada"
 
 #: src/pil_modu/privileged/gpu_boot.py:88
 msgid "mkinitcpio/dracut not found; boot images were not rebuilt."
-msgstr "No se encontró mkinitcpio/dracut; no se regeneraron las imágenes de arranque."
+msgstr ""
+"No se encontró mkinitcpio/dracut; no se regeneraron las imágenes de arranque."
 
 #: src/pil_modu/privileged/gpu_boot.py:122
 msgid "Invalid GPU mode"
@@ -706,8 +724,14 @@ msgid "No integrated GPU found; turning NVIDIA off would leave no display"
 msgstr "No se encontró GPU integrada; apagar NVIDIA dejaría sin imagen"
 
 #: src/pil_modu/privileged/gpu_boot.py:128
-msgid "NVIDIA drives the built-in display (GPU mode 'Discrete'/MUX in the BIOS). Turning NVIDIA off would black out the screen; choose 'MSHybrid'/'Optimus' in the BIOS."
-msgstr "NVIDIA controla la pantalla integrada (modo de GPU «Discrete»/MUX en la BIOS). Apagar NVIDIA dejaría la pantalla en negro; elige «MSHybrid»/«Optimus» en la BIOS."
+msgid ""
+"NVIDIA drives the built-in display (GPU mode 'Discrete'/MUX in the BIOS). "
+"Turning NVIDIA off would black out the screen; choose 'MSHybrid'/'Optimus' "
+"in the BIOS."
+msgstr ""
+"NVIDIA controla la pantalla integrada (modo de GPU «Discrete»/MUX en la "
+"BIOS). Apagar NVIDIA dejaría la pantalla en negro; elige "
+"«MSHybrid»/«Optimus» en la BIOS."
 
 #: src/pil_modu/privileged/gpu_boot.py:137
 msgid "Unexpected configuration; existing files were not touched"
@@ -723,7 +747,9 @@ msgstr "Regenerando las imágenes de arranque; puede tardar unos minutos..."
 
 #: src/pil_modu/privileged/gpu_boot.py:159
 msgid "GPU configuration rolled back; rebuilding the previous boot images."
-msgstr "Configuración de GPU revertida; regenerando las imágenes de arranque anteriores."
+msgstr ""
+"Configuración de GPU revertida; regenerando las imágenes de arranque "
+"anteriores."
 
 #: src/pil_modu/privileged/gpu_boot.py:162
 msgid "GPU boot setting saved:"
@@ -754,7 +780,7 @@ msgstr "Límite de carga no admitido:"
 msgid "Skipped (device missing):"
 msgstr "Omitido (falta el dispositivo):"
 
-#: src/pil_modu/privileged/hardware.py:280
+#: src/pil_modu/privileged/hardware.py:283
 #, python-brace-format
 msgid "{path} does not belong to pil-modu; not touched"
 msgstr "{path} no pertenece a pil-modu; no se tocó"
@@ -816,8 +842,12 @@ msgid "Plugged in, waiting to charge."
 msgstr "Enchufado, esperando para cargar."
 
 #: src/pil_modu/ui/charge.py:34
-msgid "The highest level the battery charges to. Independent of modes and restored at boot. 60% and 80% extend battery life."
-msgstr "El nivel máximo de carga de la batería. Es independiente de los modos y se restaura al arrancar. 60% y 80% alargan la vida útil de la batería."
+msgid ""
+"The highest level the battery charges to. Independent of modes and restored "
+"at boot. 60% and 80% extend battery life."
+msgstr ""
+"El nivel máximo de carga de la batería. Es independiente de los modos y se "
+"restaura al arrancar. 60% y 80% alargan la vida útil de la batería."
 
 #: src/pil_modu/ui/charge.py:62
 msgid "This computer does not support a charge limit."
@@ -844,46 +874,66 @@ msgid "Switch modes when the charger is plugged in or out"
 msgstr "Cambiar de modo al conectar o desconectar el cargador"
 
 #: src/pil_modu/ui/settings_dialog.py:54
-msgid "Switch without asking for a password"
-msgstr "Cambiar sin pedir contraseña"
+msgid "Do not ask for the administrator password"
+msgstr "No pedir la contraseña de administrador"
 
-#: src/pil_modu/ui/settings_dialog.py:56
-msgid "Adds a polkit rule so local administrators of this session can apply modes without a password. Only the pil-modu hardware helper is allowed, and only whitelisted settings."
-msgstr "Añade una regla de polkit para que los administradores locales de esta sesión apliquen modos sin contraseña. Solo se permite el asistente de hardware de pil-modu y solo los ajustes de la lista permitida."
-
-#: src/pil_modu/ui/settings_dialog.py:61
+#: src/pil_modu/ui/settings_dialog.py:58
 msgid "Start in the system tray when I log in"
 msgstr "Iniciar en la bandeja del sistema al iniciar sesión"
 
-#: src/pil_modu/ui/settings_dialog.py:65 src/pil_modu/ui/window.py:417
+#: src/pil_modu/ui/settings_dialog.py:62 src/pil_modu/ui/window.py:425
 msgid "Language"
 msgstr "Idioma"
 
-#: src/pil_modu/ui/settings_dialog.py:67
+#: src/pil_modu/ui/settings_dialog.py:64
 msgid "A new language is used after the app restarts."
 msgstr "El nuevo idioma se usará al reiniciar la aplicación."
 
-#: src/pil_modu/ui/settings_dialog.py:69
+#: src/pil_modu/ui/settings_dialog.py:66
 msgid "Battery modes"
 msgstr "Modos de batería"
 
-#: src/pil_modu/ui/settings_dialog.py:73
+#: src/pil_modu/ui/settings_dialog.py:70
 msgid "Automatic mode"
 msgstr "Modo automático"
 
-#: src/pil_modu/ui/settings_dialog.py:76
+#: src/pil_modu/ui/settings_dialog.py:73
 msgid "Plugged in"
 msgstr "Enchufado"
 
-#: src/pil_modu/ui/settings_dialog.py:77
+#: src/pil_modu/ui/settings_dialog.py:74
 msgid "On battery"
 msgstr "Con batería"
 
-#: src/pil_modu/ui/settings_dialog.py:80
-msgid "Automatic switches do not change the NVIDIA boot setting, so the boot image is not rebuilt each time. Apply a battery mode by hand to turn NVIDIA fully off. The app must be running (tray is enough)."
-msgstr "Los cambios automáticos no modifican el ajuste de arranque de NVIDIA, así que la imagen de arranque no se regenera cada vez. Aplica un modo de batería a mano para apagar NVIDIA por completo. La aplicación debe estar abierta (basta con la bandeja)."
+#: src/pil_modu/ui/settings_dialog.py:76
+msgid ""
+"Automatic switches do not change the NVIDIA boot setting, so the boot image "
+"is not rebuilt each time. Apply a battery mode by hand to turn NVIDIA fully "
+"off. The app must be running (tray is enough)."
+msgstr ""
+"Los cambios automáticos no modifican el ajuste de arranque de NVIDIA, así "
+"que la imagen de arranque no se regenera cada vez. Aplica un modo de batería "
+"a mano para apagar NVIDIA por completo. La aplicación debe estar abierta "
+"(basta con la bandeja)."
 
-#: src/pil_modu/ui/settings_dialog.py:84
+#: src/pil_modu/ui/settings_dialog.py:80
+msgid "Administrator password"
+msgstr "Contraseña de administrador"
+
+#: src/pil_modu/ui/settings_dialog.py:82
+msgid ""
+"Applies to switching modes, the charge limit and automatic mode. Adds a "
+"polkit rule for local administrators (wheel) of an active session; only the "
+"two pil-modu helpers are allowed, and they only write whitelisted settings. "
+"You are asked for the password once to turn this on or off."
+msgstr ""
+"Se aplica al cambio de modo, al límite de carga y al modo automático. Añade "
+"una regla de polkit para los administradores locales (wheel) de una sesión "
+"activa; solo se permiten los dos asistentes de pil-modu, que solo escriben "
+"ajustes de la lista permitida. La contraseña se pide una vez al activarlo o "
+"desactivarlo."
+
+#: src/pil_modu/ui/settings_dialog.py:88
 msgid "System tray"
 msgstr "Bandeja del sistema"
 
@@ -926,8 +976,12 @@ msgid "average {watts}"
 msgstr "media {watts}"
 
 #: src/pil_modu/ui/status_strip.py:39
-msgid "Plugged in, the battery only reports its charging power, so the laptop's power use cannot be measured. Unplug to see it."
-msgstr "Enchufado, la batería solo informa de su potencia de carga, así que no se puede medir el consumo del portátil. Desenchúfalo para verlo."
+msgid ""
+"Plugged in, the battery only reports its charging power, so the laptop's "
+"power use cannot be measured. Unplug to see it."
+msgstr ""
+"Enchufado, la batería solo informa de su potencia de carga, así que no se "
+"puede medir el consumo del portátil. Desenchúfalo para verlo."
 
 #: src/pil_modu/ui/status_strip.py:42
 msgid "The average appears after a few seconds on battery."
@@ -935,8 +989,12 @@ msgstr "La media aparece tras unos segundos con batería."
 
 #: src/pil_modu/ui/status_strip.py:43
 #, python-brace-format
-msgid "Average since the charger was unplugged ({minutes} min). Resets when you plug it in."
-msgstr "Media desde que se desconectó el cargador ({minutes} min). Se reinicia al enchufarlo."
+msgid ""
+"Average since the charger was unplugged ({minutes} min). Resets when you "
+"plug it in."
+msgstr ""
+"Media desde que se desconectó el cargador ({minutes} min). Se reinicia al "
+"enchufarlo."
 
 #: src/pil_modu/ui/status_strip.py:49
 msgid "NVIDIA off"
@@ -1002,7 +1060,7 @@ msgstr "Todavía se está aplicando otro cambio."
 msgid "Average over {minutes} min on battery"
 msgstr "Media de {minutes} min con batería"
 
-#: src/pil_modu/ui/tray.py:97 src/pil_modu/ui/window.py:374
+#: src/pil_modu/ui/tray.py:97 src/pil_modu/ui/window.py:382
 #, python-brace-format
 msgid "{name} applied."
 msgstr "{name} aplicado."
@@ -1022,17 +1080,26 @@ msgid "Not available here: {reason}"
 msgstr "No disponible aquí: {reason}"
 
 #: src/pil_modu/ui/window.py:41
-msgid "The msi-ec driver was not found: fan, EC mode and Cooler Boost cannot be changed (AUR: msi-ec-dkms-git)."
-msgstr "No se encontró el controlador msi-ec: no se pueden cambiar el ventilador, el modo del EC ni Cooler Boost (AUR: msi-ec-dkms-git)."
+msgid ""
+"The msi-ec driver was not found: fan, EC mode and Cooler Boost cannot be "
+"changed (AUR: msi-ec-dkms-git)."
+msgstr ""
+"No se encontró el controlador msi-ec: no se pueden cambiar el ventilador, el "
+"modo del EC ni Cooler Boost (AUR: msi-ec-dkms-git)."
 
 #: src/pil_modu/ui/window.py:44
-msgid "KDE Plasma 6 was not found: refresh rate and brightness are not changed."
+msgid ""
+"KDE Plasma 6 was not found: refresh rate and brightness are not changed."
 msgstr "No se encontró KDE Plasma 6: no se cambian la frecuencia ni el brillo."
 
 #: src/pil_modu/ui/window.py:46
 #, python-brace-format
-msgid "{services} is running and conflicts with power profiles; modes may fail to verify. Disable one of them."
-msgstr "{services} está en ejecución y entra en conflicto con los perfiles de energía; los modos podrían no verificarse. Desactiva uno de ellos."
+msgid ""
+"{services} is running and conflicts with power profiles; modes may fail to "
+"verify. Disable one of them."
+msgstr ""
+"{services} está en ejecución y entra en conflicto con los perfiles de "
+"energía; los modos podrían no verificarse. Desactiva uno de ellos."
 
 #: src/pil_modu/ui/window.py:54
 msgid "Activity log"
@@ -1042,13 +1109,17 @@ msgstr "Registro de actividad"
 msgid "Applied steps appear here."
 msgstr "Aquí aparecen los pasos aplicados."
 
-#: src/pil_modu/ui/window.py:157 src/pil_modu/ui/window.py:427
+#: src/pil_modu/ui/window.py:157 src/pil_modu/ui/window.py:435
 msgid "Restart"
 msgstr "Reiniciar"
 
 #: src/pil_modu/ui/window.py:194
-msgid "Whether external displays stay on in this mode. Their refresh rate and resolution never change."
-msgstr "Si las pantallas externas siguen encendidas en este modo. Su frecuencia y resolución nunca cambian."
+msgid ""
+"Whether external displays stay on in this mode. Their refresh rate and "
+"resolution never change."
+msgstr ""
+"Si las pantallas externas siguen encendidas en este modo. Su frecuencia y "
+"resolución nunca cambian."
 
 #: src/pil_modu/ui/window.py:215
 msgid "Show log"
@@ -1062,75 +1133,79 @@ msgstr "Restaurar ajustes anteriores"
 msgid "Previous settings"
 msgstr "Ajustes anteriores"
 
-#: src/pil_modu/ui/window.py:231 src/pil_modu/ui/window.py:312
+#: src/pil_modu/ui/window.py:231 src/pil_modu/ui/window.py:318
 msgid "Apply"
 msgstr "Aplicar"
 
-#: src/pil_modu/ui/window.py:303
+#: src/pil_modu/ui/window.py:309
 #, python-brace-format
-msgid "{outputs} is wired to NVIDIA: it turns off in battery mode and cannot be used until NVIDIA is back."
-msgstr "{outputs} está conectada a NVIDIA: se apaga en modo batería y no se puede usar hasta que vuelva NVIDIA."
+msgid ""
+"{outputs} is wired to NVIDIA: it turns off in battery mode and cannot be "
+"used until NVIDIA is back."
+msgstr ""
+"{outputs} está conectada a NVIDIA: se apaga en modo batería y no se puede "
+"usar hasta que vuelva NVIDIA."
 
-#: src/pil_modu/ui/window.py:312
+#: src/pil_modu/ui/window.py:318
 msgid "Apply again"
 msgstr "Aplicar de nuevo"
 
-#: src/pil_modu/ui/window.py:320
+#: src/pil_modu/ui/window.py:328
 #, python-brace-format
 msgid "Active mode: {mode}"
 msgstr "Modo activo: {mode}"
 
-#: src/pil_modu/ui/window.py:321
+#: src/pil_modu/ui/window.py:329
 msgid "No mode applied yet (system settings)"
 msgstr "Aún no se aplicó ningún modo (ajustes del sistema)"
 
-#: src/pil_modu/ui/window.py:326
+#: src/pil_modu/ui/window.py:334
 msgid "NVIDIA will be disabled after a restart."
 msgstr "NVIDIA se desactivará tras reiniciar."
 
-#: src/pil_modu/ui/window.py:327
+#: src/pil_modu/ui/window.py:335
 msgid "NVIDIA will be available again after a restart."
 msgstr "NVIDIA volverá a estar disponible tras reiniciar."
 
-#: src/pil_modu/ui/window.py:350
+#: src/pil_modu/ui/window.py:358
 #, python-brace-format
 msgid "{limit}% charge limit"
 msgstr "Límite de carga del {limit}%"
 
-#: src/pil_modu/ui/window.py:355
+#: src/pil_modu/ui/window.py:363
 #, python-brace-format
 msgid "Password-free switching {state}"
 msgstr "Cambio sin contraseña: {state}"
 
-#: src/pil_modu/ui/window.py:362
+#: src/pil_modu/ui/window.py:370
 #, python-brace-format
 msgid "Applying {name}… An administrator password may be requested."
 msgstr "Aplicando {name}… Puede que se pida la contraseña de administrador."
 
-#: src/pil_modu/ui/window.py:376
+#: src/pil_modu/ui/window.py:384
 #, python-brace-format
 msgid "{count} setting changed."
 msgid_plural "{count} settings changed."
 msgstr[0] "Cambió {count} ajuste."
 msgstr[1] "Cambiaron {count} ajustes."
 
-#: src/pil_modu/ui/window.py:380
+#: src/pil_modu/ui/window.py:388
 #, python-brace-format
 msgid "{name} could not be applied. See the log for details."
 msgstr "No se pudo aplicar {name}. Consulta el registro para más detalles."
 
-#: src/pil_modu/ui/window.py:418
+#: src/pil_modu/ui/window.py:426
 msgid "The new language is used after the app restarts."
 msgstr "El nuevo idioma se usará al reiniciar la aplicación."
 
-#: src/pil_modu/ui/window.py:427
+#: src/pil_modu/ui/window.py:435
 msgid "Restart the computer now?"
 msgstr "¿Reiniciar el equipo ahora?"
 
-#: src/pil_modu/ui/window.py:437
+#: src/pil_modu/ui/window.py:445
 msgid "Still working"
 msgstr "Todavía trabajando"
 
-#: src/pil_modu/ui/window.py:438
+#: src/pil_modu/ui/window.py:446
 msgid "You can close the window when the settings are applied."
 msgstr "Puedes cerrar la ventana cuando se apliquen los ajustes."
