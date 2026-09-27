@@ -41,6 +41,10 @@ def hardware_plan(original, preset, options=None):
     result.update(mode_settings(preset))
     if preset.is_battery:
         result.update(battery_savings(result, options))
+    if not options["bluetooth_off_on_battery"]:
+        # Seçenek kapalıyken Bluetooth kullanıcının; ilk kayıttaki haline de döndürülmez.
+        for path in hw.BLUETOOTH:
+            result.pop(path, None)
     return result
 
 

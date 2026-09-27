@@ -33,6 +33,15 @@ class PresetTests(unittest.TestCase):
             self.assertEqual(balanced[hw.SOUND_POWER_SAVE], "0")
             self.assertEqual(balanced["/sys/bus/pci/x"], "on")
 
+    def test_bluetooth_untouched_unless_option_enabled(self):
+        bt = "/sys/class/bluetooth/hci0/rfkill0/soft"
+        with patch.object(hw, "BLUETOOTH", [bt]):
+            for mode in ("batarya", "dengeli"):
+                self.assertNotIn(bt, plan.hardware_plan({bt: "0"}, PRESETS[mode]))
+            on = {"bluetooth_off_on_battery": True}
+            self.assertEqual(plan.hardware_plan({bt: "0"}, PRESETS["batarya"], on)[bt], "1")
+            self.assertEqual(plan.hardware_plan({bt: "0"}, PRESETS["dengeli"], on)[bt], "0")
+
     def test_battery_skips_missing_settings(self):
         self.assertNotIn(hw.SOUND_POWER_SAVE, plan.hardware_plan({}, PRESETS["batarya"]))
 
