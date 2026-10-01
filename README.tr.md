@@ -1,181 +1,124 @@
-# msi-ultrapower — KDE Plasma'da MSI dizüstüleri için güç modları
+# msi-ultrapower
 
-[English](README.md) · **Türkçe**
+**KDE Plasma'da MSI dizüstüleri için güç modları.**
 
-Tek tıkla MSI dizüstünü performans, dengeli ya da batarya moduna geçirir. Her mod güç
-profilini, ekranın yenileme hızını ve parlaklığını, MSI EC'yi (fan, shift mode, Cooler Boost),
-CPU turbo'yu, klavye ışığını, aygıt güç tasarrufunu ve NVIDIA ekran kartını birlikte ayarlar.
-Bir adım başarısız olursa hepsini geri alır.
+[English](README.md) · **Türkçe** · [Русский](README.ru.md) · [Español](README.es.md) · [العربية](README.ar.md)
+
+MSI dizüstünü tek tıkla performans, dengeli ya da batarya moduna geçirir. Her mod güç profilini,
+ekranın yenileme hızını ve parlaklığını, fanı ve EC modunu, CPU turbo'yu, klavye ışığını, aygıt
+güç tasarrufunu ve NVIDIA ekran kartını birlikte ayarlar; bir adım başarısız olursa hepsini geri alır.
 
 ![Güç Modları penceresi](docs/screenshot.png)
 
-- **Uygulamadan önce gör.** Pencere *senin* bilgisayarında tam olarak hangi ayarların
-  değişeceğini listeler ("11 ayar değişecek: parlaklık %100 → %30 …"). Bir modun üzerine
-  gelince yaptığı her şey görünür.
-- **Pil bakımı.** %60 / %80 / %100 şarj sınırı; açılışta geri yüklenir.
-- **TLP gibi batarya modu, fazlasıyla.** PCI güç yönetimi, ses kartı ve disk tasarrufu; NVIDIA
-  sonraki açılışta tamamen kapanır.
-- **Otomatik mod.** Şarj aleti takılınca/çekilince mod değiştirir.
-- **Sistem tepsisi.** Pencereyi açmadan mod ve şarj sınırı değiştir.
-- **Canlı durum.** Pil, pildeyken anlık ve ortalama güç tüketimi, CPU/GPU sıcaklığı ve fan hızı, NVIDIA durumu (tepsi ipucunda da).
-- **Diller.** English, Türkçe, Русский, Español, العربية (sağdan sola).
-
-## Modlar
-
-| Mod (komut) | Güç profili / turbo | EC / fan | Dahili ekran | NVIDIA |
-|---|---|---|---|---|
-| `performans` | performance / açık | turbo / Cooler Boost | en yüksek Hz · %100 | hep uyanık |
-| `performans-manuel` | performance / açık | turbo / `advanced` (MControlCenter eğrisi) | en yüksek Hz · %100 | hep uyanık |
-| `dengeli` | balanced / açık | comfort / otomatik | en yüksek Hz · %60 | boşta uyur |
-| `batarya` | power-saver / kapalı | eco / otomatik | en yüksek Hz · %30 | yeniden başlatınca kapalı |
-| `batarya-48` | power-saver / kapalı | eco / otomatik | en düşük Hz (örn. 48) · %30 | yeniden başlatınca kapalı |
-
-Batarya modları klavye ışığını da kapatır; PCI aygıtları, ses kartı ve disk uyuyabilir
-(Ayarlar'dan kapatılabilir). İstersen Bluetooth da kapanır. Harici ekranların Hz'i ve
-çözünürlüğü hiçbir modda değişmez. Batarya modlarında yalnızca NVIDIA'ya bağlı çıkışlar
-zorunlu kapanır; diğerleri seçimine göre.
-
-Diğer modlar ve **Önceki ayarlara dön** bunları ilk moddan önceki haline döndürür.
-
-## Gereksinimler ve uyumluluk
-
-- **Arch tabanlı dağıtım** (Arch, CachyOS, EndeavourOS, Manjaro), **KDE Plasma 6** ve
-  `power-profiles-daemon`.
-- Fan, EC modu, Cooler Boost ve şarj sınırı için **[msi-ec](https://github.com/BeardOverflow/msi-ec)**
-  (AUR: `msi-ec-dkms-git`). msi-ec belirli EC firmware sürümlerini destekler; yoksa bu ayarlar
-  atlanır, geri kalanı çalışır.
-
-Program tek bir modele göre değil, bulunduğu makineye göre davranır:
-
-| Alan | Nasıl uyum sağlar |
-|---|---|
-| EC | EC'nin bildirdiği shift ve fan modlarını kullanır; olmayan modun yerine en yakını seçilir. EC'de `advanced` fan modu yoksa manuel fan modu kapanır. |
-| Ekran | Panelin en yüksek / en düşük Hz'i kullanılır (120, 144, 165, 240 Hz paneller olur). Tek Hz'li panelde düşük Hz modu kapanır. |
-| NVIDIA | PCI adresine göre değil üreticiye göre bulunur. NVIDIA yoksa GPU adımı atlanır. |
-| **MUX anahtarı** | BIOS'ta GPU modu *Discrete* ise ve dahili ekranı NVIDIA sürüyorsa NVIDIA'yı kapatmak **reddedilir** (ekran kararırdı). BIOS'ta *MSHybrid/Optimus* seç. |
-| CPU turbo | Intel (`intel_pstate/no_turbo`) ve AMD (`cpufreq/boost`). |
-| Diğer | Pil, klavye ışığı ve Bluetooth adlarıyla aranır; olmayan atlanır. Çalışan TLP, auto-cpufreq ya da tuned çakışma olarak bildirilir. |
-
-Bilgisayarında neyin çalıştığını görmek için `msi-ultrapower doctor` çalıştır. GF65 Thin 9SEXR
-üzerinde geliştirildi; başka modellerden gelen raporlar çok değerli
-(bkz. [Modelini bildir](#modelini-bildir)).
-
 ## Kurulum
 
+KDE Plasma 6 kullanan Arch, CachyOS, EndeavourOS ya da Manjaro'da:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/bugrakaann/msi-ultrapower/main/install.sh | bash
 ```
+
+Güncellemek için aynı komutu yeniden çalıştır. Fan, EC modu, Cooler Boost ve şarj sınırı için
+AUR'dan [msi-ec](https://github.com/BeardOverflow/msi-ec) sürücüsünü de kur (`msi-ec-dkms-git`) ve
+yeniden başlat. O olmadan da geri kalan her şey çalışır.
+
+<details>
+<summary>Elle kurulum</summary>
+
+```sh
 git clone https://github.com/bugrakaann/msi-ultrapower.git
 cd msi-ultrapower
-make install      # paketi derler ve pacman ile kurar (güncellemek için de aynı komut)
-make uninstall    # kaldırır (sudo pacman -R msi-ultrapower)
+make install
 ```
 
-Kaldırmadan önce ekran ve donanım ayarlarını eski haline getirmek için `msi-ultrapower geri`
-çalıştır. Kişisel veriler `~/.local/share/msi-ultrapower` ve `~/.config/msi-ultrapower` içinde kalır.
+</details>
 
-## Kullanım
+## Nasıl kullanılır
 
-Uygulama menüsünde **Güç Modları**: modu seç, neyin değişeceğine bak, **Uygula**'ya bas.
-⚙ düğmesi Ayarlar'ı açar (dil, batarya modu seçenekleri, otomatik mod, tepsi).
+1. Uygulama menüsünden **Güç Modları**'nı aç.
+2. Bir mod seç. Pencere, bilgisayarında tam olarak neyin değişeceğini listeler.
+3. **Uygula**'ya bas ve parolanı gir.
 
-Komut satırı (İngilizce komut adları da çalışır):
+Uygulamayı ilk kullanmadan önceki haline dönmek için **Önceki ayarlara dön**'e bas. Batarya
+modları NVIDIA'yı yeniden başlatınca tamamen kapatır; yeniden başlatman gerektiğinde pencere söyler.
 
+### Modlar
+
+| Mod | Ne yapar |
+|---|---|
+| **Maksimum performans** | Performans profili, turbo, Cooler Boost, en yüksek Hz, %100 parlaklık |
+| **Performans · Manuel fan** | Aynısı, kendi fan eğrinle (MControlCenter'da ayarla) |
+| **Dengeli** | Dengeli profil, otomatik fan, %60 parlaklık, NVIDIA boştayken uyur |
+| **Maksimum batarya** | Güç tasarrufu, turbo kapalı, %30 parlaklık, NVIDIA kapalı, aygıtlar uyur, klavye ışığı kapalı |
+| **Maksimum batarya · Düşük Hz** | Aynısı, ayrıca ekranın en düşük yenileme hızı |
+
+Harici ekranların çözünürlüğü ve Hz'i değişmez. NVIDIA'ya bağlı çıkışlar batarya modlarında
+kapanır, çünkü NVIDIA kapalıdır.
+
+### Ayarlar (⚙)
+
+- **Şarj sınırı** – pili %60, %80 ya da %100'e kadar doldur. %60–80 pil ömrünü uzatır.
+- **Otomatik mod** – şarj aleti takılınca ya da çekilince mod değiştir.
+- **Yönetici parolasını sorma** – mod değiştirme, şarj sınırı ve otomatik mod parola sormaz.
+- **Oturum açınca sistem tepsisinde başlat** – tepsiden mod değiştir; pil, güç tüketimi ve sıcaklıkları gör.
+- **Batarya modu seçenekleri** – aygıtlar uyusun, Bluetooth kapansın.
+- **Dil** – English, Türkçe, Русский, Español, العربية.
+
+### Komut satırı
+
+Türkçe ve İngilizce komut adları birlikte çalışır.
+
+```sh
+msi-ultrapower dengeli          # performans, performans-manuel, dengeli, batarya, batarya-48
+msi-ultrapower batarya --dene   # neyin değişeceğini göster, hiçbir şeyi değiştirme
+msi-ultrapower geri             # ilk moddan önceki ayarlara dön
+msi-ultrapower sarj 80          # şarj sınırı: 60, 80 ya da 100
+msi-ultrapower durum            # şu anki değerler
+msi-ultrapower doctor           # bu bilgisayarda neler çalışıyor
 ```
-msi-ultrapower dengeli                 # modu uygula
-msi-ultrapower dengeli --harici koru   # harici ekranı açık tut (otomatik | koru | kapat)
-msi-ultrapower batarya --dene          # hiçbir şeyi değiştirmeden planı göster
-msi-ultrapower durum                   # gerçek değerleri göster
-msi-ultrapower geri                    # ilk moddan önceki ayarlara dön
-msi-ultrapower sarj 80                 # pil en fazla %80'e kadar dolsun (60 | 80 | 100)
-msi-ultrapower doctor                  # uyumluluk raporu
-msi-ultrapower-ui --tray               # sistem tepsisinde başlat
+
+## Uyumluluk
+
+MSI GF65 Thin 9SEXR üzerinde geliştirildi. Program tek bir modele göre değil, bilgisayarının
+desteklediğine göre çalışır: EC ve fan modları, ekran yenileme hızları (120–240 Hz), Intel ya da
+AMD turbo ve NVIDIA olup olmadığı algılanır. Olmayan özellikler atlanır ve pencerede gösterilir.
+
+- **MUX anahtarı:** BIOS'ta GPU modu *Discrete* ise ekranı NVIDIA sürer ve program onu kapatmaz.
+  Batarya modlarını tam kullanmak için BIOS'ta *MSHybrid/Optimus* seç.
+- **TLP, auto-cpufreq, tuned** güç profilleriyle çakışır; biri çalışıyorsa program uyarır.
+
+Modelinde nasıl çalıştığını bildirmek için `msi-ultrapower doctor` çıktısıyla
+[bir issue aç](https://github.com/bugrakaann/msi-ultrapower/issues/new?template=model-report.md).
+
+## Kaldırma
+
+```sh
+msi-ultrapower geri           # isteğe bağlı: önceki ayarlarına dön
+sudo pacman -R msi-ultrapower
 ```
 
-### Otomatik mod
+Ayarların `~/.config/msi-ultrapower` ve `~/.local/share/msi-ultrapower` içinde kalır.
 
-Ayarlar'da *prizde* ve *pilde* için birer mod seç. Uygulama açık olduğu sürece (tepside olması
-yeterli; *Oturum açınca sistem tepsisinde başlat*'ı aç) şarj aleti takılınca/çekilince mod
-değişir. Otomatik geçişler NVIDIA açılış ayarına dokunmaz; böylece her fiş çekişinde açılış
-imajı yeniden oluşturulmaz. NVIDIA'yı tamamen kapatmak için batarya modunu elle uygula.
+## Sorun giderme
 
-### Parola sormadan
+**Batarya modundan sonra masaüstü açılmıyor.** Ctrl+Alt+F3 ile metin konsoluna geç, giriş yap ve
+şunu çalıştır:
 
-Ayarlar'daki *Yönetici parolasını sorma*, yerel ve etkin oturumdaki yöneticilerin (`wheel`)
-msi-ultrapower yardımcısını parolasız çalıştırmasına izin veren bir polkit kuralı ekler: mod
-değiştirme, şarj sınırı ve otomatik mod artık parola sormaz. Başka hiçbir şeye izin verilmez.
-Seçeneği kapatınca ya da paketi kaldırınca kural silinir.
-
-## Modelini bildir
-
-Şu komutun çıktısıyla bir issue aç:
-
-```
-msi-ultrapower doctor
-```
-
-Model, EC firmware'i, kullanılabilir EC/fan modları, panel Hz'leri, NVIDIA'ya bağlı çıkışlar ve
-çakışan servisler listelenir.
-
-## Çeviriler
-
-Çeviriler `po/` klasöründe. Bir dil eklemek ya da düzeltmek için `po/<kod>.po` dosyasını
-düzenle ya da oluştur (`po/msi-ultrapower.pot`'tan başla), denemek için `make locale && make run`
-çalıştır ve pull request aç. Mevcut çeviriler makine destekli; anadili konuşanların
-düzeltmeleri memnuniyetle karşılanır.
-
-## Güvenlik ve geri alma
-
-- Root yalnızca tek bir küçük yardımcıyla, `/usr/lib/msi-ultrapower/msi-ultrapower-hardware`,
-  `pkexec` üzerinden kullanılır (polkit eylemi `io.github.bugrakaann.msiultrapower.hardware`). Bir
-  mod geçişi NVIDIA açılış ayarı dahil parolayı bir kez sorar; NVIDIA ayarı değişmiyorsa onun için
-  hiç sormaz. Sürekli çalışan root servisi ya da sudo kuralı yoktur.
-- Donanım yardımcısı yalnızca izin listesindeki dosyalara (`privileged/hardware.py`'deki
-  `ALLOWED`) ve izin verilen değerlerle yazar.
-- Ayarları uygular ve `COMMIT` bekler. KDE tarafı (profil, ekranlar) doğrulanamazsa her şey
-  geri alınır. *Önceki ayarlara dön* açılışta geri yüklenen değerleri de kaldırır.
-- GPU yapılandırması başarısız olursa dosyalar geri alınır ve açılış imajları yeniden oluşturulur.
-
-**Kurtarma:** Grafik oturum açılmazsa TTY'ye geç (Ctrl+Alt+F3) ve çalıştır:
-
-```
+```sh
 sudo /usr/lib/msi-ultrapower/msi-ultrapower-gpu-boot hybrid
 ```
 
-Sonra yeniden başlat. Bu yalnızca bu aracın koyduğu NVIDIA engelini kaldırır.
+Sonra yeniden başlat. Bu yalnızca msi-ultrapower'ın eklediği NVIDIA engelini kaldırır.
 
-## Nereye ne kurulur
-
-| Yol | Ne |
-|---|---|
-| `/usr/bin/msi-ultrapower`, `/usr/bin/msi-ultrapower-ui` | Komutlar |
-| `/usr/lib/msi-ultrapower/` | Root yardımcısı (polkit eylemi buraya bağlı) ve GPU kurtarma komutu |
-| `/usr/lib/python3.X/site-packages/msi_ultrapower/` | Program kodu |
-| `/usr/share/polkit-1/actions/io.github.bugrakaann.msiultrapower.policy` | Polkit eylemleri |
-| `/usr/lib/systemd/system/msi-ultrapower-restore.service` | Açılışta donanım ayarlarını ve şarj sınırını geri yükler |
-| `/usr/share/locale/*/LC_MESSAGES/msi-ultrapower.mo` | Çeviriler |
-| `/var/lib/msi-ultrapower/` | Açılışta geri yüklenecek donanım değerleri ve şarj sınırı |
-| `/etc/modprobe.d/90-msi-ultrapower-nvidia.conf`, `/etc/udev/rules.d/50-msi-ultrapower-nvidia.rules`, `/etc/{mkinitcpio,dracut}.conf.d/99-msi-ultrapower-gpu.conf` | Yalnızca batarya modlarında: NVIDIA'yı açılışta kapatır |
-| `~/.config/msi-ultrapower/settings.json` | Ayarların |
-| `~/.local/share/msi-ultrapower/` | İlk moddan önceki ayarlar, aktif mod, geçmiş |
-
-## Geliştirme
-
-```
-make test     # birim testleri
-make run      # arayüzü kurmadan src/ içinden çalıştır
-make po       # metinleri po/msi-ultrapower.pot'a çıkar, çevirileri güncelle
-make locale   # make run için çevirileri derle
-make clean    # derleme artıklarını sil
-```
-
-Proje yapısı ve katmanlar için İngilizce README'deki *Development* bölümüne bak. Arayüz
-donanıma kendisi dokunmaz; CLI'yi çalıştırır, böylece terminal ve pencere hep aynı davranır.
+**Bir şey başarısız oldu.** Penceredeki **Günlüğü göster**'e bas ya da aynı modu terminalden
+çalıştırıp tüm çıktıyı gör.
 
 ## Sorumluluk reddi
 
 msi-ultrapower resmi olmayan bir projedir; Micro-Star International (MSI) ile bağlantısı yoktur ve
-MSI tarafından onaylanmamıştır. Gömülü denetleyiciye (EC), çekirdek modülü ve açılış ayarlarına
-yazar; kullanım sorumluluğu sana aittir. Hiçbir garanti verilmez (lisansın 15–16. maddeleri).
+MSI tarafından onaylanmamıştır. Gömülü denetleyici (EC), çekirdek modülü ve açılış ayarlarını
+değiştirir; kullanım sorumluluğu sana aittir. Hiçbir garanti verilmez.
 
 ## Lisans
 
-GPL-3.0-or-later. Bkz. [LICENSE](LICENSE).
+[GPL-3.0-or-later](LICENSE)

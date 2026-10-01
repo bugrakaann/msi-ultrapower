@@ -36,8 +36,7 @@ package() {
     install -Dm644 "$_repo/data/io.github.bugrakaann.msiultrapower.policy" "$pkgdir/usr/share/polkit-1/actions/io.github.bugrakaann.msiultrapower.policy"
     install -Dm644 "$_repo/data/msi-ultrapower.desktop" "$pkgdir/usr/share/applications/msi-ultrapower.desktop"
     install -Dm644 "$_repo/data/msi-ultrapower-restore.service" "$pkgdir/usr/lib/systemd/system/msi-ultrapower-restore.service"
-    install -Dm644 "$_repo/README.md" "$pkgdir/usr/share/doc/msi-ultrapower/README.md"
-    install -Dm644 "$_repo/README.tr.md" "$pkgdir/usr/share/doc/msi-ultrapower/README.tr.md"
+    install -Dm644 -t "$pkgdir/usr/share/doc/msi-ultrapower" "$_repo"/README*.md
     install -Dm644 "$_repo/LICENSE" "$pkgdir/usr/share/licenses/msi-ultrapower/LICENSE"
 
     # Çeviriler: po/xx.po → /usr/share/locale/xx/LC_MESSAGES/msi-ultrapower.mo

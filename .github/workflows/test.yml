@@ -19,6 +19,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gettext libegl1 libxkbcommon0
           pip install PySide6
+      - name: Check install script
+        run: bash -n install.sh
       - name: Byte-compile
         run: python -m compileall -q src
       - name: Check translations
