@@ -8,9 +8,9 @@ kardeş modülü gpu_boot'u (o da yalnızca standart kütüphane) kullanır.
         COMMIT gelmezse eski değerlere döner ("ROLLED_BACK").
         COMMIT gelirse ayarları açılışta geri yüklenmek üzere kaydeder ("COMMITTED"); istenirse
         NVIDIA açılış ayarını da aynı yetkiyle yapar. Böylece bir mod geçişi tek parola ister.
-  * pkexec ile şarj sınırı:  --sarj 80
+  * pkexec ile şarj sınırı:  --charge 80
         Pilin şarj sınırını yazar, doğrular ve açılışta geri yüklenmek üzere kaydeder.
-  * pkexec ile parolasız geçiş:  --parolasiz 1|0
+  * pkexec ile parolasız geçiş:  --passwordless 1|0
         Yalnızca bu yardımcının polkit eylemi için kural yazar/siler.
   * Açılışta systemd ile (msi-ultrapower-restore.service):  --restore
 
@@ -322,9 +322,9 @@ def set_passwordless(enabled):
 def main(argv):
     if argv[1] == "--restore":
         restore()
-    elif argv[1] == "--sarj":
+    elif argv[1] == "--charge":
         set_charge_limit(argv[2])
-    elif argv[1] == "--parolasiz":
+    elif argv[1] == "--passwordless":
         set_passwordless(argv[2] == "1")
     else:
         transaction(json.loads(argv[1]))

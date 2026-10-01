@@ -121,10 +121,10 @@ class MainWindow(QWidget):
         root.addWidget(self._build_action_bar())
 
         active = state.load_active() or {}
-        initial = active.get("mod")
+        initial = active.get("mode")
         if initial not in PRESETS or self.cards[initial].unsupported:
-            initial = "dengeli"
-        self.external.setCurrentIndex(max(0, self.external.findData(active.get("harici", "otomatik"))))
+            initial = "balanced"
+        self.external.setCurrentIndex(max(0, self.external.findData(active.get("external", "auto"))))
         self._select(initial)
 
         self.timer = QTimer(self)
@@ -227,7 +227,7 @@ class MainWindow(QWidget):
         self.restore_button = link_button(_("Restore previous settings"), "edit-undo")
         self.restore_button.setToolTip(describe.to_html(_("Restore previous settings"),
                                                         describe.restore_sections()))
-        self.restore_button.clicked.connect(lambda: self._run(["geri"], _("Previous settings")))
+        self.restore_button.clicked.connect(lambda: self._run(["restore"], _("Previous settings")))
 
         self.apply_button = QPushButton(QIcon.fromTheme("dialog-ok-apply"), _("Apply"))
         self.apply_button.setObjectName("primary")
@@ -270,7 +270,7 @@ class MainWindow(QWidget):
         return self.runner.is_running()
 
     def active_mode(self):
-        return (state.load_active() or {}).get("mod")
+        return (state.load_active() or {}).get("mode")
 
     def _select(self, key):
         self.selected = key
@@ -349,14 +349,14 @@ class MainWindow(QWidget):
 
     def apply_mode(self, key, external=None, keep_gpu=False):
         external = external or self.external.currentData()
-        args = [key, "--harici", external] + (["--gpu-koru"] if keep_gpu else [])
+        args = [key, "--external", external] + (["--keep-gpu"] if keep_gpu else [])
         count = self._change_count if key == self.selected else None
         return self._run(args, PRESETS[key].title, count)
 
     def apply_charge(self, limit):
         if str(status.charge_limits()[1]) == limit:
             return True
-        return self._run(["sarj", limit], _("{limit}% charge limit").format(limit=limit))
+        return self._run(["charge", limit], _("{limit}% charge limit").format(limit=limit))
 
     def set_passwordless(self, enabled):
         state_text = _("on") if enabled else _("off")

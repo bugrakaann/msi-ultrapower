@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: msi-ultrapower\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 21:18+0300\n"
+"POT-Creation-Date: 2026-10-01 21:30+0300\n"
 "PO-Revision-Date: 2026-09-26 00:00+0000\n"
 "Last-Translator: msi-ultrapower contributors\n"
 "Language-Team: Turkish\n"
@@ -34,205 +34,205 @@ msgstr "KDE Plasma'daki MSI dizüstüleri için güç modları."
 
 #: src/msi_ultrapower/cli.py:22
 msgid "mode, restore, status, charge or doctor"
-msgstr "mod, geri, durum, sarj ya da doctor"
+msgstr "mod, restore, status, charge ya da doctor"
 
-#: src/msi_ultrapower/cli.py:25
+#: src/msi_ultrapower/cli.py:24
 msgid "charge: 60, 80 or 100 · passwordless: on or off"
-msgstr "sarj: 60, 80 ya da 100 · passwordless: on ya da off"
+msgstr "charge: 60, 80 ya da 100 · passwordless: on ya da off"
+
+#: src/msi_ultrapower/cli.py:26
+msgid "external displays: auto, keep or off"
+msgstr "harici ekranlar: auto, keep ya da off"
 
 #: src/msi_ultrapower/cli.py:28
-msgid "external displays: auto, keep or off"
-msgstr "harici ekranlar: otomatik, koru ya da kapat"
-
-#: src/msi_ultrapower/cli.py:30
 msgid "show the plan without changing anything"
 msgstr "hiçbir şeyi değiştirmeden planı göster"
 
-#: src/msi_ultrapower/cli.py:32
+#: src/msi_ultrapower/cli.py:30
 msgid "do not change the NVIDIA boot setting (used by automatic mode)"
 msgstr "NVIDIA açılış ayarını değiştirme (otomatik mod kullanır)"
 
-#: src/msi_ultrapower/cli.py:42
+#: src/msi_ultrapower/cli.py:37
 msgid "Selected mode:"
 msgstr "Seçilen mod:"
 
-#: src/msi_ultrapower/cli.py:42
+#: src/msi_ultrapower/cli.py:37
 msgid "none yet"
 msgstr "henüz yok"
 
-#: src/msi_ultrapower/cli.py:43
+#: src/msi_ultrapower/cli.py:38
 msgid "Power profile:"
 msgstr "Güç profili:"
 
-#: src/msi_ultrapower/cli.py:47 src/msi_ultrapower/controller.py:170
+#: src/msi_ultrapower/cli.py:42 src/msi_ultrapower/controller.py:170
 #: src/msi_ultrapower/ui/window.py:362
 msgid "on"
 msgstr "açık"
 
-#: src/msi_ultrapower/cli.py:47 src/msi_ultrapower/controller.py:170
+#: src/msi_ultrapower/cli.py:42 src/msi_ultrapower/controller.py:170
 #: src/msi_ultrapower/ui/window.py:362
 msgid "off"
 msgstr "kapalı"
 
-#: src/msi_ultrapower/cli.py:48
+#: src/msi_ultrapower/cli.py:43
 msgid "brightness"
 msgstr "parlaklık"
 
-#: src/msi_ultrapower/cli.py:53
+#: src/msi_ultrapower/cli.py:48
 msgid "NVIDIA now:"
 msgstr "NVIDIA şu an:"
 
-#: src/msi_ultrapower/cli.py:53
+#: src/msi_ultrapower/cli.py:48
 msgid "no PCI device / disabled"
 msgstr "PCI aygıtı yok / devre dışı"
 
-#: src/msi_ultrapower/cli.py:54
+#: src/msi_ultrapower/cli.py:49
 msgid "NVIDIA next boot:"
 msgstr "NVIDIA sonraki açılış:"
 
-#: src/msi_ultrapower/cli.py:54
+#: src/msi_ultrapower/cli.py:49
 msgid "disabled"
 msgstr "devre dışı"
 
-#: src/msi_ultrapower/cli.py:54
+#: src/msi_ultrapower/cli.py:49
 msgid "available"
 msgstr "kullanılabilir"
 
-#: src/msi_ultrapower/cli.py:58
+#: src/msi_ultrapower/cli.py:53
 msgid "Battery:"
 msgstr "Pil:"
 
-#: src/msi_ultrapower/cli.py:61 src/msi_ultrapower/cli.py:132
+#: src/msi_ultrapower/cli.py:56 src/msi_ultrapower/cli.py:127
 #: src/msi_ultrapower/controller.py:162
 msgid "Charge limit:"
 msgstr "Şarj sınırı:"
 
-#: src/msi_ultrapower/cli.py:62
+#: src/msi_ultrapower/cli.py:57
 #, python-brace-format
 msgid "(charging resumes below {start}%)"
 msgstr "(%{start} altına inince şarj yeniden başlar)"
 
-#: src/msi_ultrapower/cli.py:64
+#: src/msi_ultrapower/cli.py:59
 msgid "Battery discharge power:"
 msgstr "Pil deşarj gücü:"
 
-#: src/msi_ultrapower/cli.py:65
+#: src/msi_ultrapower/cli.py:60
 msgid "Battery charge current power (not system usage):"
 msgstr "Pil şarj/akım gücü (sistem tüketimi değil):"
 
-#: src/msi_ultrapower/cli.py:73
+#: src/msi_ultrapower/cli.py:68
 msgid "yes"
 msgstr "var"
 
-#: src/msi_ultrapower/cli.py:73
+#: src/msi_ultrapower/cli.py:68
 msgid "NO"
 msgstr "YOK"
 
-#: src/msi_ultrapower/cli.py:75
+#: src/msi_ultrapower/cli.py:70
 msgid "Model"
 msgstr "Model"
 
-#: src/msi_ultrapower/cli.py:76
+#: src/msi_ultrapower/cli.py:71
 msgid "NO (display settings are skipped)"
 msgstr "YOK (ekran ayarları atlanır)"
 
-#: src/msi_ultrapower/cli.py:77
+#: src/msi_ultrapower/cli.py:72
 msgid "Display control (kscreen-doctor)"
 msgstr "Ekran ayarı (kscreen-doctor)"
 
-#: src/msi_ultrapower/cli.py:78
+#: src/msi_ultrapower/cli.py:73
 msgid "Brightness control"
 msgstr "Parlaklık ayarı"
 
-#: src/msi_ultrapower/cli.py:79
+#: src/msi_ultrapower/cli.py:74
 msgid "Panel refresh rates"
 msgstr "Panel yenileme hızları"
 
-#: src/msi_ultrapower/cli.py:80
+#: src/msi_ultrapower/cli.py:75
 #, python-brace-format
 msgid "yes · firmware {version}"
 msgstr "var · firmware {version}"
 
-#: src/msi_ultrapower/cli.py:81
+#: src/msi_ultrapower/cli.py:76
 msgid "NO (fan/EC settings are skipped; AUR: msi-ec-dkms-git)"
 msgstr "YOK (fan/EC ayarları atlanır; AUR: msi-ec-dkms-git)"
 
-#: src/msi_ultrapower/cli.py:82
+#: src/msi_ultrapower/cli.py:77
 msgid "EC modes"
 msgstr "EC modları"
 
-#: src/msi_ultrapower/cli.py:83
+#: src/msi_ultrapower/cli.py:78
 msgid "Fan modes"
 msgstr "Fan modları"
 
-#: src/msi_ultrapower/cli.py:85
+#: src/msi_ultrapower/cli.py:80
 msgid "CPU turbo control"
 msgstr "CPU turbo ayarı"
 
-#: src/msi_ultrapower/cli.py:86 src/msi_ultrapower/describe.py:77
+#: src/msi_ultrapower/cli.py:81 src/msi_ultrapower/describe.py:77
 #: src/msi_ultrapower/describe.py:92 src/msi_ultrapower/describe.py:120
 msgid "Keyboard backlight"
 msgstr "Klavye ışığı"
 
-#: src/msi_ultrapower/cli.py:87 src/msi_ultrapower/describe.py:106
+#: src/msi_ultrapower/cli.py:82 src/msi_ultrapower/describe.py:106
 #: src/msi_ultrapower/ui/charge.py:37 src/msi_ultrapower/ui/tray.py:32
 msgid "Charge limit"
 msgstr "Şarj sınırı"
 
-#: src/msi_ultrapower/cli.py:89
+#: src/msi_ultrapower/cli.py:84
 msgid "Outputs wired to NVIDIA"
 msgstr "NVIDIA'ya bağlı çıkışlar"
 
-#: src/msi_ultrapower/cli.py:90
+#: src/msi_ultrapower/cli.py:85
 msgid "PCI power management"
 msgstr "PCI güç yönetimi"
 
-#: src/msi_ultrapower/cli.py:90 src/msi_ultrapower/describe.py:136
+#: src/msi_ultrapower/cli.py:85 src/msi_ultrapower/describe.py:136
 #, python-brace-format
 msgid "{count} device"
 msgid_plural "{count} devices"
 msgstr[0] "{count} aygıt"
 msgstr[1] "{count} aygıt"
 
-#: src/msi_ultrapower/cli.py:92
+#: src/msi_ultrapower/cli.py:87
 msgid "Audio power saving"
 msgstr "Ses güç tasarrufu"
 
-#: src/msi_ultrapower/cli.py:94
+#: src/msi_ultrapower/cli.py:89
 msgid "Conflicting services"
 msgstr "Çakışan servisler"
 
-#: src/msi_ultrapower/cli.py:94
+#: src/msi_ultrapower/cli.py:89
 msgid "none"
 msgstr "yok"
 
-#: src/msi_ultrapower/cli.py:102
+#: src/msi_ultrapower/cli.py:97
 #, python-brace-format
 msgid "Unavailable mode: {mode} ({reason})"
 msgstr "Kullanılamayan mod: {mode} ({reason})"
 
-#: src/msi_ultrapower/cli.py:113
+#: src/msi_ultrapower/cli.py:108
 msgid "Another msi-ultrapower process is already running."
 msgstr "Başka bir msi-ultrapower işlemi zaten çalışıyor."
 
-#: src/msi_ultrapower/cli.py:115
+#: src/msi_ultrapower/cli.py:110
 msgid "A value can only be used with the charge or passwordless command."
-msgstr "Değer yalnızca sarj ya da passwordless komutuyla kullanılır."
+msgstr "Değer yalnızca charge ya da passwordless komutuyla kullanılır."
 
-#: src/msi_ultrapower/cli.py:117
+#: src/msi_ultrapower/cli.py:112
 #, python-brace-format
 msgid "The charge limit must be one of: {values}"
 msgstr "Şarj sınırı şunlardan biri olmalı: {values}"
 
-#: src/msi_ultrapower/cli.py:125
+#: src/msi_ultrapower/cli.py:120
 msgid "Use: msi-ultrapower passwordless on|off"
 msgstr "Kullanım: msi-ultrapower passwordless on|off"
 
-#: src/msi_ultrapower/cli.py:132
+#: src/msi_ultrapower/cli.py:127
 msgid "not supported on this device"
 msgstr "bu cihazda desteklenmiyor"
 
-#: src/msi_ultrapower/cli.py:136
+#: src/msi_ultrapower/cli.py:131
 msgid "ERROR:"
 msgstr "HATA:"
 
@@ -270,7 +270,7 @@ msgstr ""
 
 #: src/msi_ultrapower/controller.py:83
 msgid "Status: msi-ultrapower status | Restore: msi-ultrapower restore"
-msgstr "Durum: msi-ultrapower durum | Geri dönüş: msi-ultrapower geri"
+msgstr "Durum: msi-ultrapower status | Geri dönüş: msi-ultrapower restore"
 
 #: src/msi_ultrapower/controller.py:112
 msgid "The power profile was changed by another program"

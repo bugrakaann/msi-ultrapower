@@ -1,6 +1,6 @@
 """Prize takınca/çekince ayarlardaki moda geçer (settings: auto_mode, auto_ac, auto_battery).
 
-Uygulama açıkken (tepside bile) çalışır. NVIDIA'yı açılışta kapatmaz (--gpu-koru); aksi halde
+Uygulama açıkken (tepside bile) çalışır. NVIDIA'yı açılışta kapatmaz (--keep-gpu); aksi halde
 her fiş çekilişinde açılış imajı yeniden oluşturulurdu.
 
 Uygulama açılırken de (oturum açılışı) şu anki güç kaynağına uygun mod seçili değilse ona geçer:

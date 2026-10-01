@@ -14,7 +14,7 @@ class FakeWindow(QObject):
         super().__init__()
         self.timer = QTimer()
         self.busy = False
-        self.active = "dengeli"
+        self.active = "balanced"
         self.applied = []
 
     def active_mode(self):
@@ -43,14 +43,14 @@ class AutoSwitcherTests(unittest.TestCase):
 
     def test_unplug_switches_to_battery_without_touching_gpu(self):
         applied = self.run_switcher([True, True, False], {"auto_mode": True})
-        self.assertEqual(applied, [("batarya", True)])
+        self.assertEqual(applied, [("battery", True)])
 
     def test_disabled_does_nothing(self):
         self.assertEqual(self.run_switcher([True, False], {"auto_mode": False}), [])
 
     def test_startup_on_battery_switches_when_passwordless(self):
         options = {"auto_mode": True, "passwordless": True}
-        self.assertEqual(self.run_switcher([False, False], options), [("batarya", True)])
+        self.assertEqual(self.run_switcher([False, False], options), [("battery", True)])
 
     def test_startup_without_passwordless_waits_for_plug_event(self):
         self.assertEqual(self.run_switcher([False, False], {"auto_mode": True}), [])

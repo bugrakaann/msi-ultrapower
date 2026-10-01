@@ -58,7 +58,7 @@ def _should_enable(internal, preset, external, on_nvidia):
         return True
     if preset.is_battery and on_nvidia:
         return False  # NVIDIA kapanacak; bu çıkış zaten çalışmayacak
-    if external == "kapat":
+    if external == "off":
         return False
     # Bataryada "otomatik": NVIDIA'ya bağlı olmayan (iGPU/USB-C) ekranlar açık kalır.
     return True
@@ -132,7 +132,7 @@ def _mode_id(output, hz, saved):
     return mode_for(output)
 
 
-def screen_plan(current, original, preset=None, external="otomatik", nvidia_outputs=(), remembered=None):
+def screen_plan(current, original, preset=None, external="auto", nvidia_outputs=(), remembered=None):
     """kscreen-doctor argümanları.
 
     preset verilirse mod uygulanır: kullanıcının ekran düzenine (ana ekran, konum, ölçek,

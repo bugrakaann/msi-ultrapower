@@ -33,12 +33,12 @@ def save_original(snapshot):
 
 
 def load_active():
-    """{'mod': ..., 'harici': ...} ya da hiç mod seçilmediyse None."""
+    """{'mode': ..., 'external': ...} ya da hiç mod seçilmediyse None."""
     return read_json(paths.ACTIVE_STATE)
 
 
 def save_active(mode, external):
-    write_json(paths.ACTIVE_STATE, {"mod": mode, "harici": external})
+    write_json(paths.ACTIVE_STATE, {"mode": mode, "external": external})
 
 
 def load_layouts():

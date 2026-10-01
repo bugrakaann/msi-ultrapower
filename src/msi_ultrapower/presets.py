@@ -9,9 +9,9 @@ from dataclasses import dataclass
 from .i18n import N_, _
 
 EXTERNAL_CHOICES = {
-    "otomatik": N_("Automatic (by mode)"),
-    "koru": N_("Keep on"),
-    "kapat": N_("Turn off"),
+    "auto": N_("Automatic (by mode)"),
+    "keep": N_("Keep on"),
+    "off": N_("Turn off"),
 }
 
 
@@ -48,33 +48,20 @@ _BATTERY = dict(profile="power-saver", brightness=30, shift="eco", boost="off", 
                 gpu="auto", icon="battery-profile-powersave")
 
 PRESETS = {p.key: p for p in [
-    Preset("performans", N_("Maximum performance"), N_("100% brightness · Turbo · Cooler Boost"),
+    Preset("performance", N_("Maximum performance"), N_("100% brightness · Turbo · Cooler Boost"),
            icon="battery-profile-performance", profile="performance",
            brightness=100, shift="turbo", boost="on", turbo="0", gpu="on"),
-    Preset("performans-manuel", N_("Performance · Manual fan"),
+    Preset("performance-manual", N_("Performance · Manual fan"),
            N_("100% brightness · Turbo · Your own fan curve"),
            icon="adjustlevels", profile="performance", brightness=100,
            shift="turbo", boost="off", turbo="0", gpu="on", fan="advanced"),
-    Preset("dengeli", N_("Balanced"), N_("60% brightness · Automatic fan · NVIDIA sleeps when idle"),
+    Preset("balanced", N_("Balanced"), N_("60% brightness · Automatic fan · NVIDIA sleeps when idle"),
            icon="battery-profile-balanced", profile="balanced",
            brightness=60, shift="comfort", boost="off", turbo="0", gpu="auto"),
-    Preset("batarya", N_("Maximum battery"), N_("30% brightness · NVIDIA off · Devices sleep"),
+    Preset("battery", N_("Maximum battery"), N_("30% brightness · NVIDIA off · Devices sleep"),
            **_BATTERY),
-    Preset("batarya-48", N_("Maximum battery · Low Hz"), N_("Lowest Hz · 30% brightness · NVIDIA off"),
+    Preset("battery-low-hz", N_("Maximum battery · Low Hz"), N_("Lowest Hz · 30% brightness · NVIDIA off"),
            panel="min", **{**_BATTERY, "icon": "monitor"}),
 ]}
 
-RESTORE_COMMANDS = ("geri", "normal")
-
-# İngilizce komut adları: msi-ultrapower battery == msi-ultrapower batarya
-ALIASES = {
-    "performance": "performans",
-    "performance-manual": "performans-manuel",
-    "balanced": "dengeli",
-    "battery": "batarya",
-    "battery-low-hz": "batarya-48",
-    "restore": "geri",
-    "status": "durum",
-    "charge": "sarj",
-}
-EXTERNAL_ALIASES = {"auto": "otomatik", "keep": "koru", "off": "kapat"}
+RESTORE_COMMAND = "restore"

@@ -31,32 +31,32 @@ class SupportTests(unittest.TestCase):
 
     def test_manual_fan_needs_advanced(self):
         caps = replace(CAPS, fan_modes=("auto", "silent"))
-        self.assertIsNotNone(capabilities.unsupported_reason(PRESETS["performans-manuel"], caps))
+        self.assertIsNotNone(capabilities.unsupported_reason(PRESETS["performance-manual"], caps))
 
     def test_low_hz_needs_second_rate(self):
         caps = replace(CAPS, panel_rates=(60,))
-        self.assertIsNotNone(capabilities.unsupported_reason(PRESETS["batarya-48"], caps))
+        self.assertIsNotNone(capabilities.unsupported_reason(PRESETS["battery-low-hz"], caps))
 
 
 class DescribeTests(unittest.TestCase):
     def test_battery_lists_device_savings(self):
-        text = describe.to_html("x", describe.describe(PRESETS["batarya"], CAPS))
+        text = describe.to_html("x", describe.describe(PRESETS["battery"], CAPS))
         for word in ("Bluetooth", "PCI", "Sound card", "120 Hz", "HDMI-A-1"):
             self.assertIn(word, text)
 
     def test_options_change_battery_description(self):
-        rows = dict(describe.describe(PRESETS["batarya"], CAPS, {
+        rows = dict(describe.describe(PRESETS["battery"], CAPS, {
             "bluetooth_off_on_battery": True, "device_savings": False})[-1][1])
         self.assertEqual(rows["Bluetooth"], "Off")
         self.assertNotIn("PCI devices", rows)
 
     def test_low_hz_shows_lowest_rate(self):
-        screen = dict(describe.describe(PRESETS["batarya-48"], CAPS)[0][1])
+        screen = dict(describe.describe(PRESETS["battery-low-hz"], CAPS)[0][1])
         self.assertTrue(screen["Built-in display"].startswith("48 Hz"))
 
     def test_without_ec_or_nvidia(self):
         caps = replace(CAPS, shift_modes=(), fan_modes=(), nvidia=False)
-        text = describe.to_html("x", describe.describe(PRESETS["performans"], caps))
+        text = describe.to_html("x", describe.describe(PRESETS["performance"], caps))
         self.assertIn("msi-ec", text)
         self.assertIn("No NVIDIA GPU", text)
 
@@ -68,7 +68,7 @@ class ChangesTests(unittest.TestCase):
         panel = fake_output("eDP-1")
         before = {"profile": "balanced", "outputs": [panel],
                   "hardware": {hw.EC + "shift_mode": "comfort", hw.LED: "2"}}
-        plan = Plan(mode="batarya", restoring=False, profile="power-saver",
+        plan = Plan(mode="battery", restoring=False, profile="power-saver",
                     screen_args=["output.eDP-1.enable", "output.eDP-1.mode.low",
                                  "output.eDP-1.brightness.30"],
                     rollback_args=[], hardware={hw.EC + "shift_mode": "eco", hw.LED: "2"},

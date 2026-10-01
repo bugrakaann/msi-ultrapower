@@ -14,5 +14,6 @@ Exec=msi-ultrapower-ui
 Icon=battery-profile-balanced
 Terminal=false
 Categories=Settings;HardwareSettings;
-Keywords=battery;power;fan;msi;nvidia;charge;pil;batarya;
+Keywords=battery;power;fan;msi;nvidia;charge;
+Keywords[tr]=pil;batarya;güç;fan;msi;nvidia;şarj;
 StartupNotify=true

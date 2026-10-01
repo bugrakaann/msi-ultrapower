@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: msi-ultrapower\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 21:18+0300\n"
+"POT-Creation-Date: 2026-10-01 21:30+0300\n"
 "PO-Revision-Date: 2026-09-26 00:00+0000\n"
 "Last-Translator: msi-ultrapower contributors\n"
 "Language-Team: Russian\n"
@@ -37,159 +37,159 @@ msgstr "Режимы питания для ноутбуков MSI в KDE Plasma.
 msgid "mode, restore, status, charge or doctor"
 msgstr "режим, restore, status, charge или doctor"
 
-#: src/msi_ultrapower/cli.py:25
+#: src/msi_ultrapower/cli.py:24
 msgid "charge: 60, 80 or 100 · passwordless: on or off"
 msgstr "charge: 60, 80 или 100 · passwordless: on или off"
 
-#: src/msi_ultrapower/cli.py:28
+#: src/msi_ultrapower/cli.py:26
 msgid "external displays: auto, keep or off"
 msgstr "внешние дисплеи: auto, keep или off"
 
-#: src/msi_ultrapower/cli.py:30
+#: src/msi_ultrapower/cli.py:28
 msgid "show the plan without changing anything"
 msgstr "показать план, ничего не меняя"
 
-#: src/msi_ultrapower/cli.py:32
+#: src/msi_ultrapower/cli.py:30
 msgid "do not change the NVIDIA boot setting (used by automatic mode)"
 msgstr ""
 "не менять настройку NVIDIA при загрузке (используется автоматическим режимом)"
 
-#: src/msi_ultrapower/cli.py:42
+#: src/msi_ultrapower/cli.py:37
 msgid "Selected mode:"
 msgstr "Выбранный режим:"
 
-#: src/msi_ultrapower/cli.py:42
+#: src/msi_ultrapower/cli.py:37
 msgid "none yet"
 msgstr "пока нет"
 
-#: src/msi_ultrapower/cli.py:43
+#: src/msi_ultrapower/cli.py:38
 msgid "Power profile:"
 msgstr "Профиль питания:"
 
-#: src/msi_ultrapower/cli.py:47 src/msi_ultrapower/controller.py:170
+#: src/msi_ultrapower/cli.py:42 src/msi_ultrapower/controller.py:170
 #: src/msi_ultrapower/ui/window.py:362
 msgid "on"
 msgstr "вкл"
 
-#: src/msi_ultrapower/cli.py:47 src/msi_ultrapower/controller.py:170
+#: src/msi_ultrapower/cli.py:42 src/msi_ultrapower/controller.py:170
 #: src/msi_ultrapower/ui/window.py:362
 msgid "off"
 msgstr "выкл"
 
-#: src/msi_ultrapower/cli.py:48
+#: src/msi_ultrapower/cli.py:43
 msgid "brightness"
 msgstr "яркость"
 
-#: src/msi_ultrapower/cli.py:53
+#: src/msi_ultrapower/cli.py:48
 msgid "NVIDIA now:"
 msgstr "NVIDIA сейчас:"
 
-#: src/msi_ultrapower/cli.py:53
+#: src/msi_ultrapower/cli.py:48
 msgid "no PCI device / disabled"
 msgstr "нет PCI-устройства / отключена"
 
-#: src/msi_ultrapower/cli.py:54
+#: src/msi_ultrapower/cli.py:49
 msgid "NVIDIA next boot:"
 msgstr "NVIDIA при следующей загрузке:"
 
-#: src/msi_ultrapower/cli.py:54
+#: src/msi_ultrapower/cli.py:49
 msgid "disabled"
 msgstr "отключена"
 
-#: src/msi_ultrapower/cli.py:54
+#: src/msi_ultrapower/cli.py:49
 msgid "available"
 msgstr "доступна"
 
-#: src/msi_ultrapower/cli.py:58
+#: src/msi_ultrapower/cli.py:53
 msgid "Battery:"
 msgstr "Батарея:"
 
-#: src/msi_ultrapower/cli.py:61 src/msi_ultrapower/cli.py:132
+#: src/msi_ultrapower/cli.py:56 src/msi_ultrapower/cli.py:127
 #: src/msi_ultrapower/controller.py:162
 msgid "Charge limit:"
 msgstr "Предел заряда:"
 
-#: src/msi_ultrapower/cli.py:62
+#: src/msi_ultrapower/cli.py:57
 #, python-brace-format
 msgid "(charging resumes below {start}%)"
 msgstr "(зарядка возобновится ниже {start}%)"
 
-#: src/msi_ultrapower/cli.py:64
+#: src/msi_ultrapower/cli.py:59
 msgid "Battery discharge power:"
 msgstr "Мощность разряда батареи:"
 
-#: src/msi_ultrapower/cli.py:65
+#: src/msi_ultrapower/cli.py:60
 msgid "Battery charge current power (not system usage):"
 msgstr "Мощность тока заряда батареи (не потребление системы):"
 
-#: src/msi_ultrapower/cli.py:73
+#: src/msi_ultrapower/cli.py:68
 msgid "yes"
 msgstr "да"
 
-#: src/msi_ultrapower/cli.py:73
+#: src/msi_ultrapower/cli.py:68
 msgid "NO"
 msgstr "НЕТ"
 
-#: src/msi_ultrapower/cli.py:75
+#: src/msi_ultrapower/cli.py:70
 msgid "Model"
 msgstr "Модель"
 
-#: src/msi_ultrapower/cli.py:76
+#: src/msi_ultrapower/cli.py:71
 msgid "NO (display settings are skipped)"
 msgstr "НЕТ (настройки дисплея пропускаются)"
 
-#: src/msi_ultrapower/cli.py:77
+#: src/msi_ultrapower/cli.py:72
 msgid "Display control (kscreen-doctor)"
 msgstr "Управление дисплеем (kscreen-doctor)"
 
-#: src/msi_ultrapower/cli.py:78
+#: src/msi_ultrapower/cli.py:73
 msgid "Brightness control"
 msgstr "Управление яркостью"
 
-#: src/msi_ultrapower/cli.py:79
+#: src/msi_ultrapower/cli.py:74
 msgid "Panel refresh rates"
 msgstr "Частоты обновления панели"
 
-#: src/msi_ultrapower/cli.py:80
+#: src/msi_ultrapower/cli.py:75
 #, python-brace-format
 msgid "yes · firmware {version}"
 msgstr "да · прошивка {version}"
 
-#: src/msi_ultrapower/cli.py:81
+#: src/msi_ultrapower/cli.py:76
 msgid "NO (fan/EC settings are skipped; AUR: msi-ec-dkms-git)"
 msgstr "НЕТ (настройки вентилятора/EC пропускаются; AUR: msi-ec-dkms-git)"
 
-#: src/msi_ultrapower/cli.py:82
+#: src/msi_ultrapower/cli.py:77
 msgid "EC modes"
 msgstr "Режимы EC"
 
-#: src/msi_ultrapower/cli.py:83
+#: src/msi_ultrapower/cli.py:78
 msgid "Fan modes"
 msgstr "Режимы вентилятора"
 
-#: src/msi_ultrapower/cli.py:85
+#: src/msi_ultrapower/cli.py:80
 msgid "CPU turbo control"
 msgstr "Управление турбо CPU"
 
-#: src/msi_ultrapower/cli.py:86 src/msi_ultrapower/describe.py:77
+#: src/msi_ultrapower/cli.py:81 src/msi_ultrapower/describe.py:77
 #: src/msi_ultrapower/describe.py:92 src/msi_ultrapower/describe.py:120
 msgid "Keyboard backlight"
 msgstr "Подсветка клавиатуры"
 
-#: src/msi_ultrapower/cli.py:87 src/msi_ultrapower/describe.py:106
+#: src/msi_ultrapower/cli.py:82 src/msi_ultrapower/describe.py:106
 #: src/msi_ultrapower/ui/charge.py:37 src/msi_ultrapower/ui/tray.py:32
 msgid "Charge limit"
 msgstr "Предел заряда"
 
-#: src/msi_ultrapower/cli.py:89
+#: src/msi_ultrapower/cli.py:84
 msgid "Outputs wired to NVIDIA"
 msgstr "Выходы, подключённые к NVIDIA"
 
-#: src/msi_ultrapower/cli.py:90
+#: src/msi_ultrapower/cli.py:85
 msgid "PCI power management"
 msgstr "Управление питанием PCI"
 
-#: src/msi_ultrapower/cli.py:90 src/msi_ultrapower/describe.py:136
+#: src/msi_ultrapower/cli.py:85 src/msi_ultrapower/describe.py:136
 #, python-brace-format
 msgid "{count} device"
 msgid_plural "{count} devices"
@@ -197,45 +197,45 @@ msgstr[0] "{count} устройство"
 msgstr[1] "{count} устройства"
 msgstr[2] "{count} устройств"
 
-#: src/msi_ultrapower/cli.py:92
+#: src/msi_ultrapower/cli.py:87
 msgid "Audio power saving"
 msgstr "Энергосбережение звука"
 
-#: src/msi_ultrapower/cli.py:94
+#: src/msi_ultrapower/cli.py:89
 msgid "Conflicting services"
 msgstr "Конфликтующие службы"
 
-#: src/msi_ultrapower/cli.py:94
+#: src/msi_ultrapower/cli.py:89
 msgid "none"
 msgstr "нет"
 
-#: src/msi_ultrapower/cli.py:102
+#: src/msi_ultrapower/cli.py:97
 #, python-brace-format
 msgid "Unavailable mode: {mode} ({reason})"
 msgstr "Недоступный режим: {mode} ({reason})"
 
-#: src/msi_ultrapower/cli.py:113
+#: src/msi_ultrapower/cli.py:108
 msgid "Another msi-ultrapower process is already running."
 msgstr "Другой процесс msi-ultrapower уже запущен."
 
-#: src/msi_ultrapower/cli.py:115
+#: src/msi_ultrapower/cli.py:110
 msgid "A value can only be used with the charge or passwordless command."
 msgstr "Значение можно указывать только с командой charge или passwordless."
 
-#: src/msi_ultrapower/cli.py:117
+#: src/msi_ultrapower/cli.py:112
 #, python-brace-format
 msgid "The charge limit must be one of: {values}"
 msgstr "Предел заряда должен быть одним из: {values}"
 
-#: src/msi_ultrapower/cli.py:125
+#: src/msi_ultrapower/cli.py:120
 msgid "Use: msi-ultrapower passwordless on|off"
 msgstr "Использование: msi-ultrapower passwordless on|off"
 
-#: src/msi_ultrapower/cli.py:132
+#: src/msi_ultrapower/cli.py:127
 msgid "not supported on this device"
 msgstr "не поддерживается на этом устройстве"
 
-#: src/msi_ultrapower/cli.py:136
+#: src/msi_ultrapower/cli.py:131
 msgid "ERROR:"
 msgstr "ОШИБКА:"
 

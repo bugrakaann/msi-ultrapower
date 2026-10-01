@@ -66,15 +66,13 @@ kapanır, çünkü NVIDIA kapalıdır.
 
 ### Komut satırı
 
-Türkçe ve İngilizce komut adları birlikte çalışır.
-
 ```sh
-msi-ultrapower dengeli          # performans, performans-manuel, dengeli, batarya, batarya-48
-msi-ultrapower batarya --dene   # neyin değişeceğini göster, hiçbir şeyi değiştirme
-msi-ultrapower geri             # ilk moddan önceki ayarlara dön
-msi-ultrapower sarj 80          # şarj sınırı: 60, 80 ya da 100
-msi-ultrapower durum            # şu anki değerler
-msi-ultrapower doctor           # bu bilgisayarda neler çalışıyor
+msi-ultrapower balanced            # performance, performance-manual, balanced, battery, battery-low-hz
+msi-ultrapower battery --dry-run   # neyin değişeceğini göster, hiçbir şeyi değiştirme
+msi-ultrapower restore             # ilk moddan önceki ayarlara dön
+msi-ultrapower charge 80           # şarj sınırı: 60, 80 ya da 100
+msi-ultrapower status              # şu anki değerler
+msi-ultrapower doctor              # bu bilgisayarda neler çalışıyor
 ```
 
 ## Uyumluluk
@@ -93,7 +91,7 @@ Modelinde nasıl çalıştığını bildirmek için `msi-ultrapower doctor` çı
 ## Kaldırma
 
 ```sh
-msi-ultrapower geri           # isteğe bağlı: önceki ayarlarına dön
+msi-ultrapower restore        # isteğe bağlı: önceki ayarlarına dön
 sudo pacman -R msi-ultrapower
 ```
 

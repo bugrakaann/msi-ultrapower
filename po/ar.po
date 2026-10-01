@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: msi-ultrapower\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 21:18+0300\n"
+"POT-Creation-Date: 2026-10-01 21:30+0300\n"
 "PO-Revision-Date: 2026-09-26 00:00+0000\n"
 "Last-Translator: msi-ultrapower contributors\n"
 "Language-Team: Arabic\n"
@@ -37,158 +37,158 @@ msgstr "أوضاع الطاقة لحواسيب MSI المحمولة على KDE P
 msgid "mode, restore, status, charge or doctor"
 msgstr "وضع، restore، status، charge أو doctor"
 
-#: src/msi_ultrapower/cli.py:25
+#: src/msi_ultrapower/cli.py:24
 msgid "charge: 60, 80 or 100 · passwordless: on or off"
 msgstr "charge: 60 أو 80 أو 100 · passwordless: on أو off"
 
-#: src/msi_ultrapower/cli.py:28
+#: src/msi_ultrapower/cli.py:26
 msgid "external displays: auto, keep or off"
 msgstr "الشاشات الخارجية: auto أو keep أو off"
 
-#: src/msi_ultrapower/cli.py:30
+#: src/msi_ultrapower/cli.py:28
 msgid "show the plan without changing anything"
 msgstr "عرض الخطة دون تغيير أي شيء"
 
-#: src/msi_ultrapower/cli.py:32
+#: src/msi_ultrapower/cli.py:30
 msgid "do not change the NVIDIA boot setting (used by automatic mode)"
 msgstr "عدم تغيير إعداد NVIDIA عند الإقلاع (يستخدمه الوضع التلقائي)"
 
-#: src/msi_ultrapower/cli.py:42
+#: src/msi_ultrapower/cli.py:37
 msgid "Selected mode:"
 msgstr "الوضع المحدد:"
 
-#: src/msi_ultrapower/cli.py:42
+#: src/msi_ultrapower/cli.py:37
 msgid "none yet"
 msgstr "لا شيء بعد"
 
-#: src/msi_ultrapower/cli.py:43
+#: src/msi_ultrapower/cli.py:38
 msgid "Power profile:"
 msgstr "ملف الطاقة:"
 
-#: src/msi_ultrapower/cli.py:47 src/msi_ultrapower/controller.py:170
+#: src/msi_ultrapower/cli.py:42 src/msi_ultrapower/controller.py:170
 #: src/msi_ultrapower/ui/window.py:362
 msgid "on"
 msgstr "تشغيل"
 
-#: src/msi_ultrapower/cli.py:47 src/msi_ultrapower/controller.py:170
+#: src/msi_ultrapower/cli.py:42 src/msi_ultrapower/controller.py:170
 #: src/msi_ultrapower/ui/window.py:362
 msgid "off"
 msgstr "إيقاف"
 
-#: src/msi_ultrapower/cli.py:48
+#: src/msi_ultrapower/cli.py:43
 msgid "brightness"
 msgstr "السطوع"
 
-#: src/msi_ultrapower/cli.py:53
+#: src/msi_ultrapower/cli.py:48
 msgid "NVIDIA now:"
 msgstr "NVIDIA الآن:"
 
-#: src/msi_ultrapower/cli.py:53
+#: src/msi_ultrapower/cli.py:48
 msgid "no PCI device / disabled"
 msgstr "لا يوجد جهاز PCI / معطلة"
 
-#: src/msi_ultrapower/cli.py:54
+#: src/msi_ultrapower/cli.py:49
 msgid "NVIDIA next boot:"
 msgstr "NVIDIA في الإقلاع التالي:"
 
-#: src/msi_ultrapower/cli.py:54
+#: src/msi_ultrapower/cli.py:49
 msgid "disabled"
 msgstr "معطلة"
 
-#: src/msi_ultrapower/cli.py:54
+#: src/msi_ultrapower/cli.py:49
 msgid "available"
 msgstr "متاحة"
 
-#: src/msi_ultrapower/cli.py:58
+#: src/msi_ultrapower/cli.py:53
 msgid "Battery:"
 msgstr "البطارية:"
 
-#: src/msi_ultrapower/cli.py:61 src/msi_ultrapower/cli.py:132
+#: src/msi_ultrapower/cli.py:56 src/msi_ultrapower/cli.py:127
 #: src/msi_ultrapower/controller.py:162
 msgid "Charge limit:"
 msgstr "حد الشحن:"
 
-#: src/msi_ultrapower/cli.py:62
+#: src/msi_ultrapower/cli.py:57
 #, python-brace-format
 msgid "(charging resumes below {start}%)"
 msgstr "(يُستأنف الشحن تحت {start}%)"
 
-#: src/msi_ultrapower/cli.py:64
+#: src/msi_ultrapower/cli.py:59
 msgid "Battery discharge power:"
 msgstr "قدرة تفريغ البطارية:"
 
-#: src/msi_ultrapower/cli.py:65
+#: src/msi_ultrapower/cli.py:60
 msgid "Battery charge current power (not system usage):"
 msgstr "قدرة تيار شحن البطارية (ليست استهلاك النظام):"
 
-#: src/msi_ultrapower/cli.py:73
+#: src/msi_ultrapower/cli.py:68
 msgid "yes"
 msgstr "نعم"
 
-#: src/msi_ultrapower/cli.py:73
+#: src/msi_ultrapower/cli.py:68
 msgid "NO"
 msgstr "لا"
 
-#: src/msi_ultrapower/cli.py:75
+#: src/msi_ultrapower/cli.py:70
 msgid "Model"
 msgstr "الطراز"
 
-#: src/msi_ultrapower/cli.py:76
+#: src/msi_ultrapower/cli.py:71
 msgid "NO (display settings are skipped)"
 msgstr "لا (يتم تخطي إعدادات الشاشة)"
 
-#: src/msi_ultrapower/cli.py:77
+#: src/msi_ultrapower/cli.py:72
 msgid "Display control (kscreen-doctor)"
 msgstr "التحكم بالشاشة (kscreen-doctor)"
 
-#: src/msi_ultrapower/cli.py:78
+#: src/msi_ultrapower/cli.py:73
 msgid "Brightness control"
 msgstr "التحكم بالسطوع"
 
-#: src/msi_ultrapower/cli.py:79
+#: src/msi_ultrapower/cli.py:74
 msgid "Panel refresh rates"
 msgstr "معدلات تحديث الشاشة"
 
-#: src/msi_ultrapower/cli.py:80
+#: src/msi_ultrapower/cli.py:75
 #, python-brace-format
 msgid "yes · firmware {version}"
 msgstr "نعم · البرنامج الثابت {version}"
 
-#: src/msi_ultrapower/cli.py:81
+#: src/msi_ultrapower/cli.py:76
 msgid "NO (fan/EC settings are skipped; AUR: msi-ec-dkms-git)"
 msgstr "لا (يتم تخطي إعدادات المروحة/EC؛ AUR: msi-ec-dkms-git)"
 
-#: src/msi_ultrapower/cli.py:82
+#: src/msi_ultrapower/cli.py:77
 msgid "EC modes"
 msgstr "أوضاع EC"
 
-#: src/msi_ultrapower/cli.py:83
+#: src/msi_ultrapower/cli.py:78
 msgid "Fan modes"
 msgstr "أوضاع المروحة"
 
-#: src/msi_ultrapower/cli.py:85
+#: src/msi_ultrapower/cli.py:80
 msgid "CPU turbo control"
 msgstr "التحكم بتوربو المعالج"
 
-#: src/msi_ultrapower/cli.py:86 src/msi_ultrapower/describe.py:77
+#: src/msi_ultrapower/cli.py:81 src/msi_ultrapower/describe.py:77
 #: src/msi_ultrapower/describe.py:92 src/msi_ultrapower/describe.py:120
 msgid "Keyboard backlight"
 msgstr "إضاءة لوحة المفاتيح"
 
-#: src/msi_ultrapower/cli.py:87 src/msi_ultrapower/describe.py:106
+#: src/msi_ultrapower/cli.py:82 src/msi_ultrapower/describe.py:106
 #: src/msi_ultrapower/ui/charge.py:37 src/msi_ultrapower/ui/tray.py:32
 msgid "Charge limit"
 msgstr "حد الشحن"
 
-#: src/msi_ultrapower/cli.py:89
+#: src/msi_ultrapower/cli.py:84
 msgid "Outputs wired to NVIDIA"
 msgstr "المخارج الموصولة بـ NVIDIA"
 
-#: src/msi_ultrapower/cli.py:90
+#: src/msi_ultrapower/cli.py:85
 msgid "PCI power management"
 msgstr "إدارة طاقة PCI"
 
-#: src/msi_ultrapower/cli.py:90 src/msi_ultrapower/describe.py:136
+#: src/msi_ultrapower/cli.py:85 src/msi_ultrapower/describe.py:136
 #, python-brace-format
 msgid "{count} device"
 msgid_plural "{count} devices"
@@ -199,45 +199,45 @@ msgstr[3] "{count} أجهزة"
 msgstr[4] "{count} جهازًا"
 msgstr[5] "{count} جهاز"
 
-#: src/msi_ultrapower/cli.py:92
+#: src/msi_ultrapower/cli.py:87
 msgid "Audio power saving"
 msgstr "توفير طاقة الصوت"
 
-#: src/msi_ultrapower/cli.py:94
+#: src/msi_ultrapower/cli.py:89
 msgid "Conflicting services"
 msgstr "خدمات متعارضة"
 
-#: src/msi_ultrapower/cli.py:94
+#: src/msi_ultrapower/cli.py:89
 msgid "none"
 msgstr "لا يوجد"
 
-#: src/msi_ultrapower/cli.py:102
+#: src/msi_ultrapower/cli.py:97
 #, python-brace-format
 msgid "Unavailable mode: {mode} ({reason})"
 msgstr "وضع غير متاح: {mode} ({reason})"
 
-#: src/msi_ultrapower/cli.py:113
+#: src/msi_ultrapower/cli.py:108
 msgid "Another msi-ultrapower process is already running."
 msgstr "توجد عملية msi-ultrapower أخرى قيد التشغيل."
 
-#: src/msi_ultrapower/cli.py:115
+#: src/msi_ultrapower/cli.py:110
 msgid "A value can only be used with the charge or passwordless command."
 msgstr "لا يمكن استخدام قيمة إلا مع الأمر charge أو passwordless."
 
-#: src/msi_ultrapower/cli.py:117
+#: src/msi_ultrapower/cli.py:112
 #, python-brace-format
 msgid "The charge limit must be one of: {values}"
 msgstr "يجب أن يكون حد الشحن أحد القيم: {values}"
 
-#: src/msi_ultrapower/cli.py:125
+#: src/msi_ultrapower/cli.py:120
 msgid "Use: msi-ultrapower passwordless on|off"
 msgstr "الاستخدام: msi-ultrapower passwordless on|off"
 
-#: src/msi_ultrapower/cli.py:132
+#: src/msi_ultrapower/cli.py:127
 msgid "not supported on this device"
 msgstr "غير مدعوم على هذا الجهاز"
 
-#: src/msi_ultrapower/cli.py:136
+#: src/msi_ultrapower/cli.py:131
 msgid "ERROR:"
 msgstr "خطأ:"
 

@@ -20,7 +20,7 @@ class Prepared:
     caps: capabilities.Capabilities
 
 
-def prepare(mode, external="otomatik", before=None, caps=None):
+def prepare(mode, external="auto", before=None, caps=None):
     """Hiçbir şeyi değiştirmeden planı hazırlar. Arayüzün "değişecekler" listesi de bunu kullanır.
 
     caps: arayüz açılışta bir kez algıladığını verir; her önizlemede yeniden algılanmaz.
@@ -29,7 +29,7 @@ def prepare(mode, external="otomatik", before=None, caps=None):
     caps = caps or capabilities.detect(before["outputs"])
     nvidia_screens = [o["name"] for o in before["outputs"]
                       if o["connected"] and o["enabled"] and o["name"] in caps.nvidia_outputs]
-    if mode in PRESETS and PRESETS[mode].is_battery and external == "koru" and nvidia_screens:
+    if mode in PRESETS and PRESETS[mode].is_battery and external == "keep" and nvidia_screens:
         raise RuntimeError(_("{outputs} is wired to NVIDIA and cannot stay on in battery mode, "
                              "because NVIDIA is turned off. Use balanced mode for two screens.")
                            .format(outputs=", ".join(nvidia_screens)))
@@ -41,7 +41,7 @@ def prepare(mode, external="otomatik", before=None, caps=None):
     return Prepared(p, before, original, missing, caps)
 
 
-def change_mode(mode, external="otomatik", dry_run=False, keep_gpu=False):
+def change_mode(mode, external="auto", dry_run=False, keep_gpu=False):
     """Bir modu uygular ya da mode "geri"/"normal" ise önceki ayarlara döner.
 
     keep_gpu: NVIDIA'yı açılışta kapatma (otomatik mod; initramfs her fiş çekilişinde yenilenmesin).

@@ -9,8 +9,8 @@ DEFAULTS = {
     "device_savings": True,          # batarya modunda PCI/ses/disk tasarrufu
     "bluetooth_off_on_battery": False,
     "auto_mode": False,              # prize takınca/çekince mod değiştir
-    "auto_ac": "dengeli",
-    "auto_battery": "batarya",
+    "auto_ac": "balanced",
+    "auto_battery": "battery",
     "passwordless": False,           # modlar parola sormadan uygulansın (polkit kuralı)
     "tray_autostart": False,         # oturum açılınca tepside başla
 }

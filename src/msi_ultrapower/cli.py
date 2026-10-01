@@ -8,38 +8,33 @@ import sys
 
 from . import __version__, capabilities, controller, paths, state, status, system
 from .i18n import _, ngettext, percent
-from .presets import ALIASES, EXTERNAL_ALIASES, EXTERNAL_CHOICES, PRESETS, RESTORE_COMMANDS
+from .presets import EXTERNAL_CHOICES, PRESETS, RESTORE_COMMAND
 from .privileged import hardware as hw
 
-COMMANDS = [*PRESETS, *RESTORE_COMMANDS, "durum", "sarj", "doctor", "passwordless"]
+COMMANDS = [*PRESETS, RESTORE_COMMAND, "status", "charge", "doctor", "passwordless"]
 
 
 def parse_args(argv):
     parser = argparse.ArgumentParser(
         prog="msi-ultrapower", description=_("Power modes for MSI laptops on KDE Plasma."))
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
-    parser.add_argument("mod", metavar="command", choices=[*COMMANDS, *ALIASES],
-                        help=_("mode, restore, status, charge or doctor") + ": "
-                        + ", ".join(sorted({*COMMANDS, *ALIASES})))
-    parser.add_argument("sinir", metavar="value", nargs="?",
+    parser.add_argument("command", choices=COMMANDS,
+                        help=_("mode, restore, status, charge or doctor") + ": " + ", ".join(COMMANDS))
+    parser.add_argument("value", nargs="?",
                         help=_("charge: 60, 80 or 100 · passwordless: on or off"))
-    parser.add_argument("--harici", "--external", dest="harici", default="otomatik",
-                        choices=[*EXTERNAL_CHOICES, *EXTERNAL_ALIASES],
+    parser.add_argument("--external", default="auto", choices=list(EXTERNAL_CHOICES),
                         help=_("external displays: auto, keep or off"))
-    parser.add_argument("--dene", "--dry-run", dest="dene", action="store_true",
+    parser.add_argument("--dry-run", action="store_true",
                         help=_("show the plan without changing anything"))
-    parser.add_argument("--gpu-koru", "--keep-gpu", dest="gpu_koru", action="store_true",
+    parser.add_argument("--keep-gpu", action="store_true",
                         help=_("do not change the NVIDIA boot setting (used by automatic mode)"))
-    opt = parser.parse_args(argv)
-    opt.mod = ALIASES.get(opt.mod, opt.mod)
-    opt.harici = EXTERNAL_ALIASES.get(opt.harici, opt.harici)
-    return opt
+    return parser.parse_args(argv)
 
 
 def print_status():
     snapshot = system.capture()
     active = state.load_active()
-    print(_("Selected mode:"), active["mod"] if active else _("none yet"))
+    print(_("Selected mode:"), active["mode"] if active else _("none yet"))
     print(_("Power profile:"), snapshot["profile"])
     for output in snapshot["outputs"]:
         if output["connected"]:
@@ -111,27 +106,27 @@ def main(argv=None):
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
                 raise RuntimeError(_("Another msi-ultrapower process is already running.")) from None
-            if opt.sinir and opt.mod not in ("sarj", "passwordless"):
+            if opt.value and opt.command not in ("charge", "passwordless"):
                 raise RuntimeError(_("A value can only be used with the charge or passwordless command."))
-            if opt.mod == "sarj" and opt.sinir and opt.sinir not in hw.CHARGE_LIMITS:
+            if opt.command == "charge" and opt.value and opt.value not in hw.CHARGE_LIMITS:
                 raise RuntimeError(_("The charge limit must be one of: {values}").format(
                     values=", ".join(hw.CHARGE_LIMITS)))
-            if opt.mod == "durum":
+            if opt.command == "status":
                 print_status()
-            elif opt.mod == "doctor":
+            elif opt.command == "doctor":
                 print_doctor()
-            elif opt.mod == "passwordless":
-                if opt.sinir not in ("on", "off"):
+            elif opt.command == "passwordless":
+                if opt.value not in ("on", "off"):
                     raise RuntimeError(_("Use: msi-ultrapower passwordless on|off"))
-                controller.set_passwordless(opt.sinir == "on")
-            elif opt.mod == "sarj":
-                if opt.sinir:
-                    controller.set_charge_limit(opt.sinir)
+                controller.set_passwordless(opt.value == "on")
+            elif opt.command == "charge":
+                if opt.value:
+                    controller.set_charge_limit(opt.value)
                 else:
                     limit = status.charge_limits()[1]
                     print(_("Charge limit:"), percent(limit) if limit else _("not supported on this device"))
             else:
-                controller.change_mode(opt.mod, opt.harici, opt.dene, keep_gpu=opt.gpu_koru)
+                controller.change_mode(opt.command, opt.external, opt.dry_run, keep_gpu=opt.keep_gpu)
     except Exception as exc:
         print(_("ERROR:"), exc, file=sys.stderr)
         return 1

@@ -20,40 +20,40 @@ class ScreenPlanTests(unittest.TestCase):
         self.outputs = [fake_output("eDP-1"), fake_output("HDMI-A-1")]
 
     def test_battery_disables_nvidia_external(self):
-        args = display.screen_plan(self.outputs, self.outputs, PRESETS["batarya"],
+        args = display.screen_plan(self.outputs, self.outputs, PRESETS["battery"],
                                    nvidia_outputs=("HDMI-A-1",))
         self.assertIn("output.HDMI-A-1.disable", args)
         self.assertIn("output.eDP-1.mode.old", args)
 
     def test_battery_keeps_igpu_external(self):
-        args = display.screen_plan(self.outputs, self.outputs, PRESETS["batarya"])
+        args = display.screen_plan(self.outputs, self.outputs, PRESETS["battery"])
         self.assertIn("output.HDMI-A-1.mode.old", args)
 
     def test_battery_can_turn_igpu_external_off(self):
-        args = display.screen_plan(self.outputs, self.outputs, PRESETS["batarya"], "kapat")
+        args = display.screen_plan(self.outputs, self.outputs, PRESETS["battery"], "off")
         self.assertIn("output.HDMI-A-1.disable", args)
 
     def test_nvidia_external_off_even_if_kept(self):
-        args = display.screen_plan(self.outputs, self.outputs, PRESETS["batarya"], "koru",
+        args = display.screen_plan(self.outputs, self.outputs, PRESETS["battery"], "keep",
                                    nvidia_outputs=("HDMI-A-1",))
         self.assertIn("output.HDMI-A-1.disable", args)
 
     def test_without_kscreen_screen_step_is_skipped(self):
-        self.assertEqual(display.screen_plan([], [], PRESETS["batarya"]), [])
+        self.assertEqual(display.screen_plan([], [], PRESETS["battery"]), [])
 
     def test_brightness_skipped_when_unknown(self):
         panel = fake_output("eDP-1")
         del panel["brightness"]
-        args = display.screen_plan([panel], [panel], PRESETS["dengeli"])
+        args = display.screen_plan([panel], [panel], PRESETS["balanced"])
         self.assertFalse(any("brightness" in a for a in args))
 
     def test_battery_48_uses_48hz_panel(self):
-        args = display.screen_plan(self.outputs, self.outputs, PRESETS["batarya-48"])
+        args = display.screen_plan(self.outputs, self.outputs, PRESETS["battery-low-hz"])
         self.assertIn("output.eDP-1.mode.low", args)
 
     def test_no_internal_panel_aborts(self):
         with self.assertRaises(RuntimeError):
-            display.screen_plan([fake_output("HDMI-A-1")], [], PRESETS["batarya"])
+            display.screen_plan([fake_output("HDMI-A-1")], [], PRESETS["battery"])
 
     def test_restore(self):
         args = display.screen_plan([fake_output("eDP-1", ("a", "b"))], [fake_output("eDP-1")])
@@ -79,7 +79,7 @@ def arg(args, name, setting):
 class LayoutTests(unittest.TestCase):
     def test_reapplying_keeps_external_as_primary(self):
         outputs = dual()
-        args = display.screen_plan(outputs, [fake_output("eDP-1")], PRESETS["performans"])
+        args = display.screen_plan(outputs, [fake_output("eDP-1")], PRESETS["performance"])
         self.assertEqual(arg(args, "HDMI-A-1", "priority"), "1")
         self.assertEqual(arg(args, "eDP-1", "priority"), "2")
         self.assertEqual(arg(args, "HDMI-A-1", "position"), "1536,0")
@@ -89,12 +89,12 @@ class LayoutTests(unittest.TestCase):
         outputs = dual()
         outputs[0]["scale"] = 1.5
         outputs[1]["currentModeId"] = "big60"
-        args = display.screen_plan(outputs, [fake_output("eDP-1")], PRESETS["dengeli"])
+        args = display.screen_plan(outputs, [fake_output("eDP-1")], PRESETS["balanced"])
         self.assertEqual(arg(args, "eDP-1", "scale"), "1.5")
         self.assertEqual(arg(args, "HDMI-A-1", "mode"), "big60")
 
     def test_battery_leaves_laptop_alone_at_origin(self):
-        args = display.screen_plan(dual(), [], PRESETS["batarya"], nvidia_outputs=("HDMI-A-1",))
+        args = display.screen_plan(dual(), [], PRESETS["battery"], nvidia_outputs=("HDMI-A-1",))
         self.assertIn("output.HDMI-A-1.disable", args)
         self.assertEqual(arg(args, "eDP-1", "priority"), "1")
         self.assertEqual(arg(args, "eDP-1", "position"), "0,0")
@@ -103,7 +103,7 @@ class LayoutTests(unittest.TestCase):
         remembered = display.remember(dual())                    # batarya modundan önce kaydedilir
         outputs = dual(hdmi_primary=False, hdmi_enabled=False)   # HDMI kapalı, laptop tek başına
         outputs[1]["currentModeId"] = "big60"                    # kapalıyken KDE başka mod gösterebilir
-        args = display.screen_plan(outputs, [], PRESETS["performans"], remembered=remembered)
+        args = display.screen_plan(outputs, [], PRESETS["performance"], remembered=remembered)
         self.assertEqual(arg(args, "HDMI-A-1", "priority"), "1")
         self.assertEqual(arg(args, "HDMI-A-1", "position"), "1536,0")
         self.assertEqual(arg(args, "HDMI-A-1", "mode"), "big")   # hatırlanan 120 Hz
@@ -111,7 +111,7 @@ class LayoutTests(unittest.TestCase):
 
     def test_new_external_without_memory_goes_right_and_keeps_laptop_primary(self):
         outputs = dual(hdmi_primary=False, hdmi_enabled=False)
-        args = display.screen_plan(outputs, [], PRESETS["dengeli"])
+        args = display.screen_plan(outputs, [], PRESETS["balanced"])
         self.assertEqual(arg(args, "eDP-1", "priority"), "1")
         self.assertEqual(arg(args, "HDMI-A-1", "priority"), "2")
         self.assertEqual(arg(args, "HDMI-A-1", "position"), "1536,0")  # 1920 / 1.25

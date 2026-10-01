@@ -128,12 +128,12 @@ class HardwareHelper:
 
 def set_charge_limit(value):
     """Pilin şarj sınırını ayarlar. Başarısızsa nedeni, başarılıysa None."""
-    return _run(hardware("--sarj", value))
+    return _run(hardware("--charge", value))
 
 
 def set_passwordless(enabled):
     """Parolasız geçiş kuralını açar/kapatır. Başarısızsa nedeni, başarılıysa None."""
-    return _run(hardware("--parolasiz", "1" if enabled else "0"))
+    return _run(hardware("--passwordless", "1" if enabled else "0"))
 
 
 def _run(command):
