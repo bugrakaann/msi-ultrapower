@@ -7,9 +7,10 @@ import shutil
 
 from PySide6.QtCore import QProcess, Qt, QTimer, Signal
 from PySide6.QtGui import QIcon
-from PySide6.QtWidgets import (QButtonGroup, QComboBox, QDialog, QDialogButtonBox, QFrame,
-                               QHBoxLayout, QLabel, QMessageBox, QPlainTextEdit, QProgressBar,
-                               QPushButton, QScrollArea, QToolButton, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QButtonGroup, QComboBox, QDialog, QDialogButtonBox,
+                               QFrame, QHBoxLayout, QLabel, QMessageBox, QPlainTextEdit,
+                               QProgressBar, QPushButton, QScrollArea, QToolButton, QVBoxLayout,
+                               QWidget)
 
 from .. import capabilities, controller, describe, settings, state, status, system
 from ..i18n import _, ngettext
@@ -377,7 +378,10 @@ class MainWindow(QWidget):
     def _on_finished(self, ok):
         self.progress.hide()
         self._set_controls_enabled(True)
-        _args, name, count = self.pending
+        args, name, count = self.pending
+        if not ok and args[0] == "passwordless":
+            # Parola penceresi kapatıldıysa kural değişmedi; ayar da eski haline dönsün.
+            settings.save({"passwordless": args[1] != "on"})
         if ok:
             text = _("{name} applied.").format(name=name)
             if count:
@@ -447,3 +451,4 @@ class MainWindow(QWidget):
             event.ignore()
             return
         event.accept()
+        QApplication.quit()  # tepsi simgesi varken de: tepside kalma seçeneği kapalıysa uygulama kapanır

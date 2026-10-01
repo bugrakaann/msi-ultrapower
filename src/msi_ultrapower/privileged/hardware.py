@@ -1,19 +1,18 @@
-#!/usr/bin/python3
-"""Root yetkisiyle sysfs'e yazan donanım yardımcısı.
+"""Root yetkisiyle sysfs'e yazan donanım yardımcısı. Yalnızca standart kütüphaneyi ve
+kardeş modülü gpu_boot'u (o da yalnızca standart kütüphane) kullanır.
 
-Bu dosya kasıtlı olarak yalnızca standart kütüphaneyi kullanır ve paketin geri
-kalanından hiçbir şey import etmez, çünkü iki farklı şekilde çalıştırılır:
+Çalıştırma şekilleri (hepsi /usr/lib/msi-ultrapower/msi-ultrapower-hardware üzerinden):
 
-  * pkexec ile doğrudan:   hardware.py '<json>'
+  * pkexec ile mod geçişi:   '<json>'
         Ayarları uygular, "READY" yazar ve stdin'den COMMIT bekler.
         COMMIT gelmezse eski değerlere döner ("ROLLED_BACK").
-        COMMIT gelirse ayarları açılışta geri yüklenmek üzere kaydeder.
-  * pkexec ile şarj sınırı:  hardware.py --sarj 80
+        COMMIT gelirse ayarları açılışta geri yüklenmek üzere kaydeder ("COMMITTED"); istenirse
+        NVIDIA açılış ayarını da aynı yetkiyle yapar. Böylece bir mod geçişi tek parola ister.
+  * pkexec ile şarj sınırı:  --sarj 80
         Pilin şarj sınırını yazar, doğrular ve açılışta geri yüklenmek üzere kaydeder.
-  * pkexec ile parolasız geçiş:  hardware.py --parolasiz 1|0
-        Yalnızca msi-ultrapower yardımcılarının eylemleri için polkit kuralı yazar/siler.
-  * Açılışta systemd ile (msi-ultrapower-restore.service):
-        /usr/lib/msi-ultrapower/msi-ultrapower-hardware --restore
+  * pkexec ile parolasız geçiş:  --parolasiz 1|0
+        Yalnızca bu yardımcının polkit eylemi için kural yazar/siler.
+  * Açılışta systemd ile (msi-ultrapower-restore.service):  --restore
 
 Kullanıcı tarafı (msi_ultrapower paketi) ALLOWED, read_state, writable ve validate'i
 import ederek aynı izin listesini kullanır.
@@ -25,6 +24,8 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+
+from . import gpu_boot
 
 # Standart kütüphane gettext; pkexec LANGUAGE/LANG'ı korur, dil kullanıcınınkiyle aynı olur.
 _ = gettext.translation("msi-ultrapower", fallback=True).gettext
@@ -247,23 +248,51 @@ def restore():
         raise errors[0]
 
 
+def parse_commit(line):
+    """"COMMIT gpu=integrated save=no" → {"gpu": "integrated", "save": "no"}; COMMIT değilse None."""
+    words = line.split()
+    if not words or words[0] != "COMMIT":
+        return None
+    return dict(word.split("=", 1) for word in words[1:] if "=" in word)
+
+
+def forget():
+    """Önceki ayarlara dönüldü: açılışta yeniden uygulanacak mod ayarı kalmaz (şarj sınırı ayrı)."""
+    (STATE_DIR / "hardware.json").unlink(missing_ok=True)
+
+
 def transaction(target):
-    """Uygula → READY → COMMIT beklenir; gelmezse geri al."""
+    """Uygula → READY → COMMIT beklenir; gelmezse geri al.
+
+    COMMIT seçenekleri: gpu=integrated|hybrid (NVIDIA açılış ayarı da yapılır),
+    save=no (önceki ayarlara dönüş; açılışta geri yükleme kaydı silinir).
+    """
     before = apply(target)
     print("READY", flush=True)
-    if sys.stdin.readline().strip() != "COMMIT":
+    options = parse_commit(sys.stdin.readline())
+    if options is None:
         apply(writable(before))
         print("ROLLED_BACK", flush=True)
         return
     try:
-        persist(target)
+        if options.get("save") == "no":
+            forget()
+        else:
+            persist(target)
     except BaseException:
         apply(writable(before))
         raise
+    print("COMMITTED", flush=True)
+    if "gpu" in options:
+        # Donanım ayarları kalıcı oldu; GPU adımı başarısız olsa da onlar geri alınmaz.
+        try:
+            gpu_boot.configure(options["gpu"])
+        except Exception as exc:
+            raise RuntimeError(_("GPU configuration error:") + f" {exc}") from exc
 
 
-# Donanım yardımcısı ve NVIDIA açılış yardımcısı; ikisi de yalnızca izin listesindeki işleri yapar.
-POLKIT_ACTIONS = ("io.github.bugrakaann.msiultrapower.hardware", "io.github.bugrakaann.msiultrapower.gpu-boot")
+# Yalnızca bu yardımcının eylemi; o da yalnızca izin listesindeki işleri yapar.
+POLKIT_ACTIONS = ("io.github.bugrakaann.msiultrapower.hardware",)
 POLKIT_RULE = Path("/etc/polkit-1/rules.d/49-msi-ultrapower.rules")
 POLKIT_HEADER = "// Managed by msi-ultrapower hardware.py\n"
 # Yalnızca msi-ultrapower eylemleri; yalnızca yerel, etkin oturumdaki yönetici (wheel) kullanıcılar.
@@ -308,7 +337,3 @@ def entry():
     except Exception as exc:
         print(exc, file=sys.stderr)
         sys.exit(1)
-
-
-if __name__ == "__main__":
-    entry()

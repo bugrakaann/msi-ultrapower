@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: msi-ultrapower\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-01 21:00+0300\n"
+"POT-Creation-Date: 2026-10-01 21:18+0300\n"
 "PO-Revision-Date: 2026-09-26 00:00+0000\n"
 "Last-Translator: msi-ultrapower contributors\n"
 "Language-Team: Turkish\n"
@@ -64,13 +64,13 @@ msgstr "henüz yok"
 msgid "Power profile:"
 msgstr "Güç profili:"
 
-#: src/msi_ultrapower/cli.py:47 src/msi_ultrapower/controller.py:150
-#: src/msi_ultrapower/ui/window.py:361
+#: src/msi_ultrapower/cli.py:47 src/msi_ultrapower/controller.py:170
+#: src/msi_ultrapower/ui/window.py:362
 msgid "on"
 msgstr "açık"
 
-#: src/msi_ultrapower/cli.py:47 src/msi_ultrapower/controller.py:150
-#: src/msi_ultrapower/ui/window.py:361
+#: src/msi_ultrapower/cli.py:47 src/msi_ultrapower/controller.py:170
+#: src/msi_ultrapower/ui/window.py:362
 msgid "off"
 msgstr "kapalı"
 
@@ -102,8 +102,8 @@ msgstr "kullanılabilir"
 msgid "Battery:"
 msgstr "Pil:"
 
-#: src/msi_ultrapower/cli.py:61 src/msi_ultrapower/cli.py:134
-#: src/msi_ultrapower/controller.py:143
+#: src/msi_ultrapower/cli.py:61 src/msi_ultrapower/cli.py:132
+#: src/msi_ultrapower/controller.py:162
 msgid "Charge limit:"
 msgstr "Şarj sınırı:"
 
@@ -211,28 +211,28 @@ msgstr "yok"
 msgid "Unavailable mode: {mode} ({reason})"
 msgstr "Kullanılamayan mod: {mode} ({reason})"
 
-#: src/msi_ultrapower/cli.py:115
+#: src/msi_ultrapower/cli.py:113
 msgid "Another msi-ultrapower process is already running."
 msgstr "Başka bir msi-ultrapower işlemi zaten çalışıyor."
 
-#: src/msi_ultrapower/cli.py:117
+#: src/msi_ultrapower/cli.py:115
 msgid "A value can only be used with the charge or passwordless command."
 msgstr "Değer yalnızca sarj ya da passwordless komutuyla kullanılır."
 
-#: src/msi_ultrapower/cli.py:119
+#: src/msi_ultrapower/cli.py:117
 #, python-brace-format
 msgid "The charge limit must be one of: {values}"
 msgstr "Şarj sınırı şunlardan biri olmalı: {values}"
 
-#: src/msi_ultrapower/cli.py:127
+#: src/msi_ultrapower/cli.py:125
 msgid "Use: msi-ultrapower passwordless on|off"
 msgstr "Kullanım: msi-ultrapower passwordless on|off"
 
-#: src/msi_ultrapower/cli.py:134
+#: src/msi_ultrapower/cli.py:132
 msgid "not supported on this device"
 msgstr "bu cihazda desteklenmiyor"
 
-#: src/msi_ultrapower/cli.py:138
+#: src/msi_ultrapower/cli.py:136
 msgid "ERROR:"
 msgstr "HATA:"
 
@@ -245,43 +245,22 @@ msgstr ""
 "{outputs} NVIDIA'ya bağlı; batarya modunda NVIDIA kapandığı için açık "
 "tutulamaz. Çift ekran için dengeli modunu seç."
 
-#: src/msi_ultrapower/controller.py:51
+#: src/msi_ultrapower/controller.py:52
 msgid "No saved settings to restore; nothing changed."
 msgstr "Geri dönüş kaydı yok; hiçbir şey değişmedi."
 
-#: src/msi_ultrapower/controller.py:61
+#: src/msi_ultrapower/controller.py:62
 msgid ""
 "Note: the old EC value 'unspecified' cannot be written back; the closest "
 "mode is used."
 msgstr ""
 "Not: eski EC değeri 'unspecified' geri yazılamaz; en yakın mod kullanılır."
 
-#: src/msi_ultrapower/controller.py:75
+#: src/msi_ultrapower/controller.py:77
 msgid "CPU, display and EC settings applied:"
 msgstr "İşlemci, ekran ve EC ayarları uygulandı:"
 
-#: src/msi_ultrapower/controller.py:78
-msgid "NVIDIA boot setting left unchanged."
-msgstr "NVIDIA açılış ayarı değiştirilmedi."
-
-#: src/msi_ultrapower/controller.py:81
-msgid "Status: msi-ultrapower status | Restore: msi-ultrapower restore"
-msgstr "Durum: msi-ultrapower durum | Geri dönüş: msi-ultrapower geri"
-
-#: src/msi_ultrapower/controller.py:97
-msgid "The power profile was changed by another program"
-msgstr "Güç profili başka bir program tarafından değiştirildi"
-
-#: src/msi_ultrapower/controller.py:114
-#: src/msi_ultrapower/privileged/hardware.py:168
-msgid "Rollback error:"
-msgstr "Geri alma hatası:"
-
-#: src/msi_ultrapower/controller.py:119
-msgid "No NVIDIA GPU; boot setting skipped."
-msgstr "NVIDIA ekran kartı yok; açılış ayarı atlandı."
-
-#: src/msi_ultrapower/controller.py:122
+#: src/msi_ultrapower/controller.py:80
 msgid ""
 "CPU and display settings were applied, but the NVIDIA boot setting could not "
 "be completed. Apply the same mode again."
@@ -289,36 +268,57 @@ msgstr ""
 "İşlemci ve ekran ayarları uygulandı, ancak NVIDIA açılış ayarı "
 "tamamlanamadı. Aynı modu yeniden uygula."
 
-#: src/msi_ultrapower/controller.py:126
+#: src/msi_ultrapower/controller.py:83
+msgid "Status: msi-ultrapower status | Restore: msi-ultrapower restore"
+msgstr "Durum: msi-ultrapower durum | Geri dönüş: msi-ultrapower geri"
+
+#: src/msi_ultrapower/controller.py:112
+msgid "The power profile was changed by another program"
+msgstr "Güç profili başka bir program tarafından değiştirildi"
+
+#: src/msi_ultrapower/controller.py:131 src/msi_ultrapower/elevated.py:126
+#: src/msi_ultrapower/privileged/hardware.py:169
+msgid "Rollback error:"
+msgstr "Geri alma hatası:"
+
+#: src/msi_ultrapower/controller.py:137
+msgid "No NVIDIA GPU; boot setting skipped."
+msgstr "NVIDIA ekran kartı yok; açılış ayarı atlandı."
+
+#: src/msi_ultrapower/controller.py:140
+msgid "NVIDIA boot setting left unchanged."
+msgstr "NVIDIA açılış ayarı değiştirilmedi."
+
+#: src/msi_ultrapower/controller.py:144
 msgid "NVIDIA is not disabled yet. Restart to finish battery mode."
 msgstr ""
 "NVIDIA henüz devre dışı değil. Batarya modunu tamamlamak için yeniden başlat."
 
-#: src/msi_ultrapower/controller.py:128
+#: src/msi_ultrapower/controller.py:146
 msgid "NVIDIA is currently disabled. Restart to use it again."
 msgstr "NVIDIA şu anda devre dışı. Yeniden kullanmak için yeniden başlat."
 
-#: src/msi_ultrapower/controller.py:130
+#: src/msi_ultrapower/controller.py:148
 msgid "The GPU state matches the selected mode."
 msgstr "GPU durumu seçilen modla uyumlu."
 
-#: src/msi_ultrapower/controller.py:134
+#: src/msi_ultrapower/controller.py:152
 msgid "GPU mode at next boot:"
 msgstr "Sonraki açılışta GPU modu:"
 
-#: src/msi_ultrapower/controller.py:135
+#: src/msi_ultrapower/controller.py:153
 msgid "Profile:"
 msgstr "Profil:"
 
-#: src/msi_ultrapower/controller.py:142
+#: src/msi_ultrapower/controller.py:161
 msgid "The charge limit could not be set."
 msgstr "Şarj sınırı ayarlanamadı."
 
-#: src/msi_ultrapower/controller.py:148
+#: src/msi_ultrapower/controller.py:168
 msgid "The password rule could not be changed."
 msgstr "Parola kuralı değiştirilemedi."
 
-#: src/msi_ultrapower/controller.py:149
+#: src/msi_ultrapower/controller.py:169
 #, python-brace-format
 msgid "Automatic switching without a password: {state}"
 msgstr "Parolasız otomatik geçiş: {state}"
@@ -401,7 +401,7 @@ msgstr "Parlaklık"
 msgid "Unchanged (needs Plasma 6.1+)"
 msgstr "Değişmez (Plasma 6.1+ gerekli)"
 
-#: src/msi_ultrapower/describe.py:49 src/msi_ultrapower/ui/window.py:197
+#: src/msi_ultrapower/describe.py:49 src/msi_ultrapower/ui/window.py:198
 msgid "External displays"
 msgstr "Harici ekranlar"
 
@@ -637,9 +637,21 @@ msgstr "Yenileme hızı doğrulanamadı: {output}"
 msgid "Could not verify brightness: {output}"
 msgstr "Parlaklık doğrulanamadı: {output}"
 
-#: src/msi_ultrapower/elevated.py:43
+#: src/msi_ultrapower/elevated.py:29
+msgid "The password prompt was cancelled; nothing was changed."
+msgstr "Parola penceresi kapatıldı; hiçbir şey değişmedi."
+
+#: src/msi_ultrapower/elevated.py:31
+msgid "Authorization failed; nothing was changed."
+msgstr "Yetkilendirme başarısız oldu; hiçbir şey değişmedi."
+
+#: src/msi_ultrapower/elevated.py:103
 msgid "Hardware authorization or apply failed:"
 msgstr "Donanım yetkilendirmesi ya da uygulaması başarısız:"
+
+#: src/msi_ultrapower/elevated.py:111
+msgid "Hardware settings could not be saved:"
+msgstr "Donanım ayarları kaydedilemedi:"
 
 #. Translators: percent sign position, e.g. "%{value}" in Turkish
 #: src/msi_ultrapower/i18n.py:74
@@ -705,23 +717,23 @@ msgstr "Maksimum batarya · Düşük Hz"
 msgid "Lowest Hz · 30% brightness · NVIDIA off"
 msgstr "En düşük Hz · %30 parlaklık · NVIDIA kapalı"
 
-#: src/msi_ultrapower/privileged/gpu_boot.py:88
+#: src/msi_ultrapower/privileged/gpu_boot.py:110
 msgid "mkinitcpio/dracut not found; boot images were not rebuilt."
 msgstr "mkinitcpio/dracut bulunamadı; açılış imajları yenilenmedi."
 
-#: src/msi_ultrapower/privileged/gpu_boot.py:122
+#: src/msi_ultrapower/privileged/gpu_boot.py:144
 msgid "Invalid GPU mode"
 msgstr "Geçersiz GPU modu"
 
-#: src/msi_ultrapower/privileged/gpu_boot.py:124
+#: src/msi_ultrapower/privileged/gpu_boot.py:146
 msgid "Administrator rights are required"
 msgstr "Yönetici yetkisi gerekiyor"
 
-#: src/msi_ultrapower/privileged/gpu_boot.py:126
+#: src/msi_ultrapower/privileged/gpu_boot.py:148
 msgid "No integrated GPU found; turning NVIDIA off would leave no display"
 msgstr "Tümleşik GPU bulunamadı; NVIDIA kapatılırsa ekran kalmaz"
 
-#: src/msi_ultrapower/privileged/gpu_boot.py:128
+#: src/msi_ultrapower/privileged/gpu_boot.py:150
 msgid ""
 "NVIDIA drives the built-in display (GPU mode 'Discrete'/MUX in the BIOS). "
 "Turning NVIDIA off would black out the screen; choose 'MSHybrid'/'Optimus' "
@@ -730,61 +742,62 @@ msgstr ""
 "Dahili ekranı NVIDIA sürüyor (BIOS'ta GPU modu 'Discrete'/MUX). NVIDIA "
 "kapatılırsa ekran kararır; BIOS'ta 'MSHybrid'/'Optimus' seç."
 
-#: src/msi_ultrapower/privileged/gpu_boot.py:137
+#: src/msi_ultrapower/privileged/gpu_boot.py:159
 msgid "Unexpected configuration; existing files were not touched"
 msgstr "Beklenmeyen yapılandırma; mevcut dosyalara dokunulmadı"
 
-#: src/msi_ultrapower/privileged/gpu_boot.py:142
+#: src/msi_ultrapower/privileged/gpu_boot.py:163
 msgid "GPU boot setting is already:"
 msgstr "GPU açılış ayarı zaten:"
 
-#: src/msi_ultrapower/privileged/gpu_boot.py:154
+#: src/msi_ultrapower/privileged/gpu_boot.py:175
 msgid "Rebuilding boot images; this can take a few minutes..."
 msgstr "Açılış imajları hazırlanıyor; bu birkaç dakika sürebilir..."
 
-#: src/msi_ultrapower/privileged/gpu_boot.py:159
+#: src/msi_ultrapower/privileged/gpu_boot.py:180
 msgid "GPU configuration rolled back; rebuilding the previous boot images."
 msgstr ""
 "GPU yapılandırması geri alındı; eski açılış imajları yeniden oluşturuluyor."
 
-#: src/msi_ultrapower/privileged/gpu_boot.py:162
+#: src/msi_ultrapower/privileged/gpu_boot.py:183
 msgid "GPU boot setting saved:"
 msgstr "GPU açılış ayarı kaydedildi:"
 
-#: src/msi_ultrapower/privileged/gpu_boot.py:163
+#: src/msi_ultrapower/privileged/gpu_boot.py:184
 msgid "The change takes effect after a restart. Your session was not closed."
 msgstr "Değişiklik yeniden başlatınca geçerli olur. Oturumun kapatılmadı."
 
-#: src/msi_ultrapower/privileged/gpu_boot.py:171
+#: src/msi_ultrapower/privileged/gpu_boot.py:192
+#: src/msi_ultrapower/privileged/hardware.py:291
 msgid "GPU configuration error:"
 msgstr "GPU yapılandırma hatası:"
 
-#: src/msi_ultrapower/privileged/hardware.py:147
+#: src/msi_ultrapower/privileged/hardware.py:148
 msgid "Unsupported setting:"
 msgstr "Desteklenmeyen ayar:"
 
-#: src/msi_ultrapower/privileged/hardware.py:162
-#: src/msi_ultrapower/privileged/hardware.py:196
+#: src/msi_ultrapower/privileged/hardware.py:163
+#: src/msi_ultrapower/privileged/hardware.py:197
 msgid "Could not verify:"
 msgstr "Doğrulanamadı:"
 
-#: src/msi_ultrapower/privileged/hardware.py:193
+#: src/msi_ultrapower/privileged/hardware.py:194
 msgid "Unsupported charge limit:"
 msgstr "Desteklenmeyen şarj sınırı:"
 
-#: src/msi_ultrapower/privileged/hardware.py:238
+#: src/msi_ultrapower/privileged/hardware.py:239
 msgid "Skipped (device missing):"
 msgstr "Atlandı (aygıt yok):"
 
-#: src/msi_ultrapower/privileged/hardware.py:283
+#: src/msi_ultrapower/privileged/hardware.py:312
 #, python-brace-format
 msgid "{path} does not belong to msi-ultrapower; not touched"
 msgstr "{path} msi-ultrapower'ya ait değil; dokunulmadı"
 
-#: src/msi_ultrapower/ui/app.py:45 src/msi_ultrapower/ui/tray.py:53
+#: src/msi_ultrapower/ui/app.py:43 src/msi_ultrapower/ui/tray.py:53
 #: src/msi_ultrapower/ui/tray.py:86 src/msi_ultrapower/ui/tray.py:97
-#: src/msi_ultrapower/ui/tray.py:100 src/msi_ultrapower/ui/window.py:72
-#: src/msi_ultrapower/ui/window.py:137
+#: src/msi_ultrapower/ui/tray.py:100 src/msi_ultrapower/ui/window.py:73
+#: src/msi_ultrapower/ui/window.py:138
 msgid "Power Modes"
 msgstr "Güç Modları"
 
@@ -850,7 +863,7 @@ msgid "This computer does not support a charge limit."
 msgstr "Bu bilgisayar şarj sınırını desteklemiyor."
 
 #: src/msi_ultrapower/ui/settings_dialog.py:37
-#: src/msi_ultrapower/ui/window.py:148
+#: src/msi_ultrapower/ui/window.py:149
 msgid "Settings"
 msgstr "Ayarlar"
 
@@ -879,7 +892,7 @@ msgid "Start in the system tray when I log in"
 msgstr "Oturum açınca sistem tepsisinde başlat"
 
 #: src/msi_ultrapower/ui/settings_dialog.py:65
-#: src/msi_ultrapower/ui/window.py:425
+#: src/msi_ultrapower/ui/window.py:429
 msgid "Language"
 msgstr "Dil"
 
@@ -921,13 +934,13 @@ msgstr "Yönetici parolası"
 msgid ""
 "Applies to switching modes, the charge limit and automatic mode. Adds a "
 "polkit rule for local administrators (wheel) of an active session; only the "
-"two msi-ultrapower helpers are allowed, and they only write whitelisted "
-"settings. You are asked for the password once to turn this on or off."
+"msi-ultrapower helper is allowed, and it only writes whitelisted settings. "
+"You are asked for the password once to turn this on or off."
 msgstr ""
 "Mod değiştirme, şarj sınırı ve otomatik mod için geçerlidir. Etkin "
 "oturumdaki yerel yöneticiler (wheel) için bir polkit kuralı ekler; yalnızca "
-"iki msi-ultrapower yardımcısına izin verilir ve bunlar yalnızca izin "
-"listesindeki ayarları yazar. Açıp kapatırken parola bir kez sorulur."
+"msi-ultrapower yardımcısına izin verilir ve o da yalnızca izin listesindeki "
+"ayarları yazar. Açıp kapatırken parola bir kez sorulur."
 
 #: src/msi_ultrapower/ui/settings_dialog.py:91
 msgid "System tray"
@@ -1057,7 +1070,7 @@ msgstr "Başka bir değişiklik hâlâ uygulanıyor."
 msgid "Average over {minutes} min on battery"
 msgstr "Pilde son {minutes} dk ortalaması"
 
-#: src/msi_ultrapower/ui/tray.py:97 src/msi_ultrapower/ui/window.py:382
+#: src/msi_ultrapower/ui/tray.py:97 src/msi_ultrapower/ui/window.py:386
 #, python-brace-format
 msgid "{name} applied."
 msgstr "{name} uygulandı."
@@ -1076,7 +1089,7 @@ msgstr "Aktif"
 msgid "Not available here: {reason}"
 msgstr "Bu bilgisayarda yok: {reason}"
 
-#: src/msi_ultrapower/ui/window.py:41
+#: src/msi_ultrapower/ui/window.py:42
 msgid ""
 "The msi-ec driver was not found: fan, EC mode and Cooler Boost cannot be "
 "changed (AUR: msi-ec-dkms-git)."
@@ -1084,12 +1097,12 @@ msgstr ""
 "msi-ec sürücüsü bulunamadı: fan, EC modu ve Cooler Boost değiştirilemez "
 "(AUR: msi-ec-dkms-git)."
 
-#: src/msi_ultrapower/ui/window.py:44
+#: src/msi_ultrapower/ui/window.py:45
 msgid ""
 "KDE Plasma 6 was not found: refresh rate and brightness are not changed."
 msgstr "KDE Plasma 6 bulunamadı: yenileme hızı ve parlaklık değiştirilmez."
 
-#: src/msi_ultrapower/ui/window.py:46
+#: src/msi_ultrapower/ui/window.py:47
 #, python-brace-format
 msgid ""
 "{services} is running and conflicts with power profiles; modes may fail to "
@@ -1098,19 +1111,19 @@ msgstr ""
 "{services} çalışıyor ve güç profilleriyle çakışıyor; modlar "
 "doğrulanamayabilir. Birini devre dışı bırak."
 
-#: src/msi_ultrapower/ui/window.py:54
+#: src/msi_ultrapower/ui/window.py:55
 msgid "Activity log"
 msgstr "İşlem günlüğü"
 
-#: src/msi_ultrapower/ui/window.py:60
+#: src/msi_ultrapower/ui/window.py:61
 msgid "Applied steps appear here."
 msgstr "Uygulanan adımlar burada görünür."
 
-#: src/msi_ultrapower/ui/window.py:157 src/msi_ultrapower/ui/window.py:435
+#: src/msi_ultrapower/ui/window.py:158 src/msi_ultrapower/ui/window.py:439
 msgid "Restart"
 msgstr "Yeniden başlat"
 
-#: src/msi_ultrapower/ui/window.py:194
+#: src/msi_ultrapower/ui/window.py:195
 msgid ""
 "Whether external displays stay on in this mode. Their refresh rate and "
 "resolution never change."
@@ -1118,23 +1131,23 @@ msgstr ""
 "Harici ekranların bu modda açık kalıp kalmayacağı. Yenileme hızları ve "
 "çözünürlükleri hiç değişmez."
 
-#: src/msi_ultrapower/ui/window.py:215
+#: src/msi_ultrapower/ui/window.py:216
 msgid "Show log"
 msgstr "Günlüğü göster"
 
-#: src/msi_ultrapower/ui/window.py:226 src/msi_ultrapower/ui/window.py:227
+#: src/msi_ultrapower/ui/window.py:227 src/msi_ultrapower/ui/window.py:228
 msgid "Restore previous settings"
 msgstr "Önceki ayarlara dön"
 
-#: src/msi_ultrapower/ui/window.py:229
+#: src/msi_ultrapower/ui/window.py:230
 msgid "Previous settings"
 msgstr "Önceki ayarlar"
 
-#: src/msi_ultrapower/ui/window.py:231 src/msi_ultrapower/ui/window.py:318
+#: src/msi_ultrapower/ui/window.py:232 src/msi_ultrapower/ui/window.py:319
 msgid "Apply"
 msgstr "Uygula"
 
-#: src/msi_ultrapower/ui/window.py:309
+#: src/msi_ultrapower/ui/window.py:310
 #, python-brace-format
 msgid ""
 "{outputs} is wired to NVIDIA: it turns off in battery mode and cannot be "
@@ -1143,66 +1156,66 @@ msgstr ""
 "{outputs} NVIDIA'ya bağlı: batarya modunda kapanır ve NVIDIA geri gelene "
 "kadar kullanılamaz."
 
-#: src/msi_ultrapower/ui/window.py:318
+#: src/msi_ultrapower/ui/window.py:319
 msgid "Apply again"
 msgstr "Yeniden uygula"
 
-#: src/msi_ultrapower/ui/window.py:328
+#: src/msi_ultrapower/ui/window.py:329
 #, python-brace-format
 msgid "Active mode: {mode}"
 msgstr "Aktif mod: {mode}"
 
-#: src/msi_ultrapower/ui/window.py:329
+#: src/msi_ultrapower/ui/window.py:330
 msgid "No mode applied yet (system settings)"
 msgstr "Henüz mod uygulanmadı (sistem ayarları)"
 
-#: src/msi_ultrapower/ui/window.py:334
+#: src/msi_ultrapower/ui/window.py:335
 msgid "NVIDIA will be disabled after a restart."
 msgstr "Yeniden başlatınca NVIDIA devre dışı kalacak."
 
-#: src/msi_ultrapower/ui/window.py:335
+#: src/msi_ultrapower/ui/window.py:336
 msgid "NVIDIA will be available again after a restart."
 msgstr "Yeniden başlatınca NVIDIA yeniden kullanılabilir olacak."
 
-#: src/msi_ultrapower/ui/window.py:358
+#: src/msi_ultrapower/ui/window.py:359
 #, python-brace-format
 msgid "{limit}% charge limit"
 msgstr "%{limit} şarj sınırı"
 
-#: src/msi_ultrapower/ui/window.py:363
+#: src/msi_ultrapower/ui/window.py:364
 #, python-brace-format
 msgid "Password-free switching {state}"
 msgstr "Parolasız geçiş {state}"
 
-#: src/msi_ultrapower/ui/window.py:370
+#: src/msi_ultrapower/ui/window.py:371
 #, python-brace-format
 msgid "Applying {name}… An administrator password may be requested."
 msgstr "{name} uygulanıyor… Yönetici parolası istenebilir."
 
-#: src/msi_ultrapower/ui/window.py:384
+#: src/msi_ultrapower/ui/window.py:388
 #, python-brace-format
 msgid "{count} setting changed."
 msgid_plural "{count} settings changed."
 msgstr[0] "{count} ayar değişti."
 msgstr[1] "{count} ayar değişti."
 
-#: src/msi_ultrapower/ui/window.py:388
+#: src/msi_ultrapower/ui/window.py:392
 #, python-brace-format
 msgid "{name} could not be applied. See the log for details."
 msgstr "{name} uygulanamadı. Ayrıntılar günlükte."
 
-#: src/msi_ultrapower/ui/window.py:426
+#: src/msi_ultrapower/ui/window.py:430
 msgid "The new language is used after the app restarts."
 msgstr "Yeni dil, uygulama yeniden açılınca kullanılır."
 
-#: src/msi_ultrapower/ui/window.py:435
+#: src/msi_ultrapower/ui/window.py:439
 msgid "Restart the computer now?"
 msgstr "Bilgisayar şimdi yeniden başlatılsın mı?"
 
-#: src/msi_ultrapower/ui/window.py:445
+#: src/msi_ultrapower/ui/window.py:449
 msgid "Still working"
 msgstr "İşlem sürüyor"
 
-#: src/msi_ultrapower/ui/window.py:446
+#: src/msi_ultrapower/ui/window.py:450
 msgid "You can close the window when the settings are applied."
 msgstr "Ayarlar uygulanınca pencereyi kapatabilirsin."

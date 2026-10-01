@@ -1,4 +1,5 @@
 """Root yardımcılarının sahte sysfs ile denenen güvenlik kontrolleri."""
+import io
 import json
 import tempfile
 import unittest
@@ -68,6 +69,50 @@ class RestoreTests(unittest.TestCase):
         with patch.object(hw, "available_shift_modes", return_value=["eco", "sport", "turbo"]):
             state = hw.writable({hw.EC + "shift_mode": "unspecified"})
         self.assertEqual(state[hw.EC + "shift_mode"], "eco")
+
+
+class TransactionTests(unittest.TestCase):
+    """Tek parola: donanım ve NVIDIA açılış ayarı aynı yardımcı oturumunda yapılır."""
+
+    def run_transaction(self, stdin):
+        calls = []
+        with patch.object(hw, "apply", side_effect=lambda s: calls.append(("apply", s)) or {"x": "old"}), \
+                patch.object(hw, "persist", side_effect=lambda s: calls.append(("persist", s))), \
+                patch.object(hw, "forget", side_effect=lambda: calls.append(("forget",))), \
+                patch.object(hw.gpu_boot, "configure", side_effect=lambda m: calls.append(("gpu", m))), \
+                patch.object(hw.sys, "stdin", io.StringIO(stdin)), \
+                patch("sys.stdout", new_callable=io.StringIO) as out:
+            hw.transaction({"x": "new"})
+        return calls, out.getvalue().split()
+
+    def test_commit_with_gpu_runs_gpu_after_saving(self):
+        calls, out = self.run_transaction("COMMIT gpu=integrated\n")
+        self.assertEqual(calls, [("apply", {"x": "new"}), ("persist", {"x": "new"}), ("gpu", "integrated")])
+        self.assertEqual(out, ["READY", "COMMITTED"])
+
+    def test_restore_forgets_boot_values(self):
+        calls, _out = self.run_transaction("COMMIT save=no\n")
+        self.assertIn(("forget",), calls)
+        self.assertNotIn("persist", [c[0] for c in calls])
+
+    def test_no_commit_rolls_back_without_gpu(self):
+        calls, out = self.run_transaction("")
+        self.assertEqual([c[0] for c in calls], ["apply", "apply"])
+        self.assertEqual(out, ["READY", "ROLLED_BACK"])
+
+
+class GpuBootStateTests(unittest.TestCase):
+    def test_is_configured_reads_managed_files(self):
+        with tempfile.TemporaryDirectory() as d:
+            mod, rule = Path(d, "mod.conf"), Path(d, "rule.rules")
+            with patch.object(gpu_boot, "MANAGED", (mod, rule)), patch.object(gpu_boot, "MOD", mod), \
+                    patch.object(gpu_boot, "RULE", rule), patch.object(gpu_boot.shutil, "which", return_value=None):
+                self.assertTrue(gpu_boot.is_configured("hybrid"))
+                self.assertFalse(gpu_boot.is_configured("integrated"))
+                mod.write_text(gpu_boot.MODPROBE_TEXT)
+                rule.write_text(gpu_boot.UDEV_TEXT)
+                self.assertTrue(gpu_boot.is_configured("integrated"))
+                self.assertFalse(gpu_boot.is_configured("hybrid"))
 
 
 if __name__ == "__main__":

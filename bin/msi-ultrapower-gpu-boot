@@ -1,5 +1,5 @@
 #!/usr/bin/python3 -P
-# pkexec ile root olarak çalışır; polkit eylemi: io.github.bugrakaann.msiultrapower.gpu-boot
+# Kurtarma için (sudo ile): msi-ultrapower-gpu-boot hybrid. Normalde donanım yardımcısı kullanır.
 from msi_ultrapower.privileged.gpu_boot import entry
 
 entry()

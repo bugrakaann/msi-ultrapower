@@ -100,7 +100,7 @@ imajı yeniden oluşturulmaz. NVIDIA'yı tamamen kapatmak için batarya modunu e
 ### Parola sormadan
 
 Ayarlar'daki *Yönetici parolasını sorma*, yerel ve etkin oturumdaki yöneticilerin (`wheel`)
-iki msi-ultrapower yardımcısını parolasız çalıştırmasına izin veren bir polkit kuralı ekler: mod
+msi-ultrapower yardımcısını parolasız çalıştırmasına izin veren bir polkit kuralı ekler: mod
 değiştirme, şarj sınırı ve otomatik mod artık parola sormaz. Başka hiçbir şeye izin verilmez.
 Seçeneği kapatınca ya da paketi kaldırınca kural silinir.
 
@@ -124,13 +124,14 @@ düzeltmeleri memnuniyetle karşılanır.
 
 ## Güvenlik ve geri alma
 
-- Root yalnızca `/usr/lib/msi-ultrapower/` içindeki iki küçük yardımcıyla ve `pkexec` üzerinden
-  kullanılır. Polkit eylemleri (`io.github.bugrakaann.msiultrapower.*`) parolayı birkaç dakika hatırlar.
-  Sürekli çalışan root servisi ya da sudo kuralı yoktur.
+- Root yalnızca tek bir küçük yardımcıyla, `/usr/lib/msi-ultrapower/msi-ultrapower-hardware`,
+  `pkexec` üzerinden kullanılır (polkit eylemi `io.github.bugrakaann.msiultrapower.hardware`). Bir
+  mod geçişi NVIDIA açılış ayarı dahil parolayı bir kez sorar; NVIDIA ayarı değişmiyorsa onun için
+  hiç sormaz. Sürekli çalışan root servisi ya da sudo kuralı yoktur.
 - Donanım yardımcısı yalnızca izin listesindeki dosyalara (`privileged/hardware.py`'deki
   `ALLOWED`) ve izin verilen değerlerle yazar.
 - Ayarları uygular ve `COMMIT` bekler. KDE tarafı (profil, ekranlar) doğrulanamazsa her şey
-  geri alınır.
+  geri alınır. *Önceki ayarlara dön* açılışta geri yüklenen değerleri de kaldırır.
 - GPU yapılandırması başarısız olursa dosyalar geri alınır ve açılış imajları yeniden oluşturulur.
 
 **Kurtarma:** Grafik oturum açılmazsa TTY'ye geç (Ctrl+Alt+F3) ve çalıştır:
@@ -146,7 +147,7 @@ Sonra yeniden başlat. Bu yalnızca bu aracın koyduğu NVIDIA engelini kaldır�
 | Yol | Ne |
 |---|---|
 | `/usr/bin/msi-ultrapower`, `/usr/bin/msi-ultrapower-ui` | Komutlar |
-| `/usr/lib/msi-ultrapower/` | Root yardımcıları (polkit eylemleri buraya bağlı) |
+| `/usr/lib/msi-ultrapower/` | Root yardımcısı (polkit eylemi buraya bağlı) ve GPU kurtarma komutu |
 | `/usr/lib/python3.X/site-packages/msi_ultrapower/` | Program kodu |
 | `/usr/share/polkit-1/actions/io.github.bugrakaann.msiultrapower.policy` | Polkit eylemleri |
 | `/usr/lib/systemd/system/msi-ultrapower-restore.service` | Açılışta donanım ayarlarını ve şarj sınırını geri yükler |

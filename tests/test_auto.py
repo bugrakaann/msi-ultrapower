@@ -48,6 +48,17 @@ class AutoSwitcherTests(unittest.TestCase):
     def test_disabled_does_nothing(self):
         self.assertEqual(self.run_switcher([True, False], {"auto_mode": False}), [])
 
+    def test_startup_on_battery_switches_when_passwordless(self):
+        options = {"auto_mode": True, "passwordless": True}
+        self.assertEqual(self.run_switcher([False, False], options), [("batarya", True)])
+
+    def test_startup_without_passwordless_waits_for_plug_event(self):
+        self.assertEqual(self.run_switcher([False, False], {"auto_mode": True}), [])
+
+    def test_startup_in_matching_mode_does_nothing(self):
+        options = {"auto_mode": True, "passwordless": True}
+        self.assertEqual(self.run_switcher([True, True], options), [])
+
     def test_no_change_no_switch(self):
         self.assertEqual(self.run_switcher([True, True, True], {"auto_mode": True}), [])
 

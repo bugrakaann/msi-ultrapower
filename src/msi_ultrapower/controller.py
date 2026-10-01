@@ -44,7 +44,8 @@ def prepare(mode, external="otomatik", before=None, caps=None):
 def change_mode(mode, external="otomatik", dry_run=False, keep_gpu=False):
     """Bir modu uygular ya da mode "geri"/"normal" ise önceki ayarlara döner.
 
-    keep_gpu: NVIDIA açılış ayarına dokunma (otomatik mod; initramfs her seferinde yenilenmesin).
+    keep_gpu: NVIDIA'yı açılışta kapatma (otomatik mod; initramfs her fiş çekilişinde yenilenmesin).
+    NVIDIA kapalıyken batarya dışı bir moda geçilirse yine de geri açılır.
     """
     restoring = mode not in PRESETS
     if restoring and not state.has_original():
@@ -65,7 +66,8 @@ def change_mode(mode, external="otomatik", dry_run=False, keep_gpu=False):
     # Kullanıcının şu anki ekran düzeni (ana ekran, konumlar): bu kombinasyona dönülünce kurulur.
     state.save_layout(before["outputs"])
 
-    apply_plan(p, before)
+    gpu_mode = gpu_step(p.gpu_boot, keep_gpu)
+    helper = apply_plan(p, before, gpu_mode)
 
     if restoring:
         state.forget_all()
@@ -74,15 +76,28 @@ def change_mode(mode, external="otomatik", dry_run=False, keep_gpu=False):
     state.log_history(mode, external)
     print(_("CPU, display and EC settings applied:"), mode, flush=True)
 
-    if keep_gpu:
-        print(_("NVIDIA boot setting left unchanged."), flush=True)
-    else:
-        apply_gpu_boot(p.gpu_boot)
+    if not helper.finish() and gpu_mode:
+        raise RuntimeError(_("CPU and display settings were applied, but the NVIDIA boot setting "
+                             "could not be completed. Apply the same mode again."))
+    report_gpu(p.gpu_boot, gpu_mode, keep_gpu)
     print(_("Status: msi-ultrapower status | Restore: msi-ultrapower restore"))
 
 
-def apply_plan(p, before):
-    """Donanım + güç profili + ekranı birlikte uygular; bir adım bile başarısız olursa hepsi geri alınır."""
+def gpu_step(boot_mode, keep_gpu):
+    """Yardımcıya verilecek NVIDIA açılış modu; değişiklik gerekmiyorsa None (parola da sorulmaz)."""
+    if status.NVIDIA_DEVICE is None and not gpu_boot.MOD.exists():
+        return None  # NVIDIA yok
+    if keep_gpu and boot_mode == "integrated":
+        return None
+    return None if gpu_boot.is_configured(boot_mode) else boot_mode
+
+
+def apply_plan(p, before, gpu_mode=None):
+    """Donanım + güç profili + ekranı birlikte uygular; bir adım bile başarısız olursa hepsi geri alınır.
+
+    Tek bir yetkili yardımcı kullanılır: NVIDIA açılış ayarı (gpu_mode) COMMIT ile aynı oturumda
+    başlar ve helper.finish() ile beklenir. Döndürülen yardımcı bu yüzden henüz bitmemiş olabilir.
+    """
     helper = elevated.HardwareHelper(p.hardware)
     kde_changed = False
     try:
@@ -97,12 +112,14 @@ def apply_plan(p, before):
             raise RuntimeError(_("The power profile was changed by another program"))
         plan.verify_hardware(p, actual["hardware"])
         display.verify_screen(p.screen_args, before["outputs"], actual["outputs"])
-        helper.commit()
+        # Önceki ayarlara dönüşte açılışta yeniden uygulanacak bir mod kalmaz.
+        helper.commit(gpu_mode, save=not p.restoring)
     except BaseException:
         if kde_changed:
             rollback_kde(before["profile"], p.rollback_args)
         helper.rollback()
         raise
+    return helper
 
 
 def rollback_kde(profile, screen_args):
@@ -114,13 +131,14 @@ def rollback_kde(profile, screen_args):
             print(_("Rollback error:"), exc, file=sys.stderr)
 
 
-def apply_gpu_boot(boot_mode):
+def report_gpu(boot_mode, gpu_mode, keep_gpu):
+    """NVIDIA'nın şu anki durumunun seçilen modla uyumunu ve gerekiyorsa yeniden başlatmayı bildirir."""
     if status.NVIDIA_DEVICE is None and not gpu_boot.MOD.exists():
         print(_("No NVIDIA GPU; boot setting skipped."), flush=True)
         return
-    if not elevated.configure_gpu_boot(boot_mode):
-        raise RuntimeError(_("CPU and display settings were applied, but the NVIDIA boot setting "
-                             "could not be completed. Apply the same mode again."))
+    if keep_gpu and boot_mode == "integrated" and gpu_mode is None:
+        print(_("NVIDIA boot setting left unchanged."), flush=True)
+        return
     gpu_present = status.gpu().present
     if boot_mode == "integrated" and gpu_present:
         print(_("NVIDIA is not disabled yet. Restart to finish battery mode."), flush=True)
@@ -138,13 +156,15 @@ def print_plan(p):
 
 
 def set_charge_limit(limit):
-    if not elevated.set_charge_limit(limit):
-        raise RuntimeError(_("The charge limit could not be set."))
+    error = elevated.set_charge_limit(limit)
+    if error:
+        raise RuntimeError(_("The charge limit could not be set.") + " " + error)
     print(_("Charge limit:"), percent(limit), flush=True)
 
 
 def set_passwordless(enabled):
-    if not elevated.set_passwordless(enabled):
-        raise RuntimeError(_("The password rule could not be changed."))
+    error = elevated.set_passwordless(enabled)
+    if error:
+        raise RuntimeError(_("The password rule could not be changed.") + " " + error)
     print(_("Automatic switching without a password: {state}").format(
         state=_("on") if enabled else _("off")), flush=True)

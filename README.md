@@ -99,7 +99,7 @@ NVIDIA fully off.
 ### No password prompts
 
 In Settings, *Do not ask for the administrator password* adds a polkit rule that lets local,
-active administrators (`wheel`) run the two msi-ultrapower helpers without a password: switching modes,
+active administrators (`wheel`) run the msi-ultrapower helper without a password: switching modes,
 the charge limit and automatic mode no longer ask. Nothing else is allowed. The rule is removed
 when you turn the option off or uninstall.
 
@@ -122,13 +122,15 @@ The current translations were machine-assisted; native speakers are welcome to i
 
 ## Security and rollback
 
-- Root is only used by two small helpers in `/usr/lib/msi-ultrapower/`, started with `pkexec`.
-  Their polkit actions (`io.github.bugrakaann.msiultrapower.*`) remember the password for a few minutes.
-  There is no always-running root service and no sudo rule.
+- Root is only used by one small helper, `/usr/lib/msi-ultrapower/msi-ultrapower-hardware`,
+  started with `pkexec` (polkit action `io.github.bugrakaann.msiultrapower.hardware`). A mode switch
+  asks for the password once, including the NVIDIA boot setting; it is not asked at all when the
+  NVIDIA setting does not change. There is no always-running root service and no sudo rule.
 - The hardware helper only writes files on an allow-list (`ALLOWED` in
   `privileged/hardware.py`), with allowed values.
 - It applies the settings and waits for `COMMIT`. If the KDE side (profile, displays)
-  cannot be verified, everything is rolled back.
+  cannot be verified, everything is rolled back. *Restore previous settings* also removes the
+  values restored at boot.
 - If the GPU configuration fails, its files are restored and the boot images rebuilt.
 
 **Recovery:** if the graphical session does not start, switch to a TTY (Ctrl+Alt+F3) and run
@@ -144,7 +146,7 @@ then restart. This only removes the NVIDIA block this tool added.
 | Path | What |
 |---|---|
 | `/usr/bin/msi-ultrapower`, `/usr/bin/msi-ultrapower-ui` | Commands |
-| `/usr/lib/msi-ultrapower/` | Root helpers (polkit actions point here) |
+| `/usr/lib/msi-ultrapower/` | Root helper (the polkit action points here) and the GPU recovery command |
 | `/usr/lib/python3.X/site-packages/msi_ultrapower/` | Program code |
 | `/usr/share/polkit-1/actions/io.github.bugrakaann.msiultrapower.policy` | Polkit actions |
 | `/usr/lib/systemd/system/msi-ultrapower-restore.service` | Restores hardware settings and the charge limit at boot |

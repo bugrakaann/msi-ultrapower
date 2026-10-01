@@ -1,13 +1,14 @@
 #!/usr/bin/python3
 """Sonraki açılış için yalnızca tümleşik GPU / hibrit modunu hazırlar.
 
-pkexec ile çalıştırılır:  gpu_boot.py integrated|hybrid
+Donanım yardımcısı (hardware.py) mod uygulanırken aynı yetki oturumunda configure()'u
+çağırır; böylece bir mod geçişi tek parola ister. Tek başına yalnızca kurtarma için çalışır.
 
 Canlı GPU'yu asla sökmez ve bilgisayarı yeniden başlatmaz. Yalnızca kendi
 oluşturduğu üç dosyayı (HEADER ile işaretli) yönetir. Yalnızca standart
 kütüphaneyi kullanır; paketin geri kalanından import yapmaz.
 
-Kurtarma (TTY):  sudo python3 -P -m msi_ultrapower.privileged.gpu_boot hybrid
+Kurtarma (TTY):  sudo /usr/lib/msi-ultrapower/msi-ultrapower-gpu-boot hybrid
 """
 import gettext
 import glob
@@ -66,6 +67,27 @@ def integrated_config():
     if shutil.which("dracut"):
         config[DRACUT] = DRACUT_TEXT
     return config
+
+
+def desired(mode):
+    """Bu modda yönetilen her dosyanın olması gereken içeriği (None: dosya olmamalı)."""
+    wanted = integrated_config() if mode == "integrated" else {}
+    return {p: wanted.get(p) for p in MANAGED}
+
+
+def current():
+    return {p: p.read_text() if p.exists() else None for p in MANAGED}
+
+
+def is_configured(mode):
+    """Açılış ayarı zaten bu modda mı. Dosyalar herkesçe okunabilir; yetki gerekmez.
+
+    Okunamazsa False döner; o zaman karar yetkili yardımcıya kalır.
+    """
+    try:
+        return current() == desired(mode)
+    except OSError:
+        return False
 
 
 def write(path, content):
@@ -132,13 +154,12 @@ def check_preconditions(mode):
 
 def configure(mode):
     check_preconditions(mode)
-    before = {p: p.read_text() if p.exists() else None for p in MANAGED}
+    before = current()
     if any(v is not None and not v.startswith(HEADER) for v in before.values()):
         raise RuntimeError(_("Unexpected configuration; existing files were not touched"))
 
-    wanted = integrated_config() if mode == "integrated" else {}
-    desired = {p: wanted.get(p) for p in MANAGED}
-    if before == desired:
+    target = desired(mode)
+    if before == target:
         print(_("GPU boot setting is already:"), mode, flush=True)
         return
 
@@ -147,7 +168,7 @@ def configure(mode):
     (BACKUP_DIR / "gpu-before.json").write_text(
         json.dumps({str(p): v for p, v in before.items()}, indent=2))
     try:
-        for path, content in desired.items():
+        for path, content in target.items():
             if content is not None:
                 path.parent.mkdir(parents=True, exist_ok=True)
             write(path, content)
@@ -164,7 +185,7 @@ def configure(mode):
 
 
 def entry():
-    """/usr/lib/msi-ultrapower/msi-ultrapower-gpu-boot buradan başlar."""
+    """/usr/lib/msi-ultrapower/msi-ultrapower-gpu-boot (kurtarma, sudo ile) buradan başlar."""
     try:
         configure(sys.argv[1])
     except Exception as exc:

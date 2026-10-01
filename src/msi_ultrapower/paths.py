@@ -3,10 +3,8 @@ from pathlib import Path
 
 PACKAGE_DIR = Path(__file__).resolve().parent
 SOURCE_DIR = PACKAGE_DIR.parent  # PYTHONPATH'e eklenen "src" klasörü
-HARDWARE_HELPER = PACKAGE_DIR / "privileged" / "hardware.py"
-GPU_BOOT_HELPER = PACKAGE_DIR / "privileged" / "gpu_boot.py"
-# Paketle kurulan yardımcılar; polkit eylemleri bu yollara bağlıdır (parola hatırlama).
-INSTALLED_HELPERS = Path("/usr/lib/msi-ultrapower")
+# Paketle kurulan root yardımcısı; polkit eylemi bu yola bağlıdır.
+INSTALLED_HELPER = Path("/usr/lib/msi-ultrapower/msi-ultrapower-hardware")
 
 # Kullanıcıya ait durum dosyaları (kod değil, yalnızca veri).
 DATA_DIR = Path.home() / ".local/share/msi-ultrapower"

@@ -84,8 +84,8 @@ class SettingsDialog(QDialog):
         layout.addWidget(self.passwordless)
         layout.addWidget(muted(_("Applies to switching modes, the charge limit and automatic mode. "
                                  "Adds a polkit rule for local administrators (wheel) of an active "
-                                 "session; only the two msi-ultrapower helpers are allowed, and they only "
-                                 "write whitelisted settings. You are asked for the password once "
+                                 "session; only the msi-ultrapower helper is allowed, and it only "
+                                 "writes whitelisted settings. You are asked for the password once "
                                  "to turn this on or off.")))
 
         layout.addWidget(section_label(_("System tray")))
