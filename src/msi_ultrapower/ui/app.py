@@ -9,7 +9,7 @@ from PySide6.QtCore import QLibraryInfo, Qt, QTranslator
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 from PySide6.QtWidgets import QApplication, QSystemTrayIcon
 
-from .. import i18n, paths, settings
+from .. import i18n, settings
 from ..i18n import _
 from .auto import AutoSwitcher
 from .tray import Tray
@@ -39,8 +39,6 @@ def install_translations(app):
 
 
 def main():
-    if paths.migrate_legacy():  # ayarlar (dil, tepsi) okunmadan önce
-        i18n.setup()
     app = QApplication(sys.argv)
     app.setApplicationName(_("Power Modes"))
     app.setDesktopFileName("msi-ultrapower")

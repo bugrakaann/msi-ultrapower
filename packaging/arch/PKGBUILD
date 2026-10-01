@@ -13,9 +13,6 @@ depends=('python' 'pyside6' 'power-profiles-daemon' 'libkscreen' 'polkit' 'initr
 makedepends=('gettext')
 optdepends=('msi-ec-dkms-git: fan, EC mode, Cooler Boost and charge limit'
             'mcontrolcenter: set the fan curve for the manual-fan performance mode')
-# Projenin eski adı; pacman eski paketi kaldırıp bunu kurar.
-replaces=('pil-modu')
-conflicts=('pil-modu')
 install=msi-ultrapower.install
 
 # Kaynak kod bu deponun kendisi (iki üst klasör).

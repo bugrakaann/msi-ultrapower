@@ -6,7 +6,7 @@ import argparse
 import fcntl
 import sys
 
-from . import __version__, capabilities, controller, i18n, paths, state, status, system
+from . import __version__, capabilities, controller, paths, state, status, system
 from .i18n import _, ngettext, percent
 from .presets import ALIASES, EXTERNAL_ALIASES, EXTERNAL_CHOICES, PRESETS, RESTORE_COMMANDS
 from .privileged import hardware as hw
@@ -105,8 +105,6 @@ def print_doctor():
 def main(argv=None):
     try:
         opt = parse_args(argv)
-        if paths.migrate_legacy():
-            i18n.setup()
         paths.DATA_DIR.mkdir(parents=True, exist_ok=True)
         with paths.LOCK_FILE.open("w") as lock:
             try:

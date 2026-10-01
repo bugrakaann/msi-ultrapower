@@ -1,4 +1,4 @@
-"""Kullanıcı tercihleri: ~/.config/pil-modu/settings.json
+"""Kullanıcı tercihleri: ~/.config/msi-ultrapower/settings.json
 
 Eksik anahtarlar varsayılanla tamamlanır; böylece eski dosyalar yeni sürümde de çalışır.
 """
