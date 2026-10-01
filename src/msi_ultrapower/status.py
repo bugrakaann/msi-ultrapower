@@ -1,4 +1,4 @@
-"""Sistemin anlık durumunu okur (pil, NVIDIA, EC). Hiçbir şey yazmaz."""
+"""Reads the current state of the system (battery, NVIDIA, EC). Writes nothing."""
 import time
 from dataclasses import dataclass
 from pathlib import Path
@@ -21,7 +21,7 @@ def read(path, default="—"):
 class Battery:
     status: str          # Charging, Discharging, Full, Not charging…
     capacity: int | None
-    watts: float | None  # pilden ölçülen güç; okunamazsa None
+    watts: float | None  # power measured at the battery; None if unreadable
 
     @property
     def discharging(self):
@@ -45,20 +45,20 @@ def battery():
 
 @dataclass
 class Gpu:
-    present: bool            # NVIDIA PCI aygıtı şu an var mı
+    present: bool            # the NVIDIA PCI device exists right now
     runtime: str             # suspended / active / …
-    blocked_next_boot: bool  # sonraki açılışta devre dışı olacak mı
+    blocked_next_boot: bool  # disabled at the next boot
 
     @property
     def reboot_pending(self):
-        """Seçilen GPU modu ancak yeniden başlatınca geçerli olacaksa True."""
+        """True if the selected GPU mode only takes effect after a restart."""
         return self.blocked_next_boot == self.present
 
 
 def gpu():
     present = NVIDIA_DEVICE is not None and NVIDIA_DEVICE.exists()
     return Gpu(present,
-               read(NVIDIA_DEVICE / "power/runtime_status", "yok") if present else "yok",
+               read(NVIDIA_DEVICE / "power/runtime_status", "none") if present else "none",
                gpu_boot.MOD.exists())
 
 
@@ -75,7 +75,7 @@ def turbo_enabled():
 
 
 def charge_limits():
-    """(başlangıç, bitiş) şarj eşikleri; desteklenmiyorsa bitiş None."""
+    """(start, end) charge thresholds; end is None when unsupported."""
     start, end = read(hw.CHARGE_START), read(hw.CHARGE_LIMIT)
     return (int(start) if start.isdigit() else None, int(end) if end.isdigit() else None)
 
@@ -84,7 +84,7 @@ def charge_limits():
 class Sensors:
     cpu_temp: int | None     # °C
     gpu_temp: int | None
-    cpu_fan: int | None      # msi-ec: yüzde
+    cpu_fan: int | None      # msi-ec: percent
     gpu_fan: int | None
 
 
@@ -94,7 +94,7 @@ def _int(path):
 
 
 def _hwmon_temp(names):
-    """msi-ec yoksa işlemci sıcaklığı için coretemp/k10temp (millidereceden dereceye)."""
+    """CPU temperature from coretemp/k10temp without msi-ec (millidegrees to degrees)."""
     for folder in sorted(Path("/sys/class/hwmon").glob("hwmon*")):
         if read(folder / "name", "") in names:
             value = _int(folder / "temp1_input")
@@ -112,7 +112,7 @@ def sensors():
 
 
 def on_ac():
-    """Şarj aleti takılı mı; güç kaynağı bilgisi yoksa None."""
+    """Whether the charger is plugged in; None without power supply information."""
     found = None
     for folder in paths.POWER_SUPPLY_DIR.glob("*"):
         if read(folder / "type", "") == "Mains":
@@ -123,15 +123,15 @@ def on_ac():
 
 
 class PowerMeter:
-    """Pildeyken anlık ve ortalama güç tüketimi. Şarj aleti takılınca sıfırlanır.
+    """Current and average power use on battery. Reset when the charger is plugged in.
 
-    Ortalama, ölçümler arasındaki enerjinin (trapez) toplam süreye bölümüdür; böylece
-    ölçüm aralığı değişse de doğru kalır. Prizdeyken pil yalnızca şarj akımını bildirdiği
-    için sistemin tüketimi ölçülemez.
+    The average is the energy between readings (trapezoid rule) divided by the total time, so
+    it stays correct when the interval changes. On AC the battery only reports the charge
+    current, so the system's use cannot be measured.
     """
 
-    MAX_GAP = 30     # saniye; daha uzun ara (uyku, askıya alma) ortalamaya katılmaz
-    MIN_SPAN = 10    # saniye; bundan kısa ölçümde ortalama gösterilmez
+    MAX_GAP = 30     # seconds; longer gaps (sleep, suspend) are left out of the average
+    MIN_SPAN = 10    # seconds; no average is shown for shorter measurements
 
     def __init__(self):
         self.reset()
@@ -139,7 +139,7 @@ class PowerMeter:
     def reset(self):
         self.current = None      # W
         self.energy = 0.0        # J
-        self.span = 0.0          # ortalamaya katılan süre (sn)
+        self.span = 0.0          # time counted in the average (s)
         self._last_time = None
 
     def add(self, bat, now=None):

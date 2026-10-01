@@ -1,4 +1,4 @@
-"""Şarj sınırı: 60 / 80 / 100 segmentli düğmeler ve pilin şarj olup olmayacağı."""
+"""Charge limit: 60 / 80 / 100 segmented buttons and whether the battery will charge."""
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QButtonGroup, QHBoxLayout, QPushButton
 
@@ -9,7 +9,7 @@ from .widgets import heading, muted, panel
 
 
 def charge_text(bat, start, limit):
-    """Şarj sınırına göre pilin şarj olup olmayacağını anlatır."""
+    """Explains whether the battery will charge with this limit."""
     if limit >= 100:
         goal = _("The battery charges to full.")
     elif start:
@@ -26,7 +26,7 @@ def charge_text(bat, start, limit):
 
 
 class ChargePanel(QObject):
-    requested = Signal(str)  # kullanıcı yeni bir sınır seçti
+    requested = Signal(str)  # the user chose a new limit
 
     def __init__(self):
         super().__init__()
@@ -66,7 +66,7 @@ class ChargePanel(QObject):
             button = self.group.button(limit)
             if button:
                 button.setChecked(True)
-            elif self.group.checkedButton():  # sınır 60/80/100 dışında (başka araçla ayarlanmış)
+            elif self.group.checkedButton():  # limit other than 60/80/100 (set by another tool)
                 self.group.setExclusive(False)
                 self.group.checkedButton().setChecked(False)
                 self.group.setExclusive(True)

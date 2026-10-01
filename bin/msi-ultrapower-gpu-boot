@@ -1,5 +1,5 @@
 #!/usr/bin/python3 -P
-# Kurtarma için (sudo ile): msi-ultrapower-gpu-boot hybrid. Normalde donanım yardımcısı kullanır.
+# For recovery (with sudo): msi-ultrapower-gpu-boot hybrid. Normally the hardware helper does this.
 from msi_ultrapower.privileged.gpu_boot import entry
 
 entry()

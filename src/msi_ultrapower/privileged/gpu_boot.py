@@ -1,14 +1,13 @@
 #!/usr/bin/python3
-"""Sonraki açılış için yalnızca tümleşik GPU / hibrit modunu hazırlar.
+"""Prepares integrated-only or hybrid GPU mode for the next boot.
 
-Donanım yardımcısı (hardware.py) mod uygulanırken aynı yetki oturumunda configure()'u
-çağırır; böylece bir mod geçişi tek parola ister. Tek başına yalnızca kurtarma için çalışır.
+The hardware helper (hardware.py) calls configure() in the same privileged session while
+applying a mode, so a mode switch asks for one password. On its own it is only for recovery.
 
-Canlı GPU'yu asla sökmez ve bilgisayarı yeniden başlatmaz. Yalnızca kendi
-oluşturduğu üç dosyayı (HEADER ile işaretli) yönetir. Yalnızca standart
-kütüphaneyi kullanır; paketin geri kalanından import yapmaz.
+It never removes the running GPU and never restarts the computer. It only manages the files
+it created (marked with HEADER). Standard library only; imports nothing else from the package.
 
-Kurtarma (TTY):  sudo /usr/lib/msi-ultrapower/msi-ultrapower-gpu-boot hybrid
+Recovery (TTY):  sudo /usr/lib/msi-ultrapower/msi-ultrapower-gpu-boot hybrid
 """
 import gettext
 import glob
@@ -19,7 +18,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-# Standart kütüphane gettext; pkexec LANGUAGE/LANG'ı korur, dil kullanıcınınkiyle aynı olur.
+# Standard library gettext; pkexec keeps LANGUAGE/LANG, so the language matches the user's.
 _ = gettext.translation("msi-ultrapower", fallback=True).gettext
 
 HEADER = "# Managed by msi-ultrapower gpu_boot.py\n"
@@ -37,7 +36,7 @@ MODULES = ("nvidia", "nvidia_drm", "nvidia_modeset", "nvidia_uvm",
 MODPROBE_TEXT = HEADER + "".join(
     f"blacklist {m}\ninstall {m} /usr/bin/false\n" for m in MODULES)
 
-# Adres modelden modele değiştiği için NVIDIA'nın tüm işlevleri (GPU, ses, USB-C) üreticiye göre kaldırılır.
+# PCI addresses differ between models, so every NVIDIA function (GPU, audio, USB-C) is removed by vendor.
 UDEV_TEXT = HEADER + ('ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", '
                       'ATTR{power/control}="auto", ATTR{remove}="1"\n')
 
@@ -54,13 +53,13 @@ unset msi_ultrapower_modules msi_ultrapower_module
 
 DRACUT_TEXT = HEADER + 'omit_drivers+=" ' + " ".join(MODULES) + ' "\n'
 
-MANAGED = (MOD, RULE, INIT, DRACUT)  # bu aracın sahip olabileceği tüm dosyalar
+MANAGED = (MOD, RULE, INIT, DRACUT)  # every file this tool may own
 NVIDIA_VENDOR = "0x10de"
 INTERNAL_CONNECTORS = ("eDP", "LVDS", "DSI")
 
 
 def integrated_config():
-    """"integrated" modunda olması gereken dosyalar; "hybrid" modunda hepsi silinir."""
+    """Files needed in "integrated" mode; in "hybrid" mode all of them are removed."""
     config = {MOD: MODPROBE_TEXT, RULE: UDEV_TEXT}
     if shutil.which("mkinitcpio"):
         config[INIT] = MKINITCPIO_TEXT
@@ -70,7 +69,7 @@ def integrated_config():
 
 
 def desired(mode):
-    """Bu modda yönetilen her dosyanın olması gereken içeriği (None: dosya olmamalı)."""
+    """Wanted content of every managed file in this mode (None: the file must not exist)."""
     wanted = integrated_config() if mode == "integrated" else {}
     return {p: wanted.get(p) for p in MANAGED}
 
@@ -80,9 +79,9 @@ def current():
 
 
 def is_configured(mode):
-    """Açılış ayarı zaten bu modda mı. Dosyalar herkesçe okunabilir; yetki gerekmez.
+    """Whether the boot setting is already in this mode. The files are world-readable.
 
-    Okunamazsa False döner; o zaman karar yetkili yardımcıya kalır.
+    Returns False if they cannot be read; the privileged helper decides then.
     """
     try:
         return current() == desired(mode)
@@ -91,7 +90,7 @@ def is_configured(mode):
 
 
 def write(path, content):
-    """content None ise dosyayı siler, değilse atomik olarak yazar."""
+    """Removes the file if content is None, otherwise writes it atomically."""
     if content is None:
         path.unlink(missing_ok=True)
         return
@@ -111,7 +110,7 @@ def rebuild_initramfs():
 
 
 def has_integrated_gpu():
-    """NVIDIA kapanınca ekranı sürecek Intel/AMD tümleşik GPU var mı."""
+    """Whether an Intel/AMD integrated GPU can drive the display once NVIDIA is off."""
     for device in glob.glob("/sys/bus/pci/devices/*"):
         try:
             vendor = Path(device, "vendor").read_text().strip()
@@ -124,7 +123,7 @@ def has_integrated_gpu():
 
 
 def internal_panel_on_nvidia():
-    """MUX'lu modellerde BIOS "Discrete" ise dahili ekranı NVIDIA sürer; o zaman kapatılamaz."""
+    """On MUX models in BIOS "Discrete" mode NVIDIA drives the built-in display and cannot be turned off."""
     for connector in glob.glob("/sys/class/drm/card*-*"):
         name = Path(connector).name.split("-", 1)[1]
         if not name.startswith(INTERNAL_CONNECTORS):
@@ -163,7 +162,7 @@ def configure(mode):
         print(_("GPU boot setting is already:"), mode, flush=True)
         return
 
-    # Yalnızca bu aracın sahip olduğu dosyalar yedeklenir; dağıtımın ayarlarına dokunulmaz.
+    # Only files owned by this tool are backed up; distribution settings are never touched.
     BACKUP_DIR.mkdir(parents=True, exist_ok=True)
     (BACKUP_DIR / "gpu-before.json").write_text(
         json.dumps({str(p): v for p, v in before.items()}, indent=2))
@@ -185,7 +184,7 @@ def configure(mode):
 
 
 def entry():
-    """/usr/lib/msi-ultrapower/msi-ultrapower-gpu-boot (kurtarma, sudo ile) buradan başlar."""
+    """Entry point of /usr/lib/msi-ultrapower/msi-ultrapower-gpu-boot (recovery, with sudo)."""
     try:
         configure(sys.argv[1])
     except Exception as exc:

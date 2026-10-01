@@ -1,7 +1,7 @@
-"""Grafik arayüzün giriş noktası:  msi-ultrapower-ui [--tray]
+"""Entry point of the window:  msi-ultrapower-ui [--tray]
 
---tray: pencere açılmadan tepside başlar (oturum açılışında otomatik başlatma bunu kullanır).
-Uygulama tek kopya çalışır; ikinci kez açılınca var olan pencere öne gelir.
+--tray: start in the tray without opening the window (used by autostart at login).
+Only one copy runs; starting it again brings the existing window to the front.
 """
 import sys
 
@@ -19,7 +19,7 @@ SERVER_NAME = "msi-ultrapower-ui"
 
 
 def notify_running_instance():
-    """Başka bir kopya çalışıyorsa ona "göster" der ve True döner."""
+    """If another copy is running, tells it to show itself and returns True."""
     socket = QLocalSocket()
     socket.connectToServer(SERVER_NAME)
     if not socket.waitForConnected(300):
@@ -30,7 +30,7 @@ def notify_running_instance():
 
 
 def install_translations(app):
-    """Qt'nin kendi düğmeleri (Kaydet, İptal…) ve sağdan sola diller."""
+    """Qt's own buttons (Save, Cancel…) and right-to-left languages."""
     translator = QTranslator(app)
     if translator.load(f"qtbase_{i18n.current()}", QLibraryInfo.path(QLibraryInfo.TranslationsPath)):
         app.installTranslator(translator)
@@ -48,7 +48,7 @@ def main():
 
     window = MainWindow()
     server = QLocalServer(app)
-    QLocalServer.removeServer(SERVER_NAME)  # önceki çökmeden kalan soket
+    QLocalServer.removeServer(SERVER_NAME)  # socket left over from a crash
     server.listen(SERVER_NAME)
 
     tray = None
@@ -57,7 +57,7 @@ def main():
         tray.show()
         app.setQuitOnLastWindowClosed(False)
         started_in_tray = "--tray" in sys.argv
-        # Otomatik mod ya da tepside başlatma açıksa pencere kapanınca uygulama tepside kalır.
+        # With automatic mode or tray start on, closing the window keeps the app in the tray.
         window.keep_running = lambda: started_in_tray or settings.load()["auto_mode"] \
             or settings.load()["tray_autostart"]
     AutoSwitcher(window)

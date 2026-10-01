@@ -1,7 +1,7 @@
-"""msi-ultrapower komut satırını arka planda çalıştırır; arayüz donmaz.
+"""Runs the msi-ultrapower command line in the background so the window does not freeze.
 
-Arayüz donanıma kendisi dokunmaz: tüm işi CLI yapar. Böylece arayüz ile
-terminalden çalıştırma birebir aynı davranır.
+The window never touches hardware itself; the CLI does all the work, so the window and
+the terminal behave exactly the same.
 """
 import sys
 
@@ -12,7 +12,7 @@ from .. import i18n, paths
 
 class ModeRunner(QObject):
     output = Signal(str)
-    finished = Signal(bool)  # başarılı mı
+    finished = Signal(bool)  # succeeded
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -31,7 +31,7 @@ class ModeRunner(QObject):
         return self.process.state() != QProcess.NotRunning
 
     def start(self, args):
-        # Dil ayarı pencere açıkken değişebilir; her çalıştırmada yeniden geçir.
+        # The language may change while the window is open; pass it on every run.
         for key, value in i18n.child_environment().items():
             self._env.insert(key, value)
         self.process.setProcessEnvironment(self._env)

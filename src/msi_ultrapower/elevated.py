@@ -1,4 +1,4 @@
-"""Root yetkisi gereken yardımcıyı pkexec ile çalıştırır."""
+"""Runs the helper that needs root through pkexec."""
 import json
 import os
 import select
@@ -9,13 +9,13 @@ from . import paths
 from .i18n import _
 
 PYTHON = "/usr/bin/python3"
-# pkexec'in çıkış kodları: parola penceresi kapatıldı / yetki verilmedi.
+# pkexec exit codes: password dialog dismissed / not authorized.
 PKEXEC_DISMISSED = 126
 PKEXEC_NOT_AUTHORIZED = 127
 
 
 def hardware(*args):
-    """Kurulu yardımcı (kendi polkit eylemiyle) ya da geliştirmede kaynak koddaki aynı giriş noktası."""
+    """The installed helper (with its polkit action), or the same entry point from the source in development."""
     if paths.INSTALLED_HELPER.exists():
         return ["pkexec", str(paths.INSTALLED_HELPER), *args]
     code = (f"import sys; sys.path.insert(0, {str(paths.SOURCE_DIR)!r}); "
@@ -24,7 +24,7 @@ def hardware(*args):
 
 
 def auth_error(returncode):
-    """pkexec parola aşamasında durduysa kullanıcıya anlaşılır neden; değilse None."""
+    """A clear reason if pkexec stopped at the password step, otherwise None."""
     if returncode == PKEXEC_DISMISSED:
         return _("The password prompt was cancelled; nothing was changed.")
     if returncode == PKEXEC_NOT_AUTHORIZED:
@@ -33,25 +33,25 @@ def auth_error(returncode):
 
 
 class HardwareHelper:
-    """privileged/hardware.py ile READY → COMMIT/ROLLBACK konuşmasını yönetir.
+    """Runs the READY → COMMIT/ROLLBACK exchange with privileged/hardware.py.
 
-    Yardımcı ayarları hemen uygular ama kalıcı yapmak için COMMIT bekler. Böylece KDE tarafı
-    başarısız olursa donanım da eski haline döner. NVIDIA açılış ayarı da COMMIT ile aynı
-    yardımcıda yapılır; bir mod geçişi yalnızca bir kez parola ister.
-    Yardımcının hata çıktısı da stdout'a katılır (initramfs çıktısı boru tıkamasın).
+    The helper applies the settings at once but waits for COMMIT to keep them, so the hardware
+    goes back too if the KDE side fails. The NVIDIA boot setting is done by the same helper after
+    COMMIT, so a mode switch asks for the password only once.
+    The helper's stderr is merged into stdout (so initramfs output cannot fill a pipe).
     """
 
     def __init__(self, target):
         self.process = subprocess.Popen(
             hardware(json.dumps(target)),
             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-        self.output = []      # işaret satırları dışındaki çıktı (hata nedeni)
+        self.output = []      # output other than the marker lines (reason for a failure)
         self._buffer = b""
 
     def _lines(self, timeout):
-        """Çıktıyı satır satır verir. Arabellek kendi elimizde: select() ile birlikte güvenli.
+        """Yields the output line by line. We own the buffer, so this is safe with select().
 
-        timeout: yeni çıktı için en fazla beklenecek süre (sn); None sınırsız.
+        timeout: longest wait for new output in seconds; None waits forever.
         """
         fd = self.process.stdout.fileno()
         while True:
@@ -70,7 +70,7 @@ class HardwareHelper:
             self._buffer += chunk
 
     def _read_until(self, marker, timeout):
-        """marker satırı gelirse True; süre dolar ya da yardımcı biterse False."""
+        """True when the marker line arrives; False on timeout or when the helper exits."""
         for line in self._lines(timeout):
             if line.strip() == marker:
                 return True
@@ -78,8 +78,8 @@ class HardwareHelper:
         return False
 
     def _stop(self):
-        """Yardımcıyı bırakır. pkexec root olarak çalıştığı için sinyal gönderilemeyebilir;
-        stdin kapanınca yardımcı READY'den sonra COMMIT alamaz ve kendisi geri alır."""
+        """Lets the helper go. pkexec runs as root, so it may not accept our signal; once stdin
+        is closed the helper cannot get COMMIT after READY and rolls back by itself."""
         try:
             self.process.terminate()
         except OSError:
@@ -98,12 +98,12 @@ class HardwareHelper:
         return RuntimeError(reason or title + " " + "\n".join(self.output).strip())
 
     def wait_ready(self, timeout=120):
-        """Parola girilip ayarlar uygulanana kadar bekler."""
+        """Waits until the password is entered and the settings are applied."""
         if not self._read_until("READY", timeout):
             raise self._failure(_("Hardware authorization or apply failed:"))
 
     def commit(self, gpu_mode=None, save=True):
-        """Ayarları kalıcı yapar. gpu_mode verilirse NVIDIA açılış ayarı ardından başlar (finish())."""
+        """Keeps the settings. With gpu_mode, the NVIDIA boot setting starts afterwards (see finish())."""
         words = ["COMMIT"] + ([f"gpu={gpu_mode}"] if gpu_mode else []) + ([] if save else ["save=no"])
         self.process.stdin.write((" ".join(words) + "\n").encode())
         self.process.stdin.flush()
@@ -111,7 +111,7 @@ class HardwareHelper:
             raise self._failure(_("Hardware settings could not be saved:"))
 
     def finish(self):
-        """COMMIT sonrası çıktıyı (NVIDIA adımı) aktarır; yardımcı başarıyla bittiyse True."""
+        """Passes on the output after COMMIT (the NVIDIA step); True if the helper succeeded."""
         for line in self._lines(None):
             print(line, flush=True)
         self.process.stdin.close()
@@ -127,12 +127,12 @@ class HardwareHelper:
 
 
 def set_charge_limit(value):
-    """Pilin şarj sınırını ayarlar. Başarısızsa nedeni, başarılıysa None."""
+    """Sets the battery charge limit. Returns the reason on failure, None on success."""
     return _run(hardware("--charge", value))
 
 
 def set_passwordless(enabled):
-    """Parolasız geçiş kuralını açar/kapatır. Başarısızsa nedeni, başarılıysa None."""
+    """Turns the password-free rule on or off. Returns the reason on failure, None on success."""
     return _run(hardware("--passwordless", "1" if enabled else "0"))
 
 

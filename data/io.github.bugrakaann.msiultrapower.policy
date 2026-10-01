@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
  "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
-<!-- msi-ultrapower yardımcısı. Yetki yalnızca bu dosyaya verilir, python3'ün kendisine değil.
-     NVIDIA açılış ayarı da mod geçişinin parçası olarak bu yardımcıyla yapılır.
-     auth_admin_keep: parola bir kez sorulur, birkaç dakika hatırlanır. -->
+<!-- msi-ultrapower helper. Authorization is granted to this file only, not to python3 itself.
+     The NVIDIA boot setting is done by this helper too, as part of a mode switch. -->
 <policyconfig>
   <vendor>msi-ultrapower</vendor>
   <vendor_url>https://github.com/bugrakaann/msi-ultrapower</vendor_url>

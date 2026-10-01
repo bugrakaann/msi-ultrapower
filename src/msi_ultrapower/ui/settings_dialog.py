@@ -1,4 +1,4 @@
-"""Ayarlar: dil, batarya modunun aygıt tasarrufları, otomatik mod, parola ve sistem tepsisi."""
+"""Settings: language, battery mode device savings, automatic mode, password and system tray."""
 from pathlib import Path
 
 from PySide6.QtWidgets import (QCheckBox, QComboBox, QDialog, QDialogButtonBox, QFormLayout, QLabel,
@@ -20,7 +20,7 @@ X-KDE-autostart-phase=2
 
 
 def set_autostart(enabled):
-    """Oturum açılınca tepsi simgesiyle başla (kullanıcıya ait dosya; yetki gerekmez)."""
+    """Start with the tray icon at login (a user file; no privileges needed)."""
     if enabled:
         AUTOSTART.parent.mkdir(parents=True, exist_ok=True)
         AUTOSTART.write_text(AUTOSTART_TEXT)
@@ -100,7 +100,7 @@ class SettingsDialog(QDialog):
         self._fit_wrapped_labels(layout)
 
     def _fit_wrapped_labels(self, layout):
-        """Qt üst düzey pencerede kaydırmalı metnin yüksekliğini hesaplamaz; metin kesilmesin."""
+        """Qt does not compute wrapped label heights in a top-level dialog; keep the text from being cut."""
         margins = layout.contentsMargins()
         width = DIALOG_WIDTH - margins.left() - margins.right()
         for label in self.findChildren(QLabel):

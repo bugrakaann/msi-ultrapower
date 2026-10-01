@@ -1,4 +1,4 @@
-"""Seçili modun şu anki duruma göre neyi değiştireceği; istenirse modun tüm ayarları."""
+"""What the selected mode changes compared with now; on request, all settings of the mode."""
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QGridLayout, QHBoxLayout, QLabel
 
@@ -9,12 +9,12 @@ from .widgets import heading, link_button, muted, panel, section_label
 def clear(grid):
     while grid.count():
         widget = grid.takeAt(0).widget()
-        widget.hide()  # deleteLater bir sonraki döngüde siler; o ana kadar görünmesin
+        widget.hide()  # deleteLater deletes on the next loop; hide it until then
         widget.deleteLater()
 
 
 def fill(grid, rows, start=0):
-    """rows: [(ayar, değer)] ya da None (bölüm başlığı için (başlık, None))."""
+    """rows: [(setting, value)], with (title, None) for a section heading."""
     row = start
     for label, value in rows:
         if value is None:
@@ -64,7 +64,7 @@ class ChangesPanel:
         layout.addWidget(self.details_host)
 
     def show(self, changes, sections, error=None):
-        """changes: [(ayar, eski, yeni)], sections: describe.describe() çıktısı."""
+        """changes: [(setting, old, new)]; sections: the output of describe.describe()."""
         clear(self.changes)
         arrow = "←" if self.widget.isRightToLeft() else "→"
         if error:

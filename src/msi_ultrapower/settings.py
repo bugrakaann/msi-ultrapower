@@ -1,18 +1,18 @@
-"""Kullanıcı tercihleri: ~/.config/msi-ultrapower/settings.json
+"""User preferences: ~/.config/msi-ultrapower/settings.json
 
-Eksik anahtarlar varsayılanla tamamlanır; böylece eski dosyalar yeni sürümde de çalışır.
+Missing keys get their defaults, so older files keep working with newer versions.
 """
 from . import paths, state
 
 DEFAULTS = {
-    "language": "",                  # boş: sistem dili
-    "device_savings": True,          # batarya modunda PCI/ses/disk tasarrufu
+    "language": "",                  # empty: system language
+    "device_savings": True,          # PCI/sound/disk power saving in battery modes
     "bluetooth_off_on_battery": False,
-    "auto_mode": False,              # prize takınca/çekince mod değiştir
+    "auto_mode": False,              # switch modes when the charger is plugged in or out
     "auto_ac": "balanced",
     "auto_battery": "battery",
-    "passwordless": False,           # modlar parola sormadan uygulansın (polkit kuralı)
-    "tray_autostart": False,         # oturum açılınca tepside başla
+    "passwordless": False,           # apply modes without a password (polkit rule)
+    "tray_autostart": False,         # start in the tray at login
 }
 
 

@@ -6,7 +6,7 @@ from msi_ultrapower.presets import PRESETS
 
 from helpers import fake_output
 
-i18n.setup("en")  # metin karşılaştıran testler sistem dilinden bağımsız olsun
+i18n.setup("en")  # tests that compare text must not depend on the system language
 
 CAPS = capabilities.Capabilities(
     model="MSI Test", shift_modes=("eco", "comfort", "sport", "turbo"),
@@ -78,7 +78,7 @@ class ChangesTests(unittest.TestCase):
         self.assertEqual(rows["eDP-1 refresh rate"], ("120 Hz", "48 Hz"))
         self.assertEqual(rows["eDP-1 brightness"], ("100%", "30%"))
         self.assertEqual(rows["EC mode"], ("comfort", "eco"))
-        self.assertNotIn("Keyboard backlight", rows)  # değişmiyor
+        self.assertNotIn("Keyboard backlight", rows)  # unchanged
 
 
 class RefreshTests(unittest.TestCase):

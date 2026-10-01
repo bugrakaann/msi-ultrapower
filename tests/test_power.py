@@ -12,7 +12,7 @@ class PowerMeterTests(unittest.TestCase):
         meter = PowerMeter()
         meter.add(on_battery(10), now=0)
         meter.add(on_battery(10), now=10)
-        meter.add(on_battery(20), now=20)   # 10–20 sn arası ortalama 15 W
+        meter.add(on_battery(20), now=20)   # 15 W on average between 10 and 20 s
         self.assertEqual(meter.current, 20)
         self.assertAlmostEqual(meter.average, (10 * 10 + 15 * 10) / 20)
 
@@ -35,7 +35,7 @@ class PowerMeterTests(unittest.TestCase):
         meter = PowerMeter()
         meter.add(on_battery(10), now=0)
         meter.add(on_battery(10), now=20)
-        meter.add(on_battery(10), now=20 + 3600)  # askıya alma sonrası
+        meter.add(on_battery(10), now=20 + 3600)  # after suspend
         self.assertEqual(meter.span, 20)
         self.assertAlmostEqual(meter.average, 10)
 

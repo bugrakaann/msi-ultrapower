@@ -8,7 +8,7 @@ version = "3.0.0"
 description = "Power mode manager for MSI laptops on KDE Plasma"
 requires-python = ">=3.11"
 license = "GPL-3.0-or-later"
-dependencies = ["PySide6"]  # Arch'ta pacman ile: pyside6
+dependencies = ["PySide6"]  # on Arch: pacman -S pyside6
 
 [project.scripts]
 msi-ultrapower = "msi_ultrapower.cli:main"

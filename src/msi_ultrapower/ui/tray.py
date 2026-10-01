@@ -1,4 +1,4 @@
-"""Sistem tepsisi: pencereyi açmadan mod ve şarj sınırı değiştirme, pil/sıcaklık ipucu."""
+"""System tray: change the mode and charge limit without the window; battery/temperature tooltip."""
 from PySide6.QtGui import QAction, QActionGroup, QIcon
 from PySide6.QtWidgets import QMenu, QSystemTrayIcon
 
@@ -55,7 +55,7 @@ class Tray(QSystemTrayIcon):
         self.refresh()
 
     def _activated(self, reason):
-        if reason == QSystemTrayIcon.Trigger:  # sol tık: pencereyi aç/kapat
+        if reason == QSystemTrayIcon.Trigger:  # left click: show or hide the window
             if self.window.isVisible():
                 self.window.hide()
             else:

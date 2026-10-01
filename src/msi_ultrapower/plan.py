@@ -1,4 +1,4 @@
-"""Bir mod geçişinde neyin değişeceğini hesaplar (hiçbir şeyi uygulamaz)."""
+"""Works out what a mode switch will change (applies nothing)."""
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -12,15 +12,15 @@ from .privileged import hardware as hw
 class Plan:
     mode: str
     restoring: bool
-    profile: str         # hedef powerprofilesctl profili
-    screen_args: list    # kscreen-doctor argümanları
-    rollback_args: list  # hata olursa ekranı eski haline döndüren argümanlar
-    hardware: dict       # sysfs yolu -> değer
-    gpu_boot: str        # "integrated" ya da "hybrid"
+    profile: str         # target powerprofilesctl profile
+    screen_args: list    # kscreen-doctor arguments
+    rollback_args: list  # arguments that put the displays back on failure
+    hardware: dict       # sysfs path -> value
+    gpu_boot: str        # "integrated" or "hybrid"
 
 
 def mode_settings(preset):
-    """Modun bu bilgisayarda yazılacak değerleri; olmayan ayarlar atlanır."""
+    """Values the mode writes on this laptop; missing settings are skipped."""
     wanted = {
         hw.EC + "shift_mode": capabilities.nearest_shift(preset.shift, capabilities.shift_modes()),
         hw.EC + "fan_mode": preset.fan,
@@ -35,26 +35,26 @@ def mode_settings(preset):
 
 
 def hardware_plan(original, preset, options=None):
-    """options: settings.load() sözlüğü; verilmezse varsayılanlar."""
+    """options: the settings.load() dictionary; defaults if not given."""
     options = {**settings.DEFAULTS, **(options or {})}
     result = dict(original)
     result.update(mode_settings(preset))
     if preset.is_battery:
         result.update(battery_savings(result, options))
     if not options["bluetooth_off_on_battery"]:
-        # Seçenek kapalıyken Bluetooth kullanıcının; ilk kayıttaki haline de döndürülmez.
+        # With the option off, Bluetooth belongs to the user; it is not reset to the first snapshot either.
         for path in hw.BLUETOOTH:
             result.pop(path, None)
     return result
 
 
 def battery_savings(current, options=settings.DEFAULTS):
-    """TLP'nin pilde yaptığı aygıt tasarrufları; yalnızca bu sistemde bulunan ayarlar."""
+    """Device power savings TLP makes on battery; only settings present on this system."""
     wanted = {hw.LED: "0"}
     if options["device_savings"]:
         wanted.update({
-            hw.SOUND_POWER_SAVE: "1",    # 1 sn sessizlikten sonra ses kartı uyur
-            hw.DIRTY_WRITEBACK: "6000",  # diske 60 sn'de bir yaz; disk daha uzun uyur
+            hw.SOUND_POWER_SAVE: "1",    # the sound card sleeps after 1 s of silence
+            hw.DIRTY_WRITEBACK: "6000",  # write to disk every 60 s so the disk sleeps longer
             **{path: "auto" for path in hw.RUNTIME_PM},
         })
     if options["bluetooth_off_on_battery"]:
@@ -63,7 +63,7 @@ def battery_savings(current, options=settings.DEFAULTS):
 
 
 def build(mode, external, before, original, options=None, caps=None, layouts=None):
-    """before: şu anki anlık görüntü, original: ilk moddan önce kaydedilen görüntü."""
+    """before: the current snapshot; original: the snapshot saved before the first mode."""
     preset = PRESETS.get(mode)
     restoring = preset is None
     caps = caps or capabilities.detect(before["outputs"])
@@ -76,7 +76,7 @@ def build(mode, external, before, original, options=None, caps=None, layouts=Non
         hardware = hw.writable(original["hardware"])
     else:
         hardware = hardware_plan(original["hardware"], preset, options)
-    # NVIDIA devre dışıyken GPU dosyaları yoktur; çıkarılan aygıtlar da. Onları atla.
+    # With NVIDIA disabled its files do not exist, nor do removed devices. Skip them.
     hardware = {k: v for k, v in hardware.items() if Path(k).exists()}
     hw.validate(hardware)
 

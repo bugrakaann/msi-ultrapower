@@ -1,7 +1,7 @@
-"""Bir modun bu bilgisayarda neyi değiştireceğini okunur metne çevirir.
+"""Turns what a mode changes on this laptop into readable text.
 
-Arayüzdeki ayrıntı paneli ve kartların ipucu (hover) buradan beslenir. Metinler
-plan.py'nin gerçekte yaptığıyla aynı kuralları izler.
+Feeds the details panel and the card tooltips. The text follows the same rules as
+what plan.py actually does.
 """
 from html import escape
 
@@ -40,7 +40,7 @@ def _external(preset, caps):
 
 
 def describe(preset, caps, options=None):
-    """[(bölüm, [(ayar, değer), ...]), ...]"""
+    """[(section, [(setting, value), ...]), ...]"""
     options = {**settings.DEFAULTS, **(options or {})}
     if caps.screen:
         screen = [(_("Built-in display"), _panel_hz(preset, caps)),
@@ -108,7 +108,7 @@ def restore_sections():
 
 
 def _hardware_changes(target, current):
-    """sysfs farklarını okunur satırlara çevirir; PCI aygıtları tek satırda toplanır."""
+    """Turns sysfs differences into readable rows; PCI devices are grouped into one row."""
     rows = []
     changed = {p: v for p, v in target.items() if current.get(p) != v}
     labels = {
@@ -167,7 +167,7 @@ def _screen_changes(args, outputs):
 
 
 def changes(plan, before, nvidia_blocked_next_boot=False):
-    """Planın şu anki duruma göre değiştireceği ayarlar: [(ayar, eski, yeni), ...]"""
+    """Settings the plan changes compared with now: [(setting, old, new), ...]"""
     rows = []
     if plan.profile != before["profile"]:
         rows.append((_("Power profile"), profile_name(before["profile"]), profile_name(plan.profile)))
@@ -181,7 +181,7 @@ def changes(plan, before, nvidia_blocked_next_boot=False):
 
 
 def to_html(title, sections, note=None):
-    """Kart ipucu için zengin metin."""
+    """Rich text for a card tooltip."""
     rows = []
     for section, items in sections:
         rows.append(f"<tr><td colspan=2 style='padding-top:6px'><b>{escape(section)}</b></td></tr>")

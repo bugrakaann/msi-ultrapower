@@ -7,11 +7,11 @@ from msi_ultrapower.privileged import gpu_boot
 
 
 class GpuStepTests(unittest.TestCase):
-    """NVIDIA adımı yalnızca gerektiğinde çalışır; çalışmadığında parola da sorulmaz."""
+    """The NVIDIA step only runs when needed; when it does not run, no password is asked."""
 
     def step(self, boot_mode, keep_gpu, configured, blocked=False):
         with patch.object(controller.status, "NVIDIA_DEVICE", None if blocked else Path("/gpu")), \
-                patch.object(gpu_boot, "MOD", Path("/" if blocked else "/yok-boyle-dosya")), \
+                patch.object(gpu_boot, "MOD", Path("/" if blocked else "/nonexistent")), \
                 patch.object(gpu_boot, "is_configured", return_value=configured):
             return controller.gpu_step(boot_mode, keep_gpu)
 
@@ -25,12 +25,12 @@ class GpuStepTests(unittest.TestCase):
         self.assertIsNone(self.step("integrated", True, configured=False))
 
     def test_automatic_mode_re_enables_disabled_nvidia(self):
-        """Pilde NVIDIA kapatıldıysa prize takınca performans modunda kapalı kalmamalı."""
+        """NVIDIA disabled on battery must not stay off in performance mode after plugging in."""
         self.assertEqual(self.step("hybrid", True, configured=False, blocked=True), "hybrid")
 
     def test_no_nvidia_no_step(self):
         with patch.object(controller.status, "NVIDIA_DEVICE", None), \
-                patch.object(gpu_boot, "MOD", Path("/yok-boyle-dosya")):
+                patch.object(gpu_boot, "MOD", Path("/nonexistent")):
             self.assertIsNone(controller.gpu_step("integrated", False))
 
 

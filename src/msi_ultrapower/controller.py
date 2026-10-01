@@ -1,4 +1,4 @@
-"""Mod geçişinin tamamı: planla → uygula → doğrula → kaydet (ya da geri al)."""
+"""A complete mode switch: plan → apply → verify → save (or roll back)."""
 import json
 import sys
 import time
@@ -14,16 +14,16 @@ from .privileged import hardware as hw
 @dataclass
 class Prepared:
     plan: plan.Plan
-    before: dict      # şu anki anlık görüntü
-    original: dict    # ilk moddan önceki ayarlar (eksikleri tamamlanmış)
-    missing: dict     # eski kayıtta olmayıp eklenen ayarlar
+    before: dict      # current snapshot
+    original: dict    # settings before the first mode (with missing keys filled in)
+    missing: dict     # settings missing from the old snapshot and added now
     caps: capabilities.Capabilities
 
 
 def prepare(mode, external="auto", before=None, caps=None):
-    """Hiçbir şeyi değiştirmeden planı hazırlar. Arayüzün "değişecekler" listesi de bunu kullanır.
+    """Prepares the plan without changing anything. The window's list of changes uses it too.
 
-    caps: arayüz açılışta bir kez algıladığını verir; her önizlemede yeniden algılanmaz.
+    caps: the window passes what it detected at startup, so previews do not detect again.
     """
     before = before or system.capture()
     caps = caps or capabilities.detect(before["outputs"])
@@ -34,7 +34,7 @@ def prepare(mode, external="auto", before=None, caps=None):
                              "because NVIDIA is turned off. Use balanced mode for two screens.")
                            .format(outputs=", ".join(nvidia_screens)))
     original = state.load_original() if state.has_original() else before
-    # Programın eski sürümüyle alınan kayıtta sonradan eklenen ayarlar yoktur; şu anki değerle tamamla.
+    # A snapshot from an older version lacks settings added later; fill them with current values.
     missing = {k: v for k, v in before["hardware"].items() if k not in original["hardware"]}
     original["hardware"].update(missing)
     p = plan.build(mode, external, before, original, settings.load(), caps, state.load_layouts())
@@ -42,10 +42,10 @@ def prepare(mode, external="auto", before=None, caps=None):
 
 
 def change_mode(mode, external="auto", dry_run=False, keep_gpu=False):
-    """Bir modu uygular ya da mode "geri"/"normal" ise önceki ayarlara döner.
+    """Applies a mode, or goes back to the previous settings when mode is "restore".
 
-    keep_gpu: NVIDIA'yı açılışta kapatma (otomatik mod; initramfs her fiş çekilişinde yenilenmesin).
-    NVIDIA kapalıyken batarya dışı bir moda geçilirse yine de geri açılır.
+    keep_gpu: do not disable NVIDIA at boot (automatic mode, so the boot image is not rebuilt
+    on every unplug). NVIDIA is still re-enabled when switching to a non-battery mode.
     """
     restoring = mode not in PRESETS
     if restoring and not state.has_original():
@@ -63,7 +63,7 @@ def change_mode(mode, external="auto", dry_run=False, keep_gpu=False):
               flush=True)
     if not state.has_original() or missing:
         state.save_original(original)
-    # Kullanıcının şu anki ekran düzeni (ana ekran, konumlar): bu kombinasyona dönülünce kurulur.
+    # The user's current display layout (primary, positions) is restored for this combination.
     state.save_layout(before["outputs"])
 
     gpu_mode = gpu_step(p.gpu_boot, keep_gpu)
@@ -84,19 +84,19 @@ def change_mode(mode, external="auto", dry_run=False, keep_gpu=False):
 
 
 def gpu_step(boot_mode, keep_gpu):
-    """Yardımcıya verilecek NVIDIA açılış modu; değişiklik gerekmiyorsa None (parola da sorulmaz)."""
+    """NVIDIA boot mode to pass to the helper; None if nothing changes (and no password is asked)."""
     if status.NVIDIA_DEVICE is None and not gpu_boot.MOD.exists():
-        return None  # NVIDIA yok
+        return None  # no NVIDIA
     if keep_gpu and boot_mode == "integrated":
         return None
     return None if gpu_boot.is_configured(boot_mode) else boot_mode
 
 
 def apply_plan(p, before, gpu_mode=None):
-    """Donanım + güç profili + ekranı birlikte uygular; bir adım bile başarısız olursa hepsi geri alınır.
+    """Applies hardware, power profile and displays together; if any step fails, all are rolled back.
 
-    Tek bir yetkili yardımcı kullanılır: NVIDIA açılış ayarı (gpu_mode) COMMIT ile aynı oturumda
-    başlar ve helper.finish() ile beklenir. Döndürülen yardımcı bu yüzden henüz bitmemiş olabilir.
+    One privileged helper is used: the NVIDIA boot setting (gpu_mode) starts in the same session
+    after COMMIT and is awaited with helper.finish(), so the returned helper may still be running.
     """
     helper = elevated.HardwareHelper(p.hardware)
     kde_changed = False
@@ -105,14 +105,14 @@ def apply_plan(p, before, gpu_mode=None):
         kde_changed = True
         system.set_power_profile(p.profile)
         system.apply_screen(p.screen_args)
-        time.sleep(2)  # KDE ayarları yerleşsin
+        time.sleep(2)  # let the KDE settings settle
 
         actual = system.capture()
         if actual["profile"] != p.profile:
             raise RuntimeError(_("The power profile was changed by another program"))
         plan.verify_hardware(p, actual["hardware"])
         display.verify_screen(p.screen_args, before["outputs"], actual["outputs"])
-        # Önceki ayarlara dönüşte açılışta yeniden uygulanacak bir mod kalmaz.
+        # After a restore there is no mode left to re-apply at boot.
         helper.commit(gpu_mode, save=not p.restoring)
     except BaseException:
         if kde_changed:
@@ -132,7 +132,7 @@ def rollback_kde(profile, screen_args):
 
 
 def report_gpu(boot_mode, gpu_mode, keep_gpu):
-    """NVIDIA'nın şu anki durumunun seçilen modla uyumunu ve gerekiyorsa yeniden başlatmayı bildirir."""
+    """Reports whether NVIDIA matches the selected mode and whether a restart is needed."""
     if status.NVIDIA_DEVICE is None and not gpu_boot.MOD.exists():
         print(_("No NVIDIA GPU; boot setting skipped."), flush=True)
         return

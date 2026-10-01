@@ -1,7 +1,7 @@
-# pacman kurulum / güncelleme / kaldırma kancaları (root olarak çalışır).
+# pacman install / upgrade / remove hooks (run as root).
 
 post_install() {
-    # Daha önce bir mod seçildiyse ayarlar açılışta geri yüklenmeye devam etsin.
+    # If a mode was chosen before, keep restoring its settings at boot.
     if [ -e /var/lib/msi-ultrapower/hardware.json ] || [ -e /var/lib/msi-ultrapower/charge ]; then
         systemctl enable msi-ultrapower-restore.service >/dev/null 2>&1 || true
     fi
@@ -14,13 +14,13 @@ post_upgrade() {
 
 pre_remove() {
     systemctl disable msi-ultrapower-restore.service >/dev/null 2>&1 || true
-    # Batarya modundan kalan NVIDIA engelini kaldır; paket gidince GPU kilitli kalmasın.
+    # Remove the NVIDIA block left by a battery mode, so the GPU is not locked after removal.
     /usr/lib/msi-ultrapower/msi-ultrapower-gpu-boot hybrid || true
 }
 
 post_remove() {
     rm -rf /var/lib/msi-ultrapower
-    # Otomatik mod için yazılan parolasız kural (yalnızca bizimkiyse).
+    # The password-free polkit rule (only if it is ours).
     if grep -qs "Managed by msi-ultrapower" /etc/polkit-1/rules.d/49-msi-ultrapower.rules; then
         rm -f /etc/polkit-1/rules.d/49-msi-ultrapower.rules
     fi

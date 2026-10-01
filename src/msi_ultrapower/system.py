@@ -1,4 +1,4 @@
-"""Harici komutlar için ince katman: powerprofilesctl ve kscreen-doctor."""
+"""Thin layer over external commands: powerprofilesctl and kscreen-doctor."""
 import json
 import shutil
 import subprocess
@@ -23,7 +23,7 @@ def set_power_profile(profile):
 
 
 def get_outputs():
-    """Ekranlar; kscreen-doctor yoksa (KDE dışı) boş liste."""
+    """Displays; empty list without kscreen-doctor (not KDE)."""
     if not shutil.which("kscreen-doctor"):
         return []
     return json.loads(run("kscreen-doctor", "-j"))["outputs"]
@@ -35,12 +35,12 @@ def apply_screen(args):
 
 
 def capture():
-    """Geri dönüş için saklanan anlık görüntü (JSON'a yazılabilir sözlük)."""
+    """Snapshot saved for restoring (a JSON-serializable dictionary)."""
     return {"profile": get_power_profile(), "outputs": get_outputs(), "hardware": hw.read_state()}
 
 
 def plasma_version():
-    """"6.7.5" gibi; Plasma yoksa boş."""
+    """Such as "6.7.5"; empty without Plasma."""
     if not shutil.which("plasmashell"):
         return ""
     try:

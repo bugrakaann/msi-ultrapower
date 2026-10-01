@@ -1,7 +1,7 @@
-"""Bu bilgisayarda hangi ayarların yapılabildiğini bulur. Hiçbir şey yazmaz.
+"""Finds out which settings this laptop supports. Writes nothing.
 
-MSI modelleri arasında EC modları, fan modları, ekran Hz'leri ve NVIDIA'nın
-varlığı değişir. Modlar buradaki bilgiyle makineye uyarlanır.
+EC modes, fan modes, screen refresh rates and the presence of NVIDIA differ between
+MSI models. Modes are adapted to the machine with this information.
 """
 import glob
 import shutil
@@ -23,7 +23,7 @@ def read(path, default=""):
 
 
 def shift_modes():
-    """EC'nin kabul ettiği shift modları; msi-ec yoksa boş."""
+    """Shift modes the EC accepts; empty without msi-ec."""
     if not Path(hw.EC + "shift_mode").exists():
         return ()
     listed = read(hw.EC + "available_shift_modes").split()
@@ -38,19 +38,19 @@ def fan_modes():
 
 
 def nearest_shift(wanted, available):
-    """İstenen mod yoksa ona en yakın olanı (eşitlikte daha tasarruflu olanı) seçer."""
+    """Picks the wanted mode, or the nearest one (the more economical one on a tie)."""
     if not available or wanted in available:
         return wanted if available else None
     order = hw.SHIFT_MODES
     return min(available, key=lambda m: (abs(order.index(m) - order.index(wanted)), order.index(m)))
 
 
-# ppd ile aynı işi yapan ve onunla çakışan güç yöneticileri.
+# Power managers that do the same job as power-profiles-daemon and conflict with it.
 CONFLICTING_SERVICES = ("tlp", "auto-cpufreq", "tuned", "system76-power", "powertop")
 
 
 def conflicts():
-    """Çalışan çakışan servislerin adları."""
+    """Names of conflicting services that are running."""
     if not shutil.which("systemctl"):
         return ()
     found = []
@@ -62,7 +62,7 @@ def conflicts():
 
 
 def nvidia_outputs():
-    """NVIDIA'ya bağlı ekran çıkışlarının adları (kscreen adlarıyla aynı: HDMI-A-1 gibi)."""
+    """Display outputs wired to NVIDIA (same names as kscreen, such as HDMI-A-1)."""
     names = []
     for connector in glob.glob("/sys/class/drm/card*-*"):
         if read(Path(connector, "device", "device", "vendor")) == "0x10de":
@@ -78,16 +78,16 @@ class Capabilities:
     cooler_boost: bool
     turbo: bool
     keyboard_light: bool
-    nvidia: bool           # NVIDIA var mı (şu an çalışıyor ya da açılışta engellenmiş)
+    nvidia: bool           # NVIDIA present (running now or blocked at boot)
     charge_limit: bool
-    panel_rates: tuple     # dahili ekranın Hz'leri; bilinmiyorsa boş
-    runtime_pm: int        # güç yönetimi yapılabilen PCI aygıtı sayısı
+    panel_rates: tuple     # built-in display refresh rates; empty if unknown
+    runtime_pm: int        # number of PCI devices with runtime power management
     sound_power_save: bool
     bluetooth: bool
-    screen: bool = True           # kscreen-doctor ile ekran ayarlanabiliyor mu (KDE Plasma)
-    brightness: bool = True       # parlaklık ayarlanabiliyor mu (Plasma 6.1+)
-    nvidia_outputs: tuple = ()    # NVIDIA'ya bağlı çıkışlar; batarya modunda kapanır
-    conflicts: tuple = ()         # ppd ile çakışan çalışan servisler
+    screen: bool = True           # displays can be set with kscreen-doctor (KDE Plasma)
+    brightness: bool = True       # brightness can be set (Plasma 6.1+)
+    nvidia_outputs: tuple = ()    # outputs wired to NVIDIA; turned off in battery modes
+    conflicts: tuple = ()         # running services that conflict with power-profiles-daemon
     ec_firmware: str = ""
 
     @property
@@ -96,7 +96,7 @@ class Capabilities:
 
 
 def detect(outputs=None):
-    """outputs: kscreen-doctor çıktısı (Hz'leri bulmak için); verilmezse Hz bilinmez."""
+    """outputs: kscreen-doctor output (for the refresh rates); without it they are unknown."""
     vendor = read("/sys/class/dmi/id/sys_vendor")
     product = read("/sys/class/dmi/id/product_name")
     return Capabilities(
@@ -121,7 +121,7 @@ def detect(outputs=None):
 
 
 def unsupported_reason(preset, caps):
-    """Mod bu bilgisayarda uygulanamıyorsa nedeni, uygulanabiliyorsa None."""
+    """Why the mode cannot be used on this laptop, or None if it can."""
     if preset.fan != "auto" and caps.ec and preset.fan not in caps.fan_modes:
         return _("the EC does not support the “{fan}” fan mode").format(fan=preset.fan)
     if preset.fan == "advanced" and not caps.ec:

@@ -1,14 +1,14 @@
-"""Çeviri: kaynak metinler İngilizce, diğer diller po/*.po dosyalarında.
+"""Translations: source strings are English, other languages live in po/*.po.
 
-Dil sırası: ayarlardaki seçim → LANGUAGE/LC_ALL/LC_MESSAGES/LANG → İngilizce.
-Arayüz, seçilen dili LANGUAGE ile CLI'ye ve oradan pkexec yardımcılarına geçirir.
+Language order: the choice in Settings → LANGUAGE/LC_ALL/LC_MESSAGES/LANG → English.
+The window passes the chosen language to the CLI with LANGUAGE, and from there to the helper.
 """
 import gettext
 
 from . import paths, settings
 
 DOMAIN = "msi-ultrapower"
-LANGUAGES = {  # kod → kendi dilindeki adı (ayarlar menüsü)
+LANGUAGES = {  # code → name in its own language (Settings menu)
     "en": "English",
     "tr": "Türkçe",
     "ru": "Русский",
@@ -22,13 +22,13 @@ _translation = gettext.NullTranslations()
 
 
 def localedir():
-    """Geliştirmede derlenmiş build/locale, kurulu pakette /usr/share/locale."""
+    """Compiled build/locale in development, /usr/share/locale when installed."""
     development = paths.SOURCE_DIR.parent / "build" / "locale"
     return str(development) if development.is_dir() else None
 
 
 def setup(language=None):
-    """language: "tr" gibi; boş ya da None ise ortam değişkenlerinden seçilir."""
+    """language: such as "tr"; empty or None picks it from the environment."""
     global _translation
     if language is None:
         language = settings.load()["language"]
@@ -37,7 +37,7 @@ def setup(language=None):
 
 
 def current():
-    """Şu an kullanılan dilin kodu ("en" çeviri yoksa)."""
+    """Code of the language in use ("en" without a translation)."""
     code = _translation.info().get("language", "") if isinstance(_translation, gettext.GNUTranslations) else ""
     return code.split("_")[0] or "en"
 
@@ -46,12 +46,12 @@ def is_rtl():
     return current() in RIGHT_TO_LEFT
 
 
-RLM = "\u200f"   # sağdan sola işareti: "HDMI-A-1 …" gibi Latin başlayan cümleler de sağa yaslansın
-FSI, PDI = "\u2068", "\u2069"  # yön yalıtımı: "80% ← 30%" gibi değerler yer değiştirmesin
+RLM = "\u200f"   # right-to-left mark: sentences starting in Latin script ("HDMI-A-1 …") also align right
+FSI, PDI = "\u2068", "\u2069"  # direction isolation: values such as "80% ← 30%" keep their order
 
 
 def directional(text):
-    """Sağdan sola dillerde metni sağdan sola paragraf yapar; diğer dillerde aynen döner."""
+    """Makes the text a right-to-left paragraph in RTL languages; unchanged otherwise."""
     return RLM + text if text and is_rtl() else text
 
 
@@ -64,29 +64,29 @@ def ngettext(singular, plural, n):
 
 
 def isolate(text):
-    """Değeri çevresindeki metnin yönünden bağımsız tutar (sayılar, aygıt adları)."""
+    """Keeps a value independent of the surrounding text direction (numbers, device names)."""
     return f"{FSI}{text}{PDI}" if is_rtl() else str(text)
 
 
 def percent(value):
-    """Yüzde yazımı dile göre değişir: 80% (en), %80 (tr)."""
+    """The percent sign position depends on the language: 80% (en), %80 (tr)."""
     # Translators: percent sign position, e.g. "%{value}" in Turkish
     return _("{value}%").format(value=value)
 
 
 def decimal(value, digits=1):
-    """Ondalık sayı; virgül kullanan dillerde "10,9"."""
+    """Decimal number; "10,9" in languages that use a decimal comma."""
     text = f"{value:.{digits}f}"
     return text.replace(".", ",") if current() in DECIMAL_COMMA else text
 
 
 def N_(message):
-    """Yalnızca işaretler (xgettext bulsun diye); çeviri kullanıldığı yerde yapılır."""
+    """Only marks the string for xgettext; it is translated where it is used."""
     return message
 
 
 def child_environment():
-    """Alt süreçlere (CLI, pkexec) seçilen dili geçirmek için ortam değişkenleri."""
+    """Environment variables that pass the chosen language to child processes (CLI, pkexec)."""
     language = settings.load()["language"]
     return {"LANGUAGE": language} if language else {}
 

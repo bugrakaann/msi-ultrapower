@@ -1,7 +1,7 @@
 # Maintainer: bugra <bugrakaan02@gmail.com>
 #
-# Depo kökünden:  make install   (ya da bu klasörde: makepkg -sci)
-# Kaldırmak:      make uninstall (ya da: sudo pacman -R msi-ultrapower)
+# From the repository root:  make install   (or in this folder: makepkg -sci)
+# To remove:                 make uninstall (or: sudo pacman -R msi-ultrapower)
 
 pkgname=msi-ultrapower
 pkgver=3.0.0
@@ -15,7 +15,7 @@ optdepends=('msi-ec-dkms-git: fan, EC mode, Cooler Boost and charge limit'
             'mcontrolcenter: set the fan curve for the manual-fan performance mode')
 install=msi-ultrapower.install
 
-# Kaynak kod bu deponun kendisi (iki üst klasör).
+# The source is this repository itself (two folders up).
 _repo="$startdir/../.."
 
 package() {
@@ -30,7 +30,7 @@ package() {
 
     install -Dm755 "$_repo/bin/msi-ultrapower"    "$pkgdir/usr/bin/msi-ultrapower"
     install -Dm755 "$_repo/bin/msi-ultrapower-ui" "$pkgdir/usr/bin/msi-ultrapower-ui"
-    # Root yardımcıları: polkit eylemleri bu yollara bağlı (parola hatırlama).
+    # Root helper (the polkit action is bound to this path) and the GPU recovery command.
     install -Dm755 "$_repo/bin/msi-ultrapower-hardware" "$pkgdir/usr/lib/msi-ultrapower/msi-ultrapower-hardware"
     install -Dm755 "$_repo/bin/msi-ultrapower-gpu-boot" "$pkgdir/usr/lib/msi-ultrapower/msi-ultrapower-gpu-boot"
     install -Dm644 "$_repo/data/io.github.bugrakaann.msiultrapower.policy" "$pkgdir/usr/share/polkit-1/actions/io.github.bugrakaann.msiultrapower.policy"
@@ -39,7 +39,7 @@ package() {
     install -Dm644 -t "$pkgdir/usr/share/doc/msi-ultrapower" "$_repo"/README*.md
     install -Dm644 "$_repo/LICENSE" "$pkgdir/usr/share/licenses/msi-ultrapower/LICENSE"
 
-    # Çeviriler: po/xx.po → /usr/share/locale/xx/LC_MESSAGES/msi-ultrapower.mo
+    # Translations: po/xx.po → /usr/share/locale/xx/LC_MESSAGES/msi-ultrapower.mo
     local po lang
     for po in "$_repo"/po/*.po; do
         [ -e "$po" ] || continue

@@ -1,4 +1,4 @@
-"""`python3 -m msi_ultrapower` ile komut satırı arayüzünü çalıştırır."""
+"""Runs the command line with `python3 -m msi_ultrapower`."""
 import sys
 
 from .cli import main

@@ -1,7 +1,4 @@
-"""Komut satırı arayüzü:  msi-ultrapower <mod> [--harici ...] [--dene]  ·  msi-ultrapower sarj [60|80|100]
-
-Türkçe ve İngilizce komut adları birlikte çalışır (presets.ALIASES).
-"""
+"""Command line:  msi-ultrapower <mode> [--external ...] [--dry-run]  ·  msi-ultrapower charge [60|80|100]"""
 import argparse
 import fcntl
 import sys
@@ -62,7 +59,7 @@ def print_status():
 
 
 def print_doctor():
-    """Uyumluluk raporu: hangi özellik var, hangisi neden yok. Hata bildirimine eklenir."""
+    """Compatibility report: which features exist and why others do not. Attached to bug reports."""
     caps = capabilities.detect(system.get_outputs())
     plasma = system.plasma_version()
     yes = {True: _("yes"), False: _("NO")}

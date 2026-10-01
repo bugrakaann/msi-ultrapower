@@ -1,4 +1,4 @@
-"""READY → COMMIT konuşması, gerçek pkexec yerine sahte bir alt süreçle."""
+"""The READY → COMMIT exchange, with a fake child process instead of pkexec."""
 import contextlib
 import io
 import sys
@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 from msi_ultrapower import elevated
 
-# Gerçek yardımcı gibi: uygula → READY, COMMIT bekle → COMMITTED, ardından NVIDIA adımının çıktısı.
+# Like the real helper: apply → READY, wait for COMMIT → COMMITTED, then the NVIDIA step's output.
 FAKE_HELPER = """
 import sys
 print("note before ready"); print("READY", flush=True)
@@ -36,7 +36,7 @@ class HardwareHelperTests(unittest.TestCase):
                 ok = helper.finish()
         self.assertFalse(ok)
         self.assertIn("got: COMMIT gpu=integrated", out.getvalue())
-        self.assertIn("gpu failed", out.getvalue())  # hata çıktısı da aktarılır
+        self.assertIn("gpu failed", out.getvalue())  # stderr is passed on too
 
     def test_restore_commit_sends_save_no(self):
         with fake():

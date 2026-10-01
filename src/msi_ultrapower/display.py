@@ -1,7 +1,7 @@
-"""Ekran planlama: kscreen-doctor argümanlarını üretir ve sonucu doğrular.
+"""Display planning: builds kscreen-doctor arguments and verifies the result.
 
-Buradaki fonksiyonlar hiçbir şeyi değiştirmez; yalnızca veri alıp veri
-döndürür. Bu sayede testlerde gerçek ekran olmadan denenebilirler.
+These functions change nothing; they only take and return data, so they can be
+tested without a real display.
 """
 from .i18n import _
 
@@ -19,7 +19,7 @@ def _old_mode(source):
 
 
 def refresh_rates(output):
-    """Ekranın şu anki çözünürlükte desteklediği yenileme hızları (küçükten büyüğe)."""
+    """Refresh rates the display supports at its current resolution (ascending)."""
     if not output.get("modes"):
         return []
     size = _old_mode(output)["size"]
@@ -27,15 +27,15 @@ def refresh_rates(output):
 
 
 def panel_rates(outputs):
-    """Dahili ekranın yenileme hızları; dahili ekran yoksa boş liste."""
+    """Refresh rates of the built-in display; empty list without one."""
     panel = next((o for o in outputs if o["connected"] and is_internal(o)), None)
     return refresh_rates(panel) if panel else []
 
 
 def mode_for(output, previous=None, hz=None):
-    """Eski çözünürlükte istenen Hz'e en yakın modun kimliği.
+    """Id of the mode closest to the wanted refresh rate at the previous resolution.
 
-    hz: sayı, "max" (en yüksek), "min" (en düşük) ya da None (eski Hz korunur).
+    hz: a number, "max" (highest), "min" (lowest) or None (keep the previous rate).
     """
     old = _old_mode(previous or output)
     candidates = [m for m in output["modes"] if m["size"] == old["size"]]
@@ -57,22 +57,22 @@ def _should_enable(internal, preset, external, on_nvidia):
     if internal:
         return True
     if preset.is_battery and on_nvidia:
-        return False  # NVIDIA kapanacak; bu çıkış zaten çalışmayacak
+        return False  # NVIDIA will be off; this output will not work anyway
     if external == "off":
         return False
-    # Bataryada "otomatik": NVIDIA'ya bağlı olmayan (iGPU/USB-C) ekranlar açık kalır.
+    # "auto" on battery: displays not wired to NVIDIA (iGPU/USB-C) stay on.
     return True
 
 
 def layout_key(names):
-    """Bir ekran kombinasyonunun anahtarı: "HDMI-A-1+eDP-1"."""
+    """Key of a display combination: "HDMI-A-1+eDP-1"."""
     return "+".join(sorted(names))
 
 
 def remember(outputs):
-    """Kullanıcının şu anki düzeni: {anahtar: {ad: {pos, priority, scale, size, refresh}}}.
+    """The user's current layout: {key: {name: {pos, priority, scale, size, refresh}}}.
 
-    Açık ekran kombinasyonuna göre saklanır; o kombinasyona dönülünce aynı düzen kurulur.
+    Stored per combination of enabled displays and restored when that combination returns.
     """
     enabled = [o for o in outputs if o["connected"] and o["enabled"]]
     if not enabled:
@@ -86,7 +86,7 @@ def remember(outputs):
 
 
 def _normalized(layout):
-    """Kapanan ekranın yerinde boşluk kalmasın: en sol üst köşe 0,0 olsun; öncelikler 1'den sıralı."""
+    """No gap where a display was turned off: top-left corner at 0,0, priorities numbered from 1."""
     min_x = min(v["pos"]["x"] for v in layout.values())
     min_y = min(v["pos"]["y"] for v in layout.values())
     order = sorted(layout, key=lambda n: layout[n]["priority"])
@@ -95,11 +95,11 @@ def _normalized(layout):
 
 
 def _target_layout(connected, targets, remembered):
-    """Açık kalacak ekranların konum/öncelik/ölçeği.
+    """Position, priority and scale of the displays that stay on.
 
-    1. Açık ekranlar değişmiyorsa: şu anki düzen aynen korunur.
-    2. Bu kombinasyon için hatırlanan bir düzen varsa: o kullanılır.
-    3. Yoksa: açık kalanlar yerinde kalır, yeni açılan sağa eklenir.
+    1. If the enabled displays do not change, the current layout is kept as is.
+    2. If a layout was remembered for this combination, it is used.
+    3. Otherwise displays that stay on keep their place and newly enabled ones go to the right.
     """
     by_name = {o["name"]: o for o in connected}
     current = {o["name"]: {"pos": o["pos"], "priority": o.get("priority", 1), "scale": o["scale"]}
@@ -122,7 +122,7 @@ def _target_layout(connected, targets, remembered):
 
 
 def _mode_id(output, hz, saved):
-    """Dahili ekran için modun Hz'i; harici ekran açıksa şu anki modu, yeniden açılıyorsa hatırlanan modu."""
+    """Built-in display: the mode's refresh rate; external: its current mode, or the remembered one when re-enabled."""
     if hz is not None:
         return mode_for(output, None, hz)
     if not output["enabled"] and saved and "size" in saved:
@@ -133,14 +133,14 @@ def _mode_id(output, hz, saved):
 
 
 def screen_plan(current, original, preset=None, external="auto", nvidia_outputs=(), remembered=None):
-    """kscreen-doctor argümanları.
+    """kscreen-doctor arguments.
 
-    preset verilirse mod uygulanır: kullanıcının ekran düzenine (ana ekran, konum, ölçek,
-    harici ekranın çözünürlüğü) dokunulmaz; yalnızca dahili ekranın Hz'i ve parlaklığı ile
-    hangi ekranların açık olacağı değişir. None ise `original` içindeki düzen geri yüklenir.
-    nvidia_outputs: NVIDIA'ya bağlı bağlantı adları; batarya modunda bunlar kapanır.
-    remembered: display.remember() kayıtları; kapanıp yeniden açılan ekranın yeri buradan gelir.
-    Ekran bilgisi yoksa (KDE dışı) boş liste döner ve ekran adımı atlanır.
+    With a preset, the mode is applied: the user's layout (primary display, position, scale,
+    external resolution) is left alone; only the built-in refresh rate and brightness and which
+    displays are on change. With None, the layout in `original` is restored.
+    nvidia_outputs: names of outputs wired to NVIDIA; they are turned off in battery modes.
+    remembered: display.remember() records; a re-enabled display gets its place from here.
+    Without display information (not KDE) an empty list is returned and the step is skipped.
     """
     if not current:
         return []
@@ -165,19 +165,19 @@ def screen_plan(current, original, preset=None, external="auto", nvidia_outputs=
             continue
         place = layout[output["name"]]
         internal = is_internal(output)
-        # Harici ekranın Hz'ine dokunulmaz; kullanıcının kendi seçimi korunur.
+        # The external refresh rate is never touched; the user's own choice is kept.
         mode_id = _mode_id(output, preset.panel if internal else None, saved.get(output["name"]))
         args += [prefix + "enable", prefix + "mode." + mode_id, prefix + f"scale.{place['scale']}",
                  prefix + f"position.{place['pos']['x']},{place['pos']['y']}",
                  prefix + f"priority.{place['priority']}"]
-        # Plasma 6.1 öncesi parlaklık bilgisi vermez; o zaman parlaklığa dokunulmaz.
+        # Before Plasma 6.1 there is no brightness information; brightness is then left alone.
         if internal and "brightness" in output:
             args.append(prefix + f"brightness.{preset.brightness}")
     return args
 
 
 def _restore_plan(current, original):
-    """İlk moddan önceki düzeni geri yükler; o kayıtta olmayan ekranlar şu anki haliyle kalır."""
+    """Restores the layout from before the first mode; displays not in that snapshot stay as they are."""
     saved = {o["name"]: o for o in original}
     args = []
     enabled_count = 0
@@ -202,7 +202,7 @@ def _restore_plan(current, original):
 
 
 def verify_screen(args, before_outputs, actual_outputs):
-    """Uygulanan argümanların gerçekten geçerli olduğunu kontrol eder."""
+    """Checks that the applied arguments really took effect."""
     for arg in args:
         _, name, setting, *value = arg.split(".")
         value = ".".join(value)

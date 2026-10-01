@@ -10,7 +10,7 @@ from msi_ultrapower import i18n
 PO_DIR = Path(__file__).resolve().parent.parent / "po"
 
 
-@unittest.skipUnless(shutil.which("msgfmt"), "gettext (msgfmt) yok")
+@unittest.skipUnless(shutil.which("msgfmt"), "gettext (msgfmt) not installed")
 class TranslationTests(unittest.TestCase):
     def setUp(self):
         self.locale = tempfile.TemporaryDirectory()
@@ -53,7 +53,7 @@ class TranslationTests(unittest.TestCase):
     def test_arabic_is_right_to_left(self):
         self.use("ar")
         self.assertTrue(i18n.is_rtl())
-        self.assertTrue(i18n._("Apply").startswith(i18n.RLM))  # Latin başlayan cümleler de sağa yaslanır
+        self.assertTrue(i18n._("Apply").startswith(i18n.RLM))  # sentences starting in Latin script also align right
         self.use("tr")
         self.assertFalse(i18n.is_rtl())
 

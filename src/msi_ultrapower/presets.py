@@ -1,8 +1,8 @@
-"""Güç modlarının tanımı. Komut satırı ve arayüz modları buradan okur.
+"""Power mode definitions. The command line and the window read the modes from here.
 
-Yeni bir mod eklemek ya da bir modu değiştirmek için yalnızca bu dosyayı düzenle.
-Değerler modeldeki karşılıklarına çevrilir: örneğin EC'de "eco" yoksa en yakın
-tasarruf modu, "max" ise panelin desteklediği en yüksek yenileme hızı kullanılır.
+To add or change a mode, edit only this file. Values are mapped to what the model
+supports: for example, without an "eco" EC mode the nearest saving mode is used, and
+"max" means the highest refresh rate of the panel.
 """
 from dataclasses import dataclass
 
@@ -17,18 +17,18 @@ EXTERNAL_CHOICES = {
 
 @dataclass(frozen=True)
 class Preset:
-    key: str             # komut satırındaki adı: msi-ultrapower <key>
-    title_source: str    # arayüzde görünen ad (İngilizce kaynak; .title çevrilmişi)
-    summary_source: str  # kartta görünen tek satırlık açıklama
-    icon: str            # KDE/Breeze tema simgesi
-    profile: str         # powerprofilesctl profili
-    brightness: int      # dahili ekran parlaklığı (%)
-    shift: str           # MSI EC shift_mode (yoksa en yakını)
+    key: str             # name on the command line: msi-ultrapower <key>
+    title_source: str    # name shown in the window (English source; .title is translated)
+    summary_source: str  # one-line summary on the card
+    icon: str            # KDE/Breeze theme icon
+    profile: str         # powerprofilesctl profile
+    brightness: int      # built-in display brightness (%)
+    shift: str           # MSI EC shift_mode (or the nearest one)
     boost: str           # Cooler Boost: on/off
-    turbo: str           # "0" turbo açık, "1" kapalı (intel_pstate/no_turbo gibi)
+    turbo: str           # "0" turbo on, "1" off (like intel_pstate/no_turbo)
     gpu: str             # NVIDIA power/control: on/auto
     fan: str = "auto"    # MSI EC fan_mode
-    panel: str = "max"   # dahili ekran Hz'i: "max" en yüksek, "min" en düşük
+    panel: str = "max"   # built-in refresh rate: "max" highest, "min" lowest
 
     @property
     def title(self):
@@ -40,7 +40,7 @@ class Preset:
 
     @property
     def is_battery(self):
-        """Batarya modları NVIDIA'yı ve harici ekranı kapatır, aygıtları uyutur."""
+        """Battery modes turn NVIDIA and NVIDIA-wired displays off and let devices sleep."""
         return self.profile == "power-saver"
 
 

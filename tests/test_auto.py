@@ -3,7 +3,7 @@ from unittest.mock import patch
 
 try:
     from PySide6.QtCore import QCoreApplication, QObject, QTimer
-except ImportError:  # PySide6 yoksa (ör. yalın CI) bu testler atlanır
+except ImportError:  # without PySide6 (e.g. a bare CI) these tests are skipped
     QObject = object
 
 from msi_ultrapower import settings
@@ -25,7 +25,7 @@ class FakeWindow(QObject):
         return True
 
 
-@unittest.skipIf(QObject is object, "PySide6 yok")
+@unittest.skipIf(QObject is object, "PySide6 not installed")
 class AutoSwitcherTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

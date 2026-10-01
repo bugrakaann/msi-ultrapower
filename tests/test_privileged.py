@@ -1,4 +1,4 @@
-"""Root yardımcılarının sahte sysfs ile denenen güvenlik kontrolleri."""
+"""Safety checks of the root helpers, tested against a fake sysfs."""
 import io
 import json
 import tempfile
@@ -11,7 +11,7 @@ from msi_ultrapower.privileged import hardware as hw
 
 
 def fake_connector(root, card, name, vendor, status="connected"):
-    """/sys/class/drm/cardN-NAME → device (kart) → device (PCI) yapısını taklit eder."""
+    """Mimics /sys/class/drm/cardN-NAME → device (card) → device (PCI)."""
     pci = Path(root, "pci", card)
     pci.mkdir(parents=True, exist_ok=True)
     (pci / "vendor").write_text(vendor + "\n")
@@ -47,7 +47,7 @@ class MuxTests(unittest.TestCase):
                 patch.object(gpu_boot, "internal_panel_on_nvidia", return_value=True):
             with self.assertRaises(RuntimeError):
                 gpu_boot.check_preconditions("integrated")
-            gpu_boot.check_preconditions("hybrid")  # geri açmak her zaman serbest
+            gpu_boot.check_preconditions("hybrid")  # turning it back on is always allowed
 
 
 class RestoreTests(unittest.TestCase):
@@ -72,7 +72,7 @@ class RestoreTests(unittest.TestCase):
 
 
 class TransactionTests(unittest.TestCase):
-    """Tek parola: donanım ve NVIDIA açılış ayarı aynı yardımcı oturumunda yapılır."""
+    """One password: hardware and the NVIDIA boot setting are done in the same helper session."""
 
     def run_transaction(self, stdin):
         calls = []

@@ -62,7 +62,7 @@ class ScreenPlanTests(unittest.TestCase):
 
 
 def dual(hdmi_primary=True, hdmi_enabled=True):
-    """Kullanıcının düzeni: solda laptop (eDP-1), sağda büyük monitör (HDMI-A-1)."""
+    """User layout: laptop (eDP-1) on the left, a large monitor (HDMI-A-1) on the right."""
     panel = fake_output("eDP-1")
     monitor = fake_output("HDMI-A-1", ("big", "big60"))
     for mode in monitor["modes"]:
@@ -100,13 +100,13 @@ class LayoutTests(unittest.TestCase):
         self.assertEqual(arg(args, "eDP-1", "position"), "0,0")
 
     def test_back_from_battery_restores_remembered_layout(self):
-        remembered = display.remember(dual())                    # batarya modundan önce kaydedilir
-        outputs = dual(hdmi_primary=False, hdmi_enabled=False)   # HDMI kapalı, laptop tek başına
-        outputs[1]["currentModeId"] = "big60"                    # kapalıyken KDE başka mod gösterebilir
+        remembered = display.remember(dual())                    # saved before battery mode
+        outputs = dual(hdmi_primary=False, hdmi_enabled=False)   # HDMI off, laptop alone
+        outputs[1]["currentModeId"] = "big60"                    # while off, KDE may report another mode
         args = display.screen_plan(outputs, [], PRESETS["performance"], remembered=remembered)
         self.assertEqual(arg(args, "HDMI-A-1", "priority"), "1")
         self.assertEqual(arg(args, "HDMI-A-1", "position"), "1536,0")
-        self.assertEqual(arg(args, "HDMI-A-1", "mode"), "big")   # hatırlanan 120 Hz
+        self.assertEqual(arg(args, "HDMI-A-1", "mode"), "big")   # the remembered 120 Hz
         self.assertEqual(arg(args, "eDP-1", "priority"), "2")
 
     def test_new_external_without_memory_goes_right_and_keeps_laptop_primary(self):

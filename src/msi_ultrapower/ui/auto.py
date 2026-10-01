@@ -1,11 +1,12 @@
-"""Prize takınca/çekince ayarlardaki moda geçer (settings: auto_mode, auto_ac, auto_battery).
+"""Switches to the mode chosen in Settings when the charger is plugged in or out
+(settings: auto_mode, auto_ac, auto_battery).
 
-Uygulama açıkken (tepside bile) çalışır. NVIDIA'yı açılışta kapatmaz (--keep-gpu); aksi halde
-her fiş çekilişinde açılış imajı yeniden oluşturulurdu.
+Works while the app runs (the tray is enough). It does not disable NVIDIA at boot (--keep-gpu);
+otherwise the boot image would be rebuilt on every unplug.
 
-Uygulama açılırken de (oturum açılışı) şu anki güç kaynağına uygun mod seçili değilse ona geçer:
-bilgisayar prizde kapatılıp pilde açıldıysa bu da bir fiş çekilişidir. Bunu yalnızca parolasız
-geçiş açıkken yapar; aksi halde oturum açılır açılmaz parola sorulurdu.
+At startup (login) it also switches if the mode does not match the power source: shutting down
+on AC and booting on battery counts as unplugging. It only does this with password-free
+switching on; otherwise a password would be asked right after login.
 """
 from PySide6.QtCore import QObject, Signal
 
@@ -14,13 +15,13 @@ from ..presets import PRESETS
 
 
 class AutoSwitcher(QObject):
-    switching = Signal(str, bool)  # (mod anahtarı, prizde mi)
+    switching = Signal(str, bool)  # (mode key, on AC)
 
     def __init__(self, window):
         super().__init__(window)
         self.window = window
         self.last = status.on_ac()
-        self.waiting = None  # meşgulken bekleyen hedef mod
+        self.waiting = None  # target mode waiting while busy
         options = settings.load()
         if self.last is not None and options["auto_mode"] and options["passwordless"]:
             self.waiting = self._target(options, self.last)

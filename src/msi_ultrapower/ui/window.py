@@ -1,7 +1,7 @@
-"""Ana pencere: durum → mod seç → neyin değişeceğine bak → Uygula.
+"""Main window: status → pick a mode → see what changes → Apply.
 
-Donanıma dokunmaz; her işlemi CLI'ye (runner) yaptırır. Tepsi ve otomatik mod da
-buradaki apply_mode / apply_charge'ı kullanır; böylece tek bir işlem kuyruğu olur.
+It never touches hardware; every action goes through the CLI (runner). The tray and
+automatic mode use apply_mode / apply_charge here too, so there is a single queue.
 """
 import shutil
 
@@ -23,16 +23,16 @@ from .status_strip import StatusStrip
 from .widgets import STYLE, Banner, ModeCard, link_button, muted
 
 REFRESH_MS = 2000
-PREVIEW_EVERY = 8      # değişiklik listesi her 8 yenilemede bir (≈16 sn) yeniden hesaplanır
+PREVIEW_EVERY = 8      # the list of changes is recomputed every 8 refreshes (≈16 s)
 PREFERRED_SIZE = (600, 820)
-SCREEN_MARGIN = 32     # pencere ile ekran kenarı arasında bırakılan boşluk
+SCREEN_MARGIN = 32     # gap left between the window and the screen edge
 
 
 def detect_capabilities():
     try:
         outputs = system.get_outputs()
     except Exception:
-        outputs = []  # kscreen-doctor çalışmazsa Hz bilinmez
+        outputs = []  # without kscreen-doctor the refresh rates are unknown
     return capabilities.detect(outputs)
 
 
@@ -66,7 +66,7 @@ class LogDialog(QDialog):
 
 
 class MainWindow(QWidget):
-    finished = Signal(str, bool)  # (işlem adı, başarılı mı) — tepsi bildirimleri için
+    finished = Signal(str, bool)  # (action name, succeeded), for tray notifications
 
     def __init__(self):
         super().__init__()
@@ -77,14 +77,14 @@ class MainWindow(QWidget):
         self.resize(*PREFERRED_SIZE)
         self._fitted = False
         self._ticks = 0
-        self.keep_running = lambda: False  # app.py: tepsi varsa pencere kapanınca gizlenir
+        self.keep_running = lambda: False  # app.py: with a tray, closing the window hides it
 
         self.caps = detect_capabilities()
-        self.power_meter = status.PowerMeter()  # pencere gizliyken de ölçer; tepsi de kullanır
+        self.power_meter = status.PowerMeter()  # measures while hidden too; the tray uses it
         self.runner = ModeRunner(self)
         self.runner.output.connect(self._append_log)
         self.runner.finished.connect(self._on_finished)
-        self.pending = None      # (args, görünen ad, değişen ayar sayısı)
+        self.pending = None      # (args, display name, number of changed settings)
         self.log_dialog = LogDialog(self)
         self.selected = None
         self._change_count = 0
@@ -132,7 +132,7 @@ class MainWindow(QWidget):
         self.timer.start(REFRESH_MS)
         self.refresh()
 
-    # ---------- Arayüzün kurulumu ----------
+    # ---------- Building the window ----------
 
     def _build_header(self):
         title = QLabel(_("Power Modes"))
@@ -242,7 +242,7 @@ class MainWindow(QWidget):
         layout.addLayout(row)
         return bar
 
-    # ---------- Pencere boyutu ----------
+    # ---------- Window size ----------
 
     def showEvent(self, event):
         super().showEvent(event)
@@ -250,12 +250,12 @@ class MainWindow(QWidget):
             self._fitted = True
             self.windowHandle().screenChanged.connect(self._fit_to_screen)
             self._fit_to_screen(self.screen())
-        # Gizliyken pencere güncellenmez; açılınca her şeyi bir kez tazele.
+        # A hidden window is not updated; refresh everything once when shown.
         self.refresh()
         self._refresh_preview()
 
     def _fit_to_screen(self, screen):
-        """Pencere, ölçeği daha büyük bir ekrana taşınınca da ekrana sığsın."""
+        """Keep the window on screen when it moves to a display with a larger scale."""
         if screen is None or self.isMaximized() or self.isFullScreen():
             return
         area = screen.availableGeometry()
@@ -263,7 +263,7 @@ class MainWindow(QWidget):
         height = min(max(self.height(), PREFERRED_SIZE[1]), area.height() - SCREEN_MARGIN)
         self.resize(max(width, self.minimumWidth()), max(height, self.minimumHeight()))
 
-    # ---------- Durum ----------
+    # ---------- Status ----------
 
     @property
     def busy(self):
@@ -279,9 +279,9 @@ class MainWindow(QWidget):
         self._refresh_preview()
 
     def _refresh_preview(self):
-        """Seçili modun şu anki duruma göre değiştireceklerini hesaplar (hiçbir şey uygulamaz).
+        """Works out what the selected mode would change now (applies nothing).
 
-        kscreen-doctor ve powerprofilesctl çalıştırdığı için yalnızca pencere açıkken yapılır.
+        Runs kscreen-doctor and powerprofilesctl, so it only runs while the window is shown.
         """
         if self.selected is None or self.busy or not self.isVisible():
             return
@@ -321,7 +321,7 @@ class MainWindow(QWidget):
     def refresh(self):
         self.power_meter.add(status.battery())
         if not self.isVisible():
-            return  # tepside: yalnızca güç ölçülür; tepsi kendi ipucunu günceller
+            return  # in the tray only power is measured; the tray updates its own tooltip
         self.status_strip.refresh(self.power_meter)
         active = self.active_mode()
         for key, card in self.cards.items():
@@ -345,7 +345,7 @@ class MainWindow(QWidget):
         if self._ticks % PREVIEW_EVERY == 0:
             self._refresh_preview()
 
-    # ---------- İşlemler (tepsi ve otomatik mod da kullanır) ----------
+    # ---------- Actions (also used by the tray and automatic mode) ----------
 
     def apply_mode(self, key, external=None, keep_gpu=False):
         external = external or self.external.currentData()
@@ -380,7 +380,7 @@ class MainWindow(QWidget):
         self._set_controls_enabled(True)
         args, name, count = self.pending
         if not ok and args[0] == "passwordless":
-            # Parola penceresi kapatıldıysa kural değişmedi; ayar da eski haline dönsün.
+            # If the password dialog was dismissed the rule did not change; revert the setting too.
             settings.save({"passwordless": args[1] != "on"})
         if ok:
             text = _("{name} applied.").format(name=name)
@@ -430,10 +430,10 @@ class MainWindow(QWidget):
                                     _("The new language is used after the app restarts."))
 
     def settings_changed(self, before, after):
-        """Tepsi/otomatik mod kancası; app.py bağlar."""
+        """Hook for the tray and automatic mode; connected in app.py."""
 
     def _reboot(self):
-        # KDE'nin kendi onay penceresini açar; açık uygulamalar düzgün kapanır.
+        # Opens KDE's own confirmation, so open apps close properly.
         if shutil.which("qdbus6"):
             QProcess.startDetached("qdbus6", ["org.kde.LogoutPrompt", "/LogoutPrompt", "promptReboot"])
         elif QMessageBox.question(self, _("Restart"), _("Restart the computer now?")) \
@@ -451,4 +451,4 @@ class MainWindow(QWidget):
             event.ignore()
             return
         event.accept()
-        QApplication.quit()  # tepsi simgesi varken de: tepside kalma seçeneği kapalıysa uygulama kapanır
+        QApplication.quit()  # even with a tray icon: quit when staying in the tray is not enabled

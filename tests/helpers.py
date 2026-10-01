@@ -1,4 +1,4 @@
-"""Testlerde kullanılan sahte kscreen-doctor çıktıları."""
+"""Fake kscreen-doctor output used by the tests."""
 
 
 def fake_output(name, ids=("old", "new")):

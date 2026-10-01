@@ -1,21 +1,21 @@
-"""Root yetkisiyle sysfs'e yazan donanım yardımcısı. Yalnızca standart kütüphaneyi ve
-kardeş modülü gpu_boot'u (o da yalnızca standart kütüphane) kullanır.
+"""Hardware helper that writes sysfs as root. Uses only the standard library and its
+sibling module gpu_boot (also standard library only).
 
-Çalıştırma şekilleri (hepsi /usr/lib/msi-ultrapower/msi-ultrapower-hardware üzerinden):
+How it runs (always through /usr/lib/msi-ultrapower/msi-ultrapower-hardware):
 
-  * pkexec ile mod geçişi:   '<json>'
-        Ayarları uygular, "READY" yazar ve stdin'den COMMIT bekler.
-        COMMIT gelmezse eski değerlere döner ("ROLLED_BACK").
-        COMMIT gelirse ayarları açılışta geri yüklenmek üzere kaydeder ("COMMITTED"); istenirse
-        NVIDIA açılış ayarını da aynı yetkiyle yapar. Böylece bir mod geçişi tek parola ister.
-  * pkexec ile şarj sınırı:  --charge 80
-        Pilin şarj sınırını yazar, doğrular ve açılışta geri yüklenmek üzere kaydeder.
-  * pkexec ile parolasız geçiş:  --passwordless 1|0
-        Yalnızca bu yardımcının polkit eylemi için kural yazar/siler.
-  * Açılışta systemd ile (msi-ultrapower-restore.service):  --restore
+  * mode switch with pkexec:   '<json>'
+        Applies the settings, prints "READY" and waits for COMMIT on stdin.
+        Without COMMIT it goes back to the old values ("ROLLED_BACK").
+        With COMMIT it saves the settings for boot ("COMMITTED") and, if asked, also sets the
+        NVIDIA boot setting with the same authorization, so a mode switch asks for one password.
+  * charge limit with pkexec:  --charge 80
+        Writes and verifies the battery charge limit and saves it for boot.
+  * password-free switching with pkexec:  --passwordless 1|0
+        Writes or removes a polkit rule for this helper's action only.
+  * at boot from systemd (msi-ultrapower-restore.service):  --restore
 
-Kullanıcı tarafı (msi_ultrapower paketi) ALLOWED, read_state, writable ve validate'i
-import ederek aynı izin listesini kullanır.
+The user side (the msi_ultrapower package) imports ALLOWED, read_state, writable and
+validate, so both sides use the same allow-list.
 """
 import gettext
 import glob
@@ -27,14 +27,14 @@ from pathlib import Path
 
 from . import gpu_boot
 
-# Standart kütüphane gettext; pkexec LANGUAGE/LANG'ı korur, dil kullanıcınınkiyle aynı olur.
+# Standard library gettext; pkexec keeps LANGUAGE/LANG, so the language matches the user's.
 _ = gettext.translation("msi-ultrapower", fallback=True).gettext
 
 PCI = "/sys/bus/pci/devices/"
 EC = "/sys/devices/platform/msi-ec/"
 CPU = "/sys/devices/system/cpu/intel_pstate/"
-BOOST = "/sys/devices/system/cpu/cpufreq/boost"  # AMD ve acpi-cpufreq: "1" turbo açık
-SOUND_POWER_SAVE = "/sys/module/snd_hda_intel/parameters/power_save"  # saniye; 0 = kapalı
+BOOST = "/sys/devices/system/cpu/cpufreq/boost"  # AMD and acpi-cpufreq: "1" means turbo on
+SOUND_POWER_SAVE = "/sys/module/snd_hda_intel/parameters/power_save"  # seconds; 0 = off
 DIRTY_WRITEBACK = "/proc/sys/vm/dirty_writeback_centisecs"
 
 
@@ -49,10 +49,10 @@ def _first(pattern, default):
     return next(iter(sorted(glob.glob(pattern))), default)
 
 
-SHIFT_MODES = ("eco", "comfort", "sport", "turbo")  # tasarruftan performansa
+SHIFT_MODES = ("eco", "comfort", "sport", "turbo")  # from saving to performance
 FAN_MODES = ("auto", "silent", "basic", "advanced")
 CHARGE_LIMITS = ("60", "80", "100")
-# Runtime PM'i kendi yöneten ya da "auto"da sorun çıkardığı bilinen sürücüler (TLP'deki gibi).
+# Drivers that manage runtime PM themselves or are known to misbehave with "auto" (as in TLP).
 RUNTIME_PM_DENY = {"mei_me", "nouveau", "radeon", "amdgpu", "nvidia", "nvidia-gpu"}
 CHARGE_PATTERN = "/sys/class/power_supply/BAT*/charge_control_end_threshold"
 
@@ -65,9 +65,9 @@ def _driver(device):
 
 
 def detect():
-    """Model farkları: aygıt adresleri ve adları makineden makineye değişir, bu yüzden aranır.
+    """Model differences: device addresses and names differ between machines, so they are searched.
 
-    İçe aktarılırken çalışır; açılışta modüller geç yüklenirse restore() yeniden çağırır.
+    Runs on import; restore() calls it again when modules load late at boot.
     """
     global NVIDIA, NVIDIA_GPU, GPU_PM, LED, BAT, RUNTIME_PM, BLUETOOTH
     global CHARGE_LIMIT, CHARGE_START, ALLOWED
@@ -79,20 +79,20 @@ def detect():
     BAT = str(Path(_first(CHARGE_PATTERN,
                           "/sys/class/power_supply/BAT1/x")).parent) + "/"
 
-    # NVIDIA dışındaki PCI aygıtlarının çalışma zamanı güç yönetimi. Sürücüsü desteklemeyen
-    # aygıt "auto"da da uyanık kalır; sürücüsü olmayan (kullanılmayan Wi-Fi kartı gibi) uyur.
+    # Runtime power management of PCI devices other than NVIDIA. A device whose driver does not
+    # support it stays awake even with "auto"; one without a driver (unused Wi-Fi card) sleeps.
     RUNTIME_PM = sorted(d + "/power/control" for d in glob.glob(PCI + "*")
                         if d + "/power/control" not in GPU_PM
                         and Path(d, "power/control").exists()
                         and _driver(d) not in RUNTIME_PM_DENY)
-    BLUETOOTH = sorted(glob.glob("/sys/class/bluetooth/hci*/rfkill*/soft"))  # 1 = kapalı
+    BLUETOOTH = sorted(glob.glob("/sys/class/bluetooth/hci*/rfkill*/soft"))  # 1 = off
 
-    # Şarj sınırı modlardan bağımsızdır; bu yüzden ALLOWED'da değil.
-    # msi-ec başlangıç eşiğini kendisi sınırın 10 altına ayarlar.
+    # The charge limit is independent of modes, so it is not in ALLOWED.
+    # msi-ec sets the start threshold to 10 below the limit by itself.
     CHARGE_LIMIT = BAT + "charge_control_end_threshold"
     CHARGE_START = BAT + "charge_control_start_threshold"
 
-    # Yazılmasına izin verilen dosyalar ve kabul edilen değerler.
+    # Files that may be written and the values they accept.
     ALLOWED = {
         EC + "shift_mode": set(SHIFT_MODES),
         EC + "fan_mode": set(FAN_MODES),
@@ -111,11 +111,11 @@ detect()
 
 STATE_DIR = Path("/var/lib/msi-ultrapower")
 RESTORE_SERVICE = "msi-ultrapower-restore.service"
-RESTORE_UNIT = Path("/usr/lib/systemd/system") / RESTORE_SERVICE  # paketle kurulur
+RESTORE_UNIT = Path("/usr/lib/systemd/system") / RESTORE_SERVICE  # installed by the package
 
 
 def read_state():
-    """İzin listesindeki mevcut dosyaların şu anki değerleri."""
+    """Current values of the allow-listed files that exist."""
     return {p: Path(p).read_text().strip() for p in ALLOWED if Path(p).exists()}
 
 
@@ -125,10 +125,10 @@ def available_shift_modes():
 
 
 def writable(state):
-    """Okunabilen ama geri yazılamayan değerleri yazılabilir karşılığına çevirir."""
+    """Maps values that can be read but not written back to a writable equivalent."""
     state = dict(state)
     if state.get(EC + "shift_mode") == "unspecified":
-        # Modelde "comfort" yoksa ona en yakın mod (capabilities.nearest_shift ile aynı kural).
+        # Without "comfort", the nearest mode (same rule as capabilities.nearest_shift).
         order = SHIFT_MODES
         state[EC + "shift_mode"] = min(available_shift_modes(), key=lambda m: (
             abs(order.index(m) - order.index("comfort")), order.index(m)))
@@ -149,7 +149,7 @@ def validate(state):
 
 
 def apply(state):
-    """Ayarları yazar; bir hata olursa değiştirilenleri geri alır. Eski durumu döndürür."""
+    """Writes the settings and undoes the changed ones on error. Returns the old state."""
     validate(state)
     before = read_state()
     changed = []
@@ -172,7 +172,7 @@ def apply(state):
 
 
 def persist(state):
-    """Ayarları kaydeder ve açılışta geri yükleyecek servisi etkinleştirir."""
+    """Saves the settings and enables the service that restores them at boot."""
     validate(state)
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     target = STATE_DIR / "hardware.json"
@@ -184,7 +184,7 @@ def persist(state):
 
 
 def enable_restore_service():
-    # Paket kurulu değilse (kaynak koddan geliştirme) servis yoktur; yalnızca kaydet.
+    # Without the package (development from source) there is no service; just save.
     if RESTORE_UNIT.exists():
         subprocess.run(["systemctl", "enable", RESTORE_SERVICE], check=True)
 
@@ -198,7 +198,7 @@ def write_charge_limit(value):
 
 
 def set_charge_limit(value):
-    """Şarj sınırını uygular ve açılışta geri yüklenmek üzere kaydeder."""
+    """Applies the charge limit and saves it for boot."""
     write_charge_limit(value)
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     temp = STATE_DIR / "charge.tmp"
@@ -208,7 +208,7 @@ def set_charge_limit(value):
     temp.replace(STATE_DIR / "charge")
 
 
-# Açılışta msi-ec ve pil eklentisi sistem servisinden sonra yüklenebilir; bu yollar gelene kadar bekle.
+# At boot msi-ec and the battery extension may load after the service; wait for these paths.
 LATE_PREFIXES = (EC, "/sys/class/leds/", "/sys/class/power_supply/")
 RESTORE_WAIT = 20  # saniye
 
@@ -228,12 +228,12 @@ def restore():
     charge_saved = (STATE_DIR / "charge").exists()
     wait_until(lambda: all(Path(p).exists() for p in late)
                and (not charge_saved or glob.glob(CHARGE_PATTERN)))
-    detect()  # geç gelen aygıtlarla izin listesini yenile
+    detect()  # refresh the allow-list with late devices
 
     if saved:
         state = saved
-        # Yalnızca tümleşik GPU ile açılışta NVIDIA dosyaları kasıtlı olarak yoktur; Bluetooth
-        # gibi aygıtlar da henüz hazır olmayabilir. Olmayan dosyaları atla.
+        # When booted with the integrated GPU only, NVIDIA files are missing on purpose, and
+        # devices such as Bluetooth may not be ready yet. Skip missing files.
         missing = [p for p in state if not Path(p).exists()]
         if missing:
             print(_("Skipped (device missing):"), *missing, file=sys.stderr)
@@ -249,7 +249,7 @@ def restore():
 
 
 def parse_commit(line):
-    """"COMMIT gpu=integrated save=no" → {"gpu": "integrated", "save": "no"}; COMMIT değilse None."""
+    """"COMMIT gpu=integrated save=no" → {"gpu": "integrated", "save": "no"}; None if not COMMIT."""
     words = line.split()
     if not words or words[0] != "COMMIT":
         return None
@@ -257,15 +257,15 @@ def parse_commit(line):
 
 
 def forget():
-    """Önceki ayarlara dönüldü: açılışta yeniden uygulanacak mod ayarı kalmaz (şarj sınırı ayrı)."""
+    """Back to the previous settings: no mode values are left to restore at boot (the charge limit is separate)."""
     (STATE_DIR / "hardware.json").unlink(missing_ok=True)
 
 
 def transaction(target):
-    """Uygula → READY → COMMIT beklenir; gelmezse geri al.
+    """Apply → READY → wait for COMMIT; roll back without it.
 
-    COMMIT seçenekleri: gpu=integrated|hybrid (NVIDIA açılış ayarı da yapılır),
-    save=no (önceki ayarlara dönüş; açılışta geri yükleme kaydı silinir).
+    COMMIT options: gpu=integrated|hybrid (also sets the NVIDIA boot setting),
+    save=no (restoring previous settings; the values restored at boot are removed).
     """
     before = apply(target)
     print("READY", flush=True)
@@ -284,18 +284,18 @@ def transaction(target):
         raise
     print("COMMITTED", flush=True)
     if "gpu" in options:
-        # Donanım ayarları kalıcı oldu; GPU adımı başarısız olsa da onlar geri alınmaz.
+        # The hardware settings are saved; they stay even if the GPU step fails.
         try:
             gpu_boot.configure(options["gpu"])
         except Exception as exc:
             raise RuntimeError(_("GPU configuration error:") + f" {exc}") from exc
 
 
-# Yalnızca bu yardımcının eylemi; o da yalnızca izin listesindeki işleri yapar.
+# Only this helper's action, and it only does allow-listed work.
 POLKIT_ACTIONS = ("io.github.bugrakaann.msiultrapower.hardware",)
 POLKIT_RULE = Path("/etc/polkit-1/rules.d/49-msi-ultrapower.rules")
 POLKIT_HEADER = "// Managed by msi-ultrapower hardware.py\n"
-# Yalnızca msi-ultrapower eylemleri; yalnızca yerel, etkin oturumdaki yönetici (wheel) kullanıcılar.
+# Only msi-ultrapower actions; only local administrators (wheel) in an active session.
 POLKIT_TEXT = POLKIT_HEADER + """polkit.addRule(function(action, subject) {
     var actions = [%s];
     if (actions.indexOf(action.id) >= 0 && subject.local && subject.active
@@ -307,7 +307,7 @@ POLKIT_TEXT = POLKIT_HEADER + """polkit.addRule(function(action, subject) {
 
 
 def set_passwordless(enabled):
-    """Modlar yönetici parolası sormadan uygulanabilsin diye polkit kuralını yazar ya da siler."""
+    """Writes or removes the polkit rule that lets modes apply without the administrator password."""
     if POLKIT_RULE.exists() and not POLKIT_RULE.read_text().startswith(POLKIT_HEADER):
         raise RuntimeError(_("{path} does not belong to msi-ultrapower; not touched").format(path=POLKIT_RULE))
     if enabled:
@@ -331,7 +331,7 @@ def main(argv):
 
 
 def entry():
-    """/usr/lib/msi-ultrapower/msi-ultrapower-hardware ve systemd servisi buradan başlar."""
+    """Entry point of /usr/lib/msi-ultrapower/msi-ultrapower-hardware and the systemd service."""
     try:
         main(sys.argv)
     except Exception as exc:

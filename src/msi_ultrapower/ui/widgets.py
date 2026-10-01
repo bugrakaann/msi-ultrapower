@@ -1,6 +1,6 @@
-"""Arayüzün yeniden kullanılabilir parçaları ve ortak stil.
+"""Reusable window parts and the shared style.
 
-Renkler sabit değil, sistemin (Breeze) paletinden gelir; açık ve koyu tema kendiliğinden çalışır.
+Colors come from the system (Breeze) palette, so light and dark themes work by themselves.
 """
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtGui import QIcon
@@ -74,13 +74,13 @@ def section_label(text):
     label = QLabel(text)
     label.setObjectName("section")
     label.setContentsMargins(0, 8, 0, 2)
-    label.setStyleSheet("font-weight: 600;")  # kalın yazının yüksekliği yerleşimden önce bilinsin
+    label.setStyleSheet("font-weight: 600;")  # know the height of bold text before layout
     label.setMinimumHeight(label.sizeHint().height())
     return label
 
 
 def panel(spacing=8):
-    """Yuvarlak köşeli arka planlı kutu ve içindeki dikey yerleşim."""
+    """A rounded box with a background, and the vertical layout inside it."""
     frame = QFrame()
     frame.setObjectName("panel")
     layout = QVBoxLayout(frame)
@@ -90,7 +90,7 @@ def panel(spacing=8):
 
 
 def link_button(text, icon=None):
-    """Kenarlıksız, metin gibi görünen küçük düğme ("Tüm ayrıntılar", "Günlük")."""
+    """A small borderless button that looks like text ("All settings", "Show log")."""
     button = QToolButton()
     button.setText(text)
     button.setAutoRaise(True)
@@ -102,7 +102,7 @@ def link_button(text, icon=None):
 
 
 class ModeCard(QPushButton):
-    """Mod satırı: simge, ad, kısa açıklama; uygulanmış moddaysa "Aktif" rozeti."""
+    """Mode row: icon, name, short summary, and an "Active" badge for the applied mode."""
 
     def __init__(self, preset):
         super().__init__()
@@ -140,7 +140,7 @@ class ModeCard(QPushButton):
         self.badge.setVisible(active)
 
     def set_info(self, tooltip, unsupported=None):
-        """Üzerine gelince görünen tam değişiklik listesi; desteklenmiyorsa satır kapanır."""
+        """Full list of changes shown on hover; the row is disabled when unsupported."""
         self.setToolTip(tooltip)
         self.setEnabled(unsupported is None)
         self.unsupported = unsupported
@@ -149,7 +149,7 @@ class ModeCard(QPushButton):
 
 
 class Banner(QFrame):
-    """Renkli bilgi şeridi; isteğe bağlı bir eylem düğmesiyle."""
+    """A colored message bar, with an optional action button."""
 
     action = Signal()
 

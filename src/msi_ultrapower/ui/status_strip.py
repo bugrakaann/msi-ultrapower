@@ -1,4 +1,4 @@
-"""Üstteki durum çipleri: pil, sıcaklık/fan, NVIDIA, şarj sınırı. Dar pencerede alt satıra akar."""
+"""Status chips at the top: battery, temperature/fan, NVIDIA, charge limit. Wraps in a narrow window."""
 from PySide6.QtCore import QPoint, QRect, QSize, Qt
 from PySide6.QtWidgets import QLabel, QLayout, QStyle, QWidget
 
@@ -24,7 +24,7 @@ def watts(value):
 
 
 def power_text(meter):
-    """Durum çipi ve tepsi için: "Şu an 12.3 W · ortalama 11.8 W"."""
+    """For the status chip and the tray: "Now 12.3 W · average 11.8 W"."""
     if meter.current is None:
         return _("Power use: not measured while plugged in")
     text = _("Now {watts}").format(watts=watts(meter.current))
@@ -34,7 +34,7 @@ def power_text(meter):
 
 
 def power_details(meter):
-    """Ortalamanın hangi süreye ait olduğu (ipucu)."""
+    """Which period the average covers (tooltip)."""
     if meter.current is None:
         return _("Plugged in, the battery only reports its charging power, so the laptop's "
                  "power use cannot be measured. Unplug to see it.")
@@ -68,7 +68,7 @@ def sensor_text(sensors):
 
 
 class FlowLayout(QLayout):
-    """Öğeleri yan yana dizer, sığmayanı alt satıra geçirir (sağdan sola dillerde aynalanır)."""
+    """Lays items out side by side and wraps what does not fit (mirrored in right-to-left languages)."""
 
     def __init__(self, parent=None, spacing=6):
         super().__init__(parent)
