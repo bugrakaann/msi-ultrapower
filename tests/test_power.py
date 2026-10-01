@@ -1,6 +1,6 @@
 import unittest
 
-from pil_modu.status import Battery, PowerMeter
+from msi_ultrapower.status import Battery, PowerMeter
 
 
 def on_battery(watts):

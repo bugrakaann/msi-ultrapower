@@ -1,4 +1,4 @@
-"""pil-modu komut satırını arka planda çalıştırır; arayüz donmaz.
+"""msi-ultrapower komut satırını arka planda çalıştırır; arayüz donmaz.
 
 Arayüz donanıma kendisi dokunmaz: tüm işi CLI yapar. Böylece arayüz ile
 terminalden çalıştırma birebir aynı davranır.
@@ -35,7 +35,7 @@ class ModeRunner(QObject):
         for key, value in i18n.child_environment().items():
             self._env.insert(key, value)
         self.process.setProcessEnvironment(self._env)
-        self.process.start(sys.executable, ["-m", "pil_modu", *args])
+        self.process.start(sys.executable, ["-m", "msi_ultrapower", *args])
 
     def _read(self):
         data = bytes(self.process.readAllStandardOutput()).decode("utf-8", errors="replace")

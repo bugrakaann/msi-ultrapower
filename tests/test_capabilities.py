@@ -1,8 +1,8 @@
 import unittest
 from dataclasses import replace
 
-from pil_modu import capabilities, describe, display, i18n
-from pil_modu.presets import PRESETS
+from msi_ultrapower import capabilities, describe, display, i18n
+from msi_ultrapower.presets import PRESETS
 
 from helpers import fake_output
 
@@ -63,8 +63,8 @@ class DescribeTests(unittest.TestCase):
 
 class ChangesTests(unittest.TestCase):
     def test_lists_only_real_changes(self):
-        from pil_modu.plan import Plan
-        from pil_modu.privileged import hardware as hw
+        from msi_ultrapower.plan import Plan
+        from msi_ultrapower.privileged import hardware as hw
         panel = fake_output("eDP-1")
         before = {"profile": "balanced", "outputs": [panel],
                   "hardware": {hw.EC + "shift_mode": "comfort", hw.LED: "2"}}

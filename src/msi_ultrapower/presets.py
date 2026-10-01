@@ -17,7 +17,7 @@ EXTERNAL_CHOICES = {
 
 @dataclass(frozen=True)
 class Preset:
-    key: str             # komut satırındaki adı: pil-modu <key>
+    key: str             # komut satırındaki adı: msi-ultrapower <key>
     title_source: str    # arayüzde görünen ad (İngilizce kaynak; .title çevrilmişi)
     summary_source: str  # kartta görünen tek satırlık açıklama
     icon: str            # KDE/Breeze tema simgesi
@@ -66,7 +66,7 @@ PRESETS = {p.key: p for p in [
 
 RESTORE_COMMANDS = ("geri", "normal")
 
-# İngilizce komut adları: pil-modu battery == pil-modu batarya
+# İngilizce komut adları: msi-ultrapower battery == msi-ultrapower batarya
 ALIASES = {
     "performance": "performans",
     "performance-manual": "performans-manuel",

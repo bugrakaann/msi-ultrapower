@@ -1,6 +1,6 @@
 ---
 name: Model report / Model bildirimi
-about: Tell us how pil-modu works on your MSI laptop
+about: Tell us how msi-ultrapower works on your MSI laptop
 labels: compatibility
 ---
 
@@ -9,7 +9,7 @@ labels: compatibility
 **What works / what does not:**
 <!-- Which modes did you try? Any error in the activity log? -->
 
-**`pil-modu doctor` output:**
+**`msi-ultrapower doctor` output:**
 
 ```
 paste here

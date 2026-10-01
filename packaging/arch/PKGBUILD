@@ -1,9 +1,9 @@
 # Maintainer: bugra <bugrakaan02@gmail.com>
 #
 # Depo kökünden:  make install   (ya da bu klasörde: makepkg -sci)
-# Kaldırmak:      make uninstall (ya da: sudo pacman -R pil-modu)
+# Kaldırmak:      make uninstall (ya da: sudo pacman -R msi-ultrapower)
 
-pkgname=pil-modu
+pkgname=msi-ultrapower
 pkgver=3.0.0
 pkgrel=1
 pkgdesc="Power mode manager for MSI laptops on KDE Plasma (performance, balanced, battery)"
@@ -13,7 +13,10 @@ depends=('python' 'pyside6' 'power-profiles-daemon' 'libkscreen' 'polkit' 'initr
 makedepends=('gettext')
 optdepends=('msi-ec-dkms-git: fan, EC mode, Cooler Boost and charge limit'
             'mcontrolcenter: set the fan curve for the manual-fan performance mode')
-install=pil-modu.install
+# Projenin eski adı; pacman eski paketi kaldırıp bunu kurar.
+replaces=('pil-modu')
+conflicts=('pil-modu')
+install=msi-ultrapower.install
 
 # Kaynak kod bu deponun kendisi (iki üst klasör).
 _repo="$startdir/../.."
@@ -22,30 +25,30 @@ package() {
     local site
     site=$(python -c 'import sysconfig; print(sysconfig.get_path("purelib"))')
 
-    # Python paketi → /usr/lib/python3.X/site-packages/pil_modu
+    # Python paketi → /usr/lib/python3.X/site-packages/msi_ultrapower
     install -d "$pkgdir$site"
-    cp -r "$_repo/src/pil_modu" "$pkgdir$site/"
+    cp -r "$_repo/src/msi_ultrapower" "$pkgdir$site/"
     find "$pkgdir$site" -name __pycache__ -prune -exec rm -rf {} +
-    python -m compileall -q -s "$pkgdir" -p / "$pkgdir$site/pil_modu"
+    python -m compileall -q -s "$pkgdir" -p / "$pkgdir$site/msi_ultrapower"
 
-    install -Dm755 "$_repo/bin/pil-modu"    "$pkgdir/usr/bin/pil-modu"
-    install -Dm755 "$_repo/bin/pil-modu-ui" "$pkgdir/usr/bin/pil-modu-ui"
+    install -Dm755 "$_repo/bin/msi-ultrapower"    "$pkgdir/usr/bin/msi-ultrapower"
+    install -Dm755 "$_repo/bin/msi-ultrapower-ui" "$pkgdir/usr/bin/msi-ultrapower-ui"
     # Root yardımcıları: polkit eylemleri bu yollara bağlı (parola hatırlama).
-    install -Dm755 "$_repo/bin/pil-modu-hardware" "$pkgdir/usr/lib/pil-modu/pil-modu-hardware"
-    install -Dm755 "$_repo/bin/pil-modu-gpu-boot" "$pkgdir/usr/lib/pil-modu/pil-modu-gpu-boot"
-    install -Dm644 "$_repo/data/io.github.pilmodu.policy" "$pkgdir/usr/share/polkit-1/actions/io.github.pilmodu.policy"
-    install -Dm644 "$_repo/data/pil-modu.desktop" "$pkgdir/usr/share/applications/pil-modu.desktop"
-    install -Dm644 "$_repo/data/pil-modu-restore.service" "$pkgdir/usr/lib/systemd/system/pil-modu-restore.service"
-    install -Dm644 "$_repo/README.md" "$pkgdir/usr/share/doc/pil-modu/README.md"
-    install -Dm644 "$_repo/README.tr.md" "$pkgdir/usr/share/doc/pil-modu/README.tr.md"
-    install -Dm644 "$_repo/LICENSE" "$pkgdir/usr/share/licenses/pil-modu/LICENSE"
+    install -Dm755 "$_repo/bin/msi-ultrapower-hardware" "$pkgdir/usr/lib/msi-ultrapower/msi-ultrapower-hardware"
+    install -Dm755 "$_repo/bin/msi-ultrapower-gpu-boot" "$pkgdir/usr/lib/msi-ultrapower/msi-ultrapower-gpu-boot"
+    install -Dm644 "$_repo/data/io.github.bugrakaann.msiultrapower.policy" "$pkgdir/usr/share/polkit-1/actions/io.github.bugrakaann.msiultrapower.policy"
+    install -Dm644 "$_repo/data/msi-ultrapower.desktop" "$pkgdir/usr/share/applications/msi-ultrapower.desktop"
+    install -Dm644 "$_repo/data/msi-ultrapower-restore.service" "$pkgdir/usr/lib/systemd/system/msi-ultrapower-restore.service"
+    install -Dm644 "$_repo/README.md" "$pkgdir/usr/share/doc/msi-ultrapower/README.md"
+    install -Dm644 "$_repo/README.tr.md" "$pkgdir/usr/share/doc/msi-ultrapower/README.tr.md"
+    install -Dm644 "$_repo/LICENSE" "$pkgdir/usr/share/licenses/msi-ultrapower/LICENSE"
 
-    # Çeviriler: po/xx.po → /usr/share/locale/xx/LC_MESSAGES/pil-modu.mo
+    # Çeviriler: po/xx.po → /usr/share/locale/xx/LC_MESSAGES/msi-ultrapower.mo
     local po lang
     for po in "$_repo"/po/*.po; do
         [ -e "$po" ] || continue
         lang=$(basename "$po" .po)
         install -d "$pkgdir/usr/share/locale/$lang/LC_MESSAGES"
-        msgfmt --check -o "$pkgdir/usr/share/locale/$lang/LC_MESSAGES/pil-modu.mo" "$po"
+        msgfmt --check -o "$pkgdir/usr/share/locale/$lang/LC_MESSAGES/msi-ultrapower.mo" "$po"
     done
 }

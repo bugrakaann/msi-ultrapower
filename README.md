@@ -1,4 +1,4 @@
-# pil-modu — power modes for MSI laptops on KDE Plasma
+# msi-ultrapower — power modes for MSI laptops on KDE Plasma
 
 **English** · [Türkçe](README.tr.md)
 
@@ -55,20 +55,20 @@ The program adapts to the model instead of assuming one:
 | CPU turbo | Intel (`intel_pstate/no_turbo`) and AMD (`cpufreq/boost`). |
 | Other | Battery, keyboard backlight and Bluetooth are looked up by name; missing ones are skipped. Running TLP, auto-cpufreq or tuned is detected and reported as a conflict. |
 
-Run `pil-modu doctor` to see what works on your laptop. Developed on a GF65 Thin 9SEXR;
+Run `msi-ultrapower doctor` to see what works on your laptop. Developed on a GF65 Thin 9SEXR;
 reports from other models are very welcome (see [Reporting your model](#reporting-your-model)).
 
 ## Install
 
 ```
-git clone https://github.com/bugrakaann/pil-modu.git
-cd pil-modu
+git clone https://github.com/bugrakaann/msi-ultrapower.git
+cd msi-ultrapower
 make install      # builds the package and installs it with pacman (also used to update)
-make uninstall    # removes it (sudo pacman -R pil-modu)
+make uninstall    # removes it (sudo pacman -R msi-ultrapower)
 ```
 
-To restore display and hardware settings before removing, run `pil-modu restore` first.
-Your own data stays in `~/.local/share/pil-modu` and `~/.config/pil-modu`.
+To restore display and hardware settings before removing, run `msi-ultrapower restore` first.
+Your own data stays in `~/.local/share/msi-ultrapower` and `~/.config/msi-ultrapower`.
 
 ## Usage
 
@@ -78,14 +78,14 @@ The ⚙ button opens Settings (language, battery mode options, automatic mode, t
 Command line (Turkish command names work too):
 
 ```
-pil-modu balanced                      # apply a mode
-pil-modu balanced --external keep      # keep external displays on (auto | keep | off)
-pil-modu battery --dry-run             # show the plan without changing anything
-pil-modu status                        # show the real current values
-pil-modu restore                       # go back to the settings before the first mode
-pil-modu charge 80                     # charge the battery up to 80% (60 | 80 | 100)
-pil-modu doctor                        # compatibility report
-pil-modu-ui --tray                     # start in the system tray
+msi-ultrapower balanced                      # apply a mode
+msi-ultrapower balanced --external keep      # keep external displays on (auto | keep | off)
+msi-ultrapower battery --dry-run             # show the plan without changing anything
+msi-ultrapower status                        # show the real current values
+msi-ultrapower restore                       # go back to the settings before the first mode
+msi-ultrapower charge 80                     # charge the battery up to 80% (60 | 80 | 100)
+msi-ultrapower doctor                        # compatibility report
+msi-ultrapower-ui --tray                     # start in the system tray
 ```
 
 ### Automatic mode
@@ -99,7 +99,7 @@ NVIDIA fully off.
 ### No password prompts
 
 In Settings, *Do not ask for the administrator password* adds a polkit rule that lets local,
-active administrators (`wheel`) run the two pil-modu helpers without a password: switching modes,
+active administrators (`wheel`) run the two msi-ultrapower helpers without a password: switching modes,
 the charge limit and automatic mode no longer ask. Nothing else is allowed. The rule is removed
 when you turn the option off or uninstall.
 
@@ -108,7 +108,7 @@ when you turn the option off or uninstall.
 Open an issue with the output of:
 
 ```
-pil-modu doctor
+msi-ultrapower doctor
 ```
 
 It lists your model, EC firmware, available EC/fan modes, panel refresh rates, which outputs are
@@ -117,13 +117,13 @@ wired to NVIDIA and any conflicting services.
 ## Translations
 
 Translations live in `po/`. To add or fix a language, edit or create `po/<code>.po`
-(start from `po/pil-modu.pot`), run `make locale && make run` to try it, and open a pull request.
+(start from `po/msi-ultrapower.pot`), run `make locale && make run` to try it, and open a pull request.
 The current translations were machine-assisted; native speakers are welcome to improve them.
 
 ## Security and rollback
 
-- Root is only used by two small helpers in `/usr/lib/pil-modu/`, started with `pkexec`.
-  Their polkit actions (`io.github.pilmodu.*`) remember the password for a few minutes.
+- Root is only used by two small helpers in `/usr/lib/msi-ultrapower/`, started with `pkexec`.
+  Their polkit actions (`io.github.bugrakaann.msiultrapower.*`) remember the password for a few minutes.
   There is no always-running root service and no sudo rule.
 - The hardware helper only writes files on an allow-list (`ALLOWED` in
   `privileged/hardware.py`), with allowed values.
@@ -134,7 +134,7 @@ The current translations were machine-assisted; native speakers are welcome to i
 **Recovery:** if the graphical session does not start, switch to a TTY (Ctrl+Alt+F3) and run
 
 ```
-sudo /usr/lib/pil-modu/pil-modu-gpu-boot hybrid
+sudo /usr/lib/msi-ultrapower/msi-ultrapower-gpu-boot hybrid
 ```
 
 then restart. This only removes the NVIDIA block this tool added.
@@ -143,29 +143,29 @@ then restart. This only removes the NVIDIA block this tool added.
 
 | Path | What |
 |---|---|
-| `/usr/bin/pil-modu`, `/usr/bin/pil-modu-ui` | Commands |
-| `/usr/lib/pil-modu/` | Root helpers (polkit actions point here) |
-| `/usr/lib/python3.X/site-packages/pil_modu/` | Program code |
-| `/usr/share/polkit-1/actions/io.github.pilmodu.policy` | Polkit actions |
-| `/usr/lib/systemd/system/pil-modu-restore.service` | Restores hardware settings and the charge limit at boot |
-| `/usr/share/locale/*/LC_MESSAGES/pil-modu.mo` | Translations |
-| `/var/lib/pil-modu/` | Hardware values and charge limit restored at boot |
-| `/etc/modprobe.d/90-pil-modu-nvidia.conf`, `/etc/udev/rules.d/50-pil-modu-nvidia.rules`, `/etc/{mkinitcpio,dracut}.conf.d/99-pil-modu-gpu.conf` | Battery modes only: disable NVIDIA at boot |
-| `~/.config/pil-modu/settings.json` | Your settings |
-| `~/.local/share/pil-modu/` | Settings before the first mode, active mode, history |
+| `/usr/bin/msi-ultrapower`, `/usr/bin/msi-ultrapower-ui` | Commands |
+| `/usr/lib/msi-ultrapower/` | Root helpers (polkit actions point here) |
+| `/usr/lib/python3.X/site-packages/msi_ultrapower/` | Program code |
+| `/usr/share/polkit-1/actions/io.github.bugrakaann.msiultrapower.policy` | Polkit actions |
+| `/usr/lib/systemd/system/msi-ultrapower-restore.service` | Restores hardware settings and the charge limit at boot |
+| `/usr/share/locale/*/LC_MESSAGES/msi-ultrapower.mo` | Translations |
+| `/var/lib/msi-ultrapower/` | Hardware values and charge limit restored at boot |
+| `/etc/modprobe.d/90-msi-ultrapower-nvidia.conf`, `/etc/udev/rules.d/50-msi-ultrapower-nvidia.rules`, `/etc/{mkinitcpio,dracut}.conf.d/99-msi-ultrapower-gpu.conf` | Battery modes only: disable NVIDIA at boot |
+| `~/.config/msi-ultrapower/settings.json` | Your settings |
+| `~/.local/share/msi-ultrapower/` | Settings before the first mode, active mode, history |
 
 ## Development
 
 ```
 make test     # unit tests
 make run      # run the UI from src/ without installing
-make po       # extract strings to po/pil-modu.pot and update translations
+make po       # extract strings to po/msi-ultrapower.pot and update translations
 make locale   # compile translations for make run
 make clean    # remove build leftovers
 ```
 
 ```
-src/pil_modu/
+src/msi_ultrapower/
 ├── presets.py        ← the modes; edit only this file to change a mode
 ├── capabilities.py   ← what this laptop supports (model differences)
 ├── plan.py           ← computes what will change (touches nothing)
@@ -182,7 +182,7 @@ behave the same.
 
 ## Disclaimer
 
-pil-modu is an unofficial project and is not affiliated with or endorsed by Micro-Star
+msi-ultrapower is an unofficial project and is not affiliated with or endorsed by Micro-Star
 International (MSI). It writes to the embedded controller, kernel module and boot settings;
 use it at your own risk. It comes with no warranty (see sections 15–16 of the license).
 

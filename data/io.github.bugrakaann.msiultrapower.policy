@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
  "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
-<!-- pil-modu yardımcıları. Yetki yalnızca bu iki dosyaya verilir, python3'ün kendisine değil.
+<!-- msi-ultrapower yardımcıları. Yetki yalnızca bu iki dosyaya verilir, python3'ün kendisine değil.
      auth_admin_keep: parola bir kez sorulur, birkaç dakika hatırlanır. -->
 <policyconfig>
-  <vendor>pil-modu</vendor>
-  <vendor_url>https://github.com/bugrakaann/pil-modu</vendor_url>
+  <vendor>msi-ultrapower</vendor>
+  <vendor_url>https://github.com/bugrakaann/msi-ultrapower</vendor_url>
 
-  <action id="io.github.pilmodu.hardware">
+  <action id="io.github.bugrakaann.msiultrapower.hardware">
     <description>Apply power mode hardware settings</description>
     <description xml:lang="tr">Güç modu donanım ayarlarını uygula</description>
     <description xml:lang="ru">Применить аппаратные настройки режима питания</description>
@@ -24,10 +24,10 @@
       <allow_inactive>auth_admin</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
-    <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/pil-modu/pil-modu-hardware</annotate>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/msi-ultrapower/msi-ultrapower-hardware</annotate>
   </action>
 
-  <action id="io.github.pilmodu.gpu-boot">
+  <action id="io.github.bugrakaann.msiultrapower.gpu-boot">
     <description>Configure the NVIDIA GPU for the next boot</description>
     <description xml:lang="tr">NVIDIA ekran kartını sonraki açılış için ayarla</description>
     <description xml:lang="ru">Настроить видеокарту NVIDIA для следующей загрузки</description>
@@ -44,6 +44,6 @@
       <allow_inactive>auth_admin</allow_inactive>
       <allow_active>auth_admin_keep</allow_active>
     </defaults>
-    <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/pil-modu/pil-modu-gpu-boot</annotate>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/lib/msi-ultrapower/msi-ultrapower-gpu-boot</annotate>
   </action>
 </policyconfig>

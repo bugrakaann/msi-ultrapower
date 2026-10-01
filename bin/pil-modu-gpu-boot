@@ -1,5 +1,0 @@
-#!/usr/bin/python3 -P
-# pkexec ile root olarak çalışır; polkit eylemi: io.github.pilmodu.gpu-boot
-from pil_modu.privileged.gpu_boot import entry
-
-entry()

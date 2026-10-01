@@ -1,0 +1,14 @@
+[Unit]
+Description=Restore hardware settings selected with msi-ultrapower
+After=systemd-modules-load.service
+ConditionPathExists=|/var/lib/msi-ultrapower/hardware.json
+ConditionPathExists=|/var/lib/msi-ultrapower/charge
+
+[Service]
+Type=oneshot
+ExecStart=/usr/lib/msi-ultrapower/msi-ultrapower-hardware --restore
+ProtectHome=yes
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target

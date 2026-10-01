@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 import sys
 
-from pil_modu.ui.app import main
+from msi_ultrapower.ui.app import main
 
 sys.exit(main())

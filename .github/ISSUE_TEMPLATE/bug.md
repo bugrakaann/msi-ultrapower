@@ -14,7 +14,7 @@ labels: bug
 paste here
 ```
 
-**`pil-modu doctor` output:**
+**`msi-ultrapower doctor` output:**
 
 ```
 paste here

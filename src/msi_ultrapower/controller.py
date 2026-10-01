@@ -78,7 +78,7 @@ def change_mode(mode, external="otomatik", dry_run=False, keep_gpu=False):
         print(_("NVIDIA boot setting left unchanged."), flush=True)
     else:
         apply_gpu_boot(p.gpu_boot)
-    print(_("Status: pil-modu status | Restore: pil-modu restore"))
+    print(_("Status: msi-ultrapower status | Restore: msi-ultrapower restore"))
 
 
 def apply_plan(p, before):

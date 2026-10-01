@@ -11,11 +11,11 @@ kalanından hiçbir şey import etmez, çünkü iki farklı şekilde çalıştı
   * pkexec ile şarj sınırı:  hardware.py --sarj 80
         Pilin şarj sınırını yazar, doğrular ve açılışta geri yüklenmek üzere kaydeder.
   * pkexec ile parolasız geçiş:  hardware.py --parolasiz 1|0
-        Yalnızca pil-modu yardımcılarının eylemleri için polkit kuralı yazar/siler.
-  * Açılışta systemd ile (pil-modu-restore.service):
-        /usr/lib/pil-modu/pil-modu-hardware --restore
+        Yalnızca msi-ultrapower yardımcılarının eylemleri için polkit kuralı yazar/siler.
+  * Açılışta systemd ile (msi-ultrapower-restore.service):
+        /usr/lib/msi-ultrapower/msi-ultrapower-hardware --restore
 
-Kullanıcı tarafı (pil_modu paketi) ALLOWED, read_state, writable ve validate'i
+Kullanıcı tarafı (msi_ultrapower paketi) ALLOWED, read_state, writable ve validate'i
 import ederek aynı izin listesini kullanır.
 """
 import gettext
@@ -27,7 +27,7 @@ import time
 from pathlib import Path
 
 # Standart kütüphane gettext; pkexec LANGUAGE/LANG'ı korur, dil kullanıcınınkiyle aynı olur.
-_ = gettext.translation("pil-modu", fallback=True).gettext
+_ = gettext.translation("msi-ultrapower", fallback=True).gettext
 
 PCI = "/sys/bus/pci/devices/"
 EC = "/sys/devices/platform/msi-ec/"
@@ -108,8 +108,8 @@ def detect():
 
 detect()
 
-STATE_DIR = Path("/var/lib/pil-modu")
-RESTORE_SERVICE = "pil-modu-restore.service"
+STATE_DIR = Path("/var/lib/msi-ultrapower")
+RESTORE_SERVICE = "msi-ultrapower-restore.service"
 RESTORE_UNIT = Path("/usr/lib/systemd/system") / RESTORE_SERVICE  # paketle kurulur
 
 
@@ -263,10 +263,10 @@ def transaction(target):
 
 
 # Donanım yardımcısı ve NVIDIA açılış yardımcısı; ikisi de yalnızca izin listesindeki işleri yapar.
-POLKIT_ACTIONS = ("io.github.pilmodu.hardware", "io.github.pilmodu.gpu-boot")
-POLKIT_RULE = Path("/etc/polkit-1/rules.d/49-pil-modu.rules")
-POLKIT_HEADER = "// Managed by pil-modu hardware.py\n"
-# Yalnızca pil-modu eylemleri; yalnızca yerel, etkin oturumdaki yönetici (wheel) kullanıcılar.
+POLKIT_ACTIONS = ("io.github.bugrakaann.msiultrapower.hardware", "io.github.bugrakaann.msiultrapower.gpu-boot")
+POLKIT_RULE = Path("/etc/polkit-1/rules.d/49-msi-ultrapower.rules")
+POLKIT_HEADER = "// Managed by msi-ultrapower hardware.py\n"
+# Yalnızca msi-ultrapower eylemleri; yalnızca yerel, etkin oturumdaki yönetici (wheel) kullanıcılar.
 POLKIT_TEXT = POLKIT_HEADER + """polkit.addRule(function(action, subject) {
     var actions = [%s];
     if (actions.indexOf(action.id) >= 0 && subject.local && subject.active
@@ -280,7 +280,7 @@ POLKIT_TEXT = POLKIT_HEADER + """polkit.addRule(function(action, subject) {
 def set_passwordless(enabled):
     """Modlar yönetici parolası sormadan uygulanabilsin diye polkit kuralını yazar ya da siler."""
     if POLKIT_RULE.exists() and not POLKIT_RULE.read_text().startswith(POLKIT_HEADER):
-        raise RuntimeError(_("{path} does not belong to pil-modu; not touched").format(path=POLKIT_RULE))
+        raise RuntimeError(_("{path} does not belong to msi-ultrapower; not touched").format(path=POLKIT_RULE))
     if enabled:
         temp = POLKIT_RULE.with_suffix(".tmp")
         temp.write_text(POLKIT_TEXT)
@@ -302,7 +302,7 @@ def main(argv):
 
 
 def entry():
-    """/usr/lib/pil-modu/pil-modu-hardware ve systemd servisi buradan başlar."""
+    """/usr/lib/msi-ultrapower/msi-ultrapower-hardware ve systemd servisi buradan başlar."""
     try:
         main(sys.argv)
     except Exception as exc:

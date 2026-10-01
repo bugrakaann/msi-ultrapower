@@ -1,4 +1,4 @@
-"""Grafik arayüzün giriş noktası:  pil-modu-ui [--tray]
+"""Grafik arayüzün giriş noktası:  msi-ultrapower-ui [--tray]
 
 --tray: pencere açılmadan tepside başlar (oturum açılışında otomatik başlatma bunu kullanır).
 Uygulama tek kopya çalışır; ikinci kez açılınca var olan pencere öne gelir.
@@ -9,13 +9,13 @@ from PySide6.QtCore import QLibraryInfo, Qt, QTranslator
 from PySide6.QtNetwork import QLocalServer, QLocalSocket
 from PySide6.QtWidgets import QApplication, QSystemTrayIcon
 
-from .. import i18n, settings
+from .. import i18n, paths, settings
 from ..i18n import _
 from .auto import AutoSwitcher
 from .tray import Tray
 from .window import MainWindow
 
-SERVER_NAME = "pil-modu-ui"
+SERVER_NAME = "msi-ultrapower-ui"
 
 
 def notify_running_instance():
@@ -39,9 +39,11 @@ def install_translations(app):
 
 
 def main():
+    if paths.migrate_legacy():  # ayarlar (dil, tepsi) okunmadan önce
+        i18n.setup()
     app = QApplication(sys.argv)
     app.setApplicationName(_("Power Modes"))
-    app.setDesktopFileName("pil-modu")
+    app.setDesktopFileName("msi-ultrapower")
     if notify_running_instance():
         return 0
     install_translations(app)

@@ -7,7 +7,7 @@ Canlı GPU'yu asla sökmez ve bilgisayarı yeniden başlatmaz. Yalnızca kendi
 oluşturduğu üç dosyayı (HEADER ile işaretli) yönetir. Yalnızca standart
 kütüphaneyi kullanır; paketin geri kalanından import yapmaz.
 
-Kurtarma (TTY):  sudo python3 -P -m pil_modu.privileged.gpu_boot hybrid
+Kurtarma (TTY):  sudo python3 -P -m msi_ultrapower.privileged.gpu_boot hybrid
 """
 import gettext
 import glob
@@ -19,14 +19,14 @@ import sys
 from pathlib import Path
 
 # Standart kütüphane gettext; pkexec LANGUAGE/LANG'ı korur, dil kullanıcınınkiyle aynı olur.
-_ = gettext.translation("pil-modu", fallback=True).gettext
+_ = gettext.translation("msi-ultrapower", fallback=True).gettext
 
-HEADER = "# Managed by pil-modu gpu_boot.py\n"
-MOD = Path("/etc/modprobe.d/90-pil-modu-nvidia.conf")
-RULE = Path("/etc/udev/rules.d/50-pil-modu-nvidia.rules")
-INIT = Path("/etc/mkinitcpio.conf.d/99-pil-modu-gpu.conf")
-DRACUT = Path("/etc/dracut.conf.d/99-pil-modu-gpu.conf")
-BACKUP_DIR = Path("/var/lib/pil-modu")
+HEADER = "# Managed by msi-ultrapower gpu_boot.py\n"
+MOD = Path("/etc/modprobe.d/90-msi-ultrapower-nvidia.conf")
+RULE = Path("/etc/udev/rules.d/50-msi-ultrapower-nvidia.rules")
+INIT = Path("/etc/mkinitcpio.conf.d/99-msi-ultrapower-gpu.conf")
+DRACUT = Path("/etc/dracut.conf.d/99-msi-ultrapower-gpu.conf")
+BACKUP_DIR = Path("/var/lib/msi-ultrapower")
 IGPU_VENDORS = ("0x8086", "0x1002")  # Intel, AMD
 MODES = ("integrated", "hybrid")
 
@@ -40,15 +40,15 @@ MODPROBE_TEXT = HEADER + "".join(
 UDEV_TEXT = HEADER + ('ACTION=="add", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", '
                       'ATTR{power/control}="auto", ATTR{remove}="1"\n')
 
-MKINITCPIO_TEXT = HEADER + '''pil_modu_modules=()
-for pil_modu_module in "${MODULES[@]}"; do
-    case "$pil_modu_module" in
+MKINITCPIO_TEXT = HEADER + '''msi_ultrapower_modules=()
+for msi_ultrapower_module in "${MODULES[@]}"; do
+    case "$msi_ultrapower_module" in
         nvidia*|nouveau|nova_core|nova_drm|i2c_nvidia_gpu) ;;
-        *) pil_modu_modules+=("$pil_modu_module") ;;
+        *) msi_ultrapower_modules+=("$msi_ultrapower_module") ;;
     esac
 done
-MODULES=("${pil_modu_modules[@]}")
-unset pil_modu_modules pil_modu_module
+MODULES=("${msi_ultrapower_modules[@]}")
+unset msi_ultrapower_modules msi_ultrapower_module
 '''
 
 DRACUT_TEXT = HEADER + 'omit_drivers+=" ' + " ".join(MODULES) + ' "\n'
@@ -164,7 +164,7 @@ def configure(mode):
 
 
 def entry():
-    """/usr/lib/pil-modu/pil-modu-gpu-boot buradan başlar."""
+    """/usr/lib/msi-ultrapower/msi-ultrapower-gpu-boot buradan başlar."""
     try:
         configure(sys.argv[1])
     except Exception as exc:

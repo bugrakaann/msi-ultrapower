@@ -5,7 +5,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from pil_modu import i18n
+from msi_ultrapower import i18n
 
 PO_DIR = Path(__file__).resolve().parent.parent / "po"
 
@@ -17,7 +17,7 @@ class TranslationTests(unittest.TestCase):
         for po in PO_DIR.glob("*.po"):
             target = Path(self.locale.name, po.stem, "LC_MESSAGES")
             target.mkdir(parents=True)
-            subprocess.run(["msgfmt", "--check", "-o", str(target / "pil-modu.mo"), str(po)], check=True)
+            subprocess.run(["msgfmt", "--check", "-o", str(target / "msi-ultrapower.mo"), str(po)], check=True)
 
     def tearDown(self):
         i18n.setup("en")

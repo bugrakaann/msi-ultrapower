@@ -1,7 +1,7 @@
 import unittest
 
-from pil_modu import display
-from pil_modu.presets import PRESETS
+from msi_ultrapower import display
+from msi_ultrapower.presets import PRESETS
 
 from helpers import fake_output
 

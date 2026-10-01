@@ -7,7 +7,7 @@ import gettext
 
 from . import paths, settings
 
-DOMAIN = "pil-modu"
+DOMAIN = "msi-ultrapower"
 LANGUAGES = {  # kod → kendi dilindeki adı (ayarlar menüsü)
     "en": "English",
     "tr": "Türkçe",

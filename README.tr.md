@@ -1,4 +1,4 @@
-# pil-modu — KDE Plasma'da MSI dizüstüleri için güç modları
+# msi-ultrapower — KDE Plasma'da MSI dizüstüleri için güç modları
 
 [English](README.md) · **Türkçe**
 
@@ -56,21 +56,21 @@ Program tek bir modele göre değil, bulunduğu makineye göre davranır:
 | CPU turbo | Intel (`intel_pstate/no_turbo`) ve AMD (`cpufreq/boost`). |
 | Diğer | Pil, klavye ışığı ve Bluetooth adlarıyla aranır; olmayan atlanır. Çalışan TLP, auto-cpufreq ya da tuned çakışma olarak bildirilir. |
 
-Bilgisayarında neyin çalıştığını görmek için `pil-modu doctor` çalıştır. GF65 Thin 9SEXR
+Bilgisayarında neyin çalıştığını görmek için `msi-ultrapower doctor` çalıştır. GF65 Thin 9SEXR
 üzerinde geliştirildi; başka modellerden gelen raporlar çok değerli
 (bkz. [Modelini bildir](#modelini-bildir)).
 
 ## Kurulum
 
 ```
-git clone https://github.com/bugrakaann/pil-modu.git
-cd pil-modu
+git clone https://github.com/bugrakaann/msi-ultrapower.git
+cd msi-ultrapower
 make install      # paketi derler ve pacman ile kurar (güncellemek için de aynı komut)
-make uninstall    # kaldırır (sudo pacman -R pil-modu)
+make uninstall    # kaldırır (sudo pacman -R msi-ultrapower)
 ```
 
-Kaldırmadan önce ekran ve donanım ayarlarını eski haline getirmek için `pil-modu geri`
-çalıştır. Kişisel veriler `~/.local/share/pil-modu` ve `~/.config/pil-modu` içinde kalır.
+Kaldırmadan önce ekran ve donanım ayarlarını eski haline getirmek için `msi-ultrapower geri`
+çalıştır. Kişisel veriler `~/.local/share/msi-ultrapower` ve `~/.config/msi-ultrapower` içinde kalır.
 
 ## Kullanım
 
@@ -80,14 +80,14 @@ Uygulama menüsünde **Güç Modları**: modu seç, neyin değişeceğine bak, *
 Komut satırı (İngilizce komut adları da çalışır):
 
 ```
-pil-modu dengeli                 # modu uygula
-pil-modu dengeli --harici koru   # harici ekranı açık tut (otomatik | koru | kapat)
-pil-modu batarya --dene          # hiçbir şeyi değiştirmeden planı göster
-pil-modu durum                   # gerçek değerleri göster
-pil-modu geri                    # ilk moddan önceki ayarlara dön
-pil-modu sarj 80                 # pil en fazla %80'e kadar dolsun (60 | 80 | 100)
-pil-modu doctor                  # uyumluluk raporu
-pil-modu-ui --tray               # sistem tepsisinde başlat
+msi-ultrapower dengeli                 # modu uygula
+msi-ultrapower dengeli --harici koru   # harici ekranı açık tut (otomatik | koru | kapat)
+msi-ultrapower batarya --dene          # hiçbir şeyi değiştirmeden planı göster
+msi-ultrapower durum                   # gerçek değerleri göster
+msi-ultrapower geri                    # ilk moddan önceki ayarlara dön
+msi-ultrapower sarj 80                 # pil en fazla %80'e kadar dolsun (60 | 80 | 100)
+msi-ultrapower doctor                  # uyumluluk raporu
+msi-ultrapower-ui --tray               # sistem tepsisinde başlat
 ```
 
 ### Otomatik mod
@@ -100,7 +100,7 @@ imajı yeniden oluşturulmaz. NVIDIA'yı tamamen kapatmak için batarya modunu e
 ### Parola sormadan
 
 Ayarlar'daki *Yönetici parolasını sorma*, yerel ve etkin oturumdaki yöneticilerin (`wheel`)
-iki pil-modu yardımcısını parolasız çalıştırmasına izin veren bir polkit kuralı ekler: mod
+iki msi-ultrapower yardımcısını parolasız çalıştırmasına izin veren bir polkit kuralı ekler: mod
 değiştirme, şarj sınırı ve otomatik mod artık parola sormaz. Başka hiçbir şeye izin verilmez.
 Seçeneği kapatınca ya da paketi kaldırınca kural silinir.
 
@@ -109,7 +109,7 @@ Seçeneği kapatınca ya da paketi kaldırınca kural silinir.
 Şu komutun çıktısıyla bir issue aç:
 
 ```
-pil-modu doctor
+msi-ultrapower doctor
 ```
 
 Model, EC firmware'i, kullanılabilir EC/fan modları, panel Hz'leri, NVIDIA'ya bağlı çıkışlar ve
@@ -118,14 +118,14 @@ Model, EC firmware'i, kullanılabilir EC/fan modları, panel Hz'leri, NVIDIA'ya 
 ## Çeviriler
 
 Çeviriler `po/` klasöründe. Bir dil eklemek ya da düzeltmek için `po/<kod>.po` dosyasını
-düzenle ya da oluştur (`po/pil-modu.pot`'tan başla), denemek için `make locale && make run`
+düzenle ya da oluştur (`po/msi-ultrapower.pot`'tan başla), denemek için `make locale && make run`
 çalıştır ve pull request aç. Mevcut çeviriler makine destekli; anadili konuşanların
 düzeltmeleri memnuniyetle karşılanır.
 
 ## Güvenlik ve geri alma
 
-- Root yalnızca `/usr/lib/pil-modu/` içindeki iki küçük yardımcıyla ve `pkexec` üzerinden
-  kullanılır. Polkit eylemleri (`io.github.pilmodu.*`) parolayı birkaç dakika hatırlar.
+- Root yalnızca `/usr/lib/msi-ultrapower/` içindeki iki küçük yardımcıyla ve `pkexec` üzerinden
+  kullanılır. Polkit eylemleri (`io.github.bugrakaann.msiultrapower.*`) parolayı birkaç dakika hatırlar.
   Sürekli çalışan root servisi ya da sudo kuralı yoktur.
 - Donanım yardımcısı yalnızca izin listesindeki dosyalara (`privileged/hardware.py`'deki
   `ALLOWED`) ve izin verilen değerlerle yazar.
@@ -136,7 +136,7 @@ düzeltmeleri memnuniyetle karşılanır.
 **Kurtarma:** Grafik oturum açılmazsa TTY'ye geç (Ctrl+Alt+F3) ve çalıştır:
 
 ```
-sudo /usr/lib/pil-modu/pil-modu-gpu-boot hybrid
+sudo /usr/lib/msi-ultrapower/msi-ultrapower-gpu-boot hybrid
 ```
 
 Sonra yeniden başlat. Bu yalnızca bu aracın koyduğu NVIDIA engelini kaldırır.
@@ -145,23 +145,23 @@ Sonra yeniden başlat. Bu yalnızca bu aracın koyduğu NVIDIA engelini kaldır�
 
 | Yol | Ne |
 |---|---|
-| `/usr/bin/pil-modu`, `/usr/bin/pil-modu-ui` | Komutlar |
-| `/usr/lib/pil-modu/` | Root yardımcıları (polkit eylemleri buraya bağlı) |
-| `/usr/lib/python3.X/site-packages/pil_modu/` | Program kodu |
-| `/usr/share/polkit-1/actions/io.github.pilmodu.policy` | Polkit eylemleri |
-| `/usr/lib/systemd/system/pil-modu-restore.service` | Açılışta donanım ayarlarını ve şarj sınırını geri yükler |
-| `/usr/share/locale/*/LC_MESSAGES/pil-modu.mo` | Çeviriler |
-| `/var/lib/pil-modu/` | Açılışta geri yüklenecek donanım değerleri ve şarj sınırı |
-| `/etc/modprobe.d/90-pil-modu-nvidia.conf`, `/etc/udev/rules.d/50-pil-modu-nvidia.rules`, `/etc/{mkinitcpio,dracut}.conf.d/99-pil-modu-gpu.conf` | Yalnızca batarya modlarında: NVIDIA'yı açılışta kapatır |
-| `~/.config/pil-modu/settings.json` | Ayarların |
-| `~/.local/share/pil-modu/` | İlk moddan önceki ayarlar, aktif mod, geçmiş |
+| `/usr/bin/msi-ultrapower`, `/usr/bin/msi-ultrapower-ui` | Komutlar |
+| `/usr/lib/msi-ultrapower/` | Root yardımcıları (polkit eylemleri buraya bağlı) |
+| `/usr/lib/python3.X/site-packages/msi_ultrapower/` | Program kodu |
+| `/usr/share/polkit-1/actions/io.github.bugrakaann.msiultrapower.policy` | Polkit eylemleri |
+| `/usr/lib/systemd/system/msi-ultrapower-restore.service` | Açılışta donanım ayarlarını ve şarj sınırını geri yükler |
+| `/usr/share/locale/*/LC_MESSAGES/msi-ultrapower.mo` | Çeviriler |
+| `/var/lib/msi-ultrapower/` | Açılışta geri yüklenecek donanım değerleri ve şarj sınırı |
+| `/etc/modprobe.d/90-msi-ultrapower-nvidia.conf`, `/etc/udev/rules.d/50-msi-ultrapower-nvidia.rules`, `/etc/{mkinitcpio,dracut}.conf.d/99-msi-ultrapower-gpu.conf` | Yalnızca batarya modlarında: NVIDIA'yı açılışta kapatır |
+| `~/.config/msi-ultrapower/settings.json` | Ayarların |
+| `~/.local/share/msi-ultrapower/` | İlk moddan önceki ayarlar, aktif mod, geçmiş |
 
 ## Geliştirme
 
 ```
 make test     # birim testleri
 make run      # arayüzü kurmadan src/ içinden çalıştır
-make po       # metinleri po/pil-modu.pot'a çıkar, çevirileri güncelle
+make po       # metinleri po/msi-ultrapower.pot'a çıkar, çevirileri güncelle
 make locale   # make run için çevirileri derle
 make clean    # derleme artıklarını sil
 ```
@@ -171,7 +171,7 @@ donanıma kendisi dokunmaz; CLI'yi çalıştırır, böylece terminal ve pencere
 
 ## Sorumluluk reddi
 
-pil-modu resmi olmayan bir projedir; Micro-Star International (MSI) ile bağlantısı yoktur ve
+msi-ultrapower resmi olmayan bir projedir; Micro-Star International (MSI) ile bağlantısı yoktur ve
 MSI tarafından onaylanmamıştır. Gömülü denetleyiciye (EC), çekirdek modülü ve açılış ayarlarına
 yazar; kullanım sorumluluğu sana aittir. Hiçbir garanti verilmez (lisansın 15–16. maddeleri).
 

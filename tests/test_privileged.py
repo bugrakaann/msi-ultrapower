@@ -5,8 +5,8 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from pil_modu.privileged import gpu_boot
-from pil_modu.privileged import hardware as hw
+from msi_ultrapower.privileged import gpu_boot
+from msi_ultrapower.privileged import hardware as hw
 
 
 def fake_connector(root, card, name, vendor, status="connected"):

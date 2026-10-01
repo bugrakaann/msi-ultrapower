@@ -1,0 +1,5 @@
+#!/usr/bin/python3 -P
+# pkexec ile root olarak çalışır; polkit eylemi: io.github.bugrakaann.msiultrapower.hardware
+from msi_ultrapower.privileged.hardware import entry
+
+entry()

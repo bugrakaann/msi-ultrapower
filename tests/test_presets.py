@@ -1,9 +1,9 @@
 import unittest
 from unittest.mock import patch
 
-from pil_modu import plan
-from pil_modu.presets import PRESETS
-from pil_modu.privileged import hardware as hw
+from msi_ultrapower import plan
+from msi_ultrapower.presets import PRESETS
+from msi_ultrapower.privileged import hardware as hw
 
 
 class PresetTests(unittest.TestCase):

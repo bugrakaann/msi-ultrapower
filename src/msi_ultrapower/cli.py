@@ -1,4 +1,4 @@
-"""Komut satırı arayüzü:  pil-modu <mod> [--harici ...] [--dene]  ·  pil-modu sarj [60|80|100]
+"""Komut satırı arayüzü:  msi-ultrapower <mod> [--harici ...] [--dene]  ·  msi-ultrapower sarj [60|80|100]
 
 Türkçe ve İngilizce komut adları birlikte çalışır (presets.ALIASES).
 """
@@ -6,7 +6,7 @@ import argparse
 import fcntl
 import sys
 
-from . import __version__, capabilities, controller, paths, state, status, system
+from . import __version__, capabilities, controller, i18n, paths, state, status, system
 from .i18n import _, ngettext, percent
 from .presets import ALIASES, EXTERNAL_ALIASES, EXTERNAL_CHOICES, PRESETS, RESTORE_COMMANDS
 from .privileged import hardware as hw
@@ -16,7 +16,7 @@ COMMANDS = [*PRESETS, *RESTORE_COMMANDS, "durum", "sarj", "doctor", "passwordles
 
 def parse_args(argv):
     parser = argparse.ArgumentParser(
-        prog="pil-modu", description=_("Power modes for MSI laptops on KDE Plasma."))
+        prog="msi-ultrapower", description=_("Power modes for MSI laptops on KDE Plasma."))
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("mod", metavar="command", choices=[*COMMANDS, *ALIASES],
                         help=_("mode, restore, status, charge or doctor") + ": "
@@ -105,12 +105,14 @@ def print_doctor():
 def main(argv=None):
     try:
         opt = parse_args(argv)
+        if paths.migrate_legacy():
+            i18n.setup()
         paths.DATA_DIR.mkdir(parents=True, exist_ok=True)
         with paths.LOCK_FILE.open("w") as lock:
             try:
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError:
-                raise RuntimeError(_("Another pil-modu process is already running.")) from None
+                raise RuntimeError(_("Another msi-ultrapower process is already running.")) from None
             if opt.sinir and opt.mod not in ("sarj", "passwordless"):
                 raise RuntimeError(_("A value can only be used with the charge or passwordless command."))
             if opt.mod == "sarj" and opt.sinir and opt.sinir not in hw.CHARGE_LIMITS:
@@ -122,7 +124,7 @@ def main(argv=None):
                 print_doctor()
             elif opt.mod == "passwordless":
                 if opt.sinir not in ("on", "off"):
-                    raise RuntimeError(_("Use: pil-modu passwordless on|off"))
+                    raise RuntimeError(_("Use: msi-ultrapower passwordless on|off"))
                 controller.set_passwordless(opt.sinir == "on")
             elif opt.mod == "sarj":
                 if opt.sinir:

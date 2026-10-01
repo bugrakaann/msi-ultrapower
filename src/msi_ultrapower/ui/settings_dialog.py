@@ -9,11 +9,11 @@ from ..i18n import LANGUAGES, _
 from ..presets import PRESETS
 from .widgets import muted, section_label
 
-AUTOSTART = Path.home() / ".config/autostart/pil-modu.desktop"
+AUTOSTART = Path.home() / ".config/autostart/msi-ultrapower.desktop"
 AUTOSTART_TEXT = """[Desktop Entry]
 Type=Application
-Name=pil-modu
-Exec=pil-modu-ui --tray
+Name=msi-ultrapower
+Exec=msi-ultrapower-ui --tray
 Icon=battery-profile-balanced
 X-KDE-autostart-phase=2
 """
@@ -84,7 +84,7 @@ class SettingsDialog(QDialog):
         layout.addWidget(self.passwordless)
         layout.addWidget(muted(_("Applies to switching modes, the charge limit and automatic mode. "
                                  "Adds a polkit rule for local administrators (wheel) of an active "
-                                 "session; only the two pil-modu helpers are allowed, and they only "
+                                 "session; only the two msi-ultrapower helpers are allowed, and they only "
                                  "write whitelisted settings. You are asked for the password once "
                                  "to turn this on or off.")))
 

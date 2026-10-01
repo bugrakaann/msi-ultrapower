@@ -1,14 +1,14 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the pil-modu package.
+# This file is distributed under the same license as the msi-ultrapower package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: pil-modu\n"
+"Project-Id-Version: msi-ultrapower\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-27 10:34+0300\n"
+"POT-Creation-Date: 2026-10-01 21:00+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,1161 +18,1166 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: src/pil_modu/capabilities.py:126
+#: src/msi_ultrapower/capabilities.py:126
 #, python-brace-format
 msgid "the EC does not support the “{fan}” fan mode"
 msgstr ""
 
-#: src/pil_modu/capabilities.py:128
+#: src/msi_ultrapower/capabilities.py:128
 msgid "manual fan needs the msi-ec driver"
 msgstr ""
 
-#: src/pil_modu/capabilities.py:130
+#: src/msi_ultrapower/capabilities.py:130
 #, python-brace-format
 msgid "the built-in display only supports {hz} Hz"
 msgstr ""
 
-#: src/pil_modu/cli.py:19
+#: src/msi_ultrapower/cli.py:19
 msgid "Power modes for MSI laptops on KDE Plasma."
 msgstr ""
 
-#: src/pil_modu/cli.py:21
+#: src/msi_ultrapower/cli.py:22
 msgid "mode, restore, status, charge or doctor"
 msgstr ""
 
-#: src/pil_modu/cli.py:24
+#: src/msi_ultrapower/cli.py:25
 msgid "charge: 60, 80 or 100 · passwordless: on or off"
 msgstr ""
 
-#: src/pil_modu/cli.py:27
+#: src/msi_ultrapower/cli.py:28
 msgid "external displays: auto, keep or off"
 msgstr ""
 
-#: src/pil_modu/cli.py:29
+#: src/msi_ultrapower/cli.py:30
 msgid "show the plan without changing anything"
 msgstr ""
 
-#: src/pil_modu/cli.py:31
+#: src/msi_ultrapower/cli.py:32
 msgid "do not change the NVIDIA boot setting (used by automatic mode)"
 msgstr ""
 
-#: src/pil_modu/cli.py:41
+#: src/msi_ultrapower/cli.py:42
 msgid "Selected mode:"
 msgstr ""
 
-#: src/pil_modu/cli.py:41
+#: src/msi_ultrapower/cli.py:42
 msgid "none yet"
 msgstr ""
 
-#: src/pil_modu/cli.py:42
+#: src/msi_ultrapower/cli.py:43
 msgid "Power profile:"
 msgstr ""
 
-#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:150
-#: src/pil_modu/ui/window.py:361
+#: src/msi_ultrapower/cli.py:47 src/msi_ultrapower/controller.py:150
+#: src/msi_ultrapower/ui/window.py:361
 msgid "on"
 msgstr ""
 
-#: src/pil_modu/cli.py:46 src/pil_modu/controller.py:150
-#: src/pil_modu/ui/window.py:361
+#: src/msi_ultrapower/cli.py:47 src/msi_ultrapower/controller.py:150
+#: src/msi_ultrapower/ui/window.py:361
 msgid "off"
 msgstr ""
 
-#: src/pil_modu/cli.py:47
+#: src/msi_ultrapower/cli.py:48
 msgid "brightness"
 msgstr ""
 
-#: src/pil_modu/cli.py:52
+#: src/msi_ultrapower/cli.py:53
 msgid "NVIDIA now:"
 msgstr ""
 
-#: src/pil_modu/cli.py:52
+#: src/msi_ultrapower/cli.py:53
 msgid "no PCI device / disabled"
 msgstr ""
 
-#: src/pil_modu/cli.py:53
+#: src/msi_ultrapower/cli.py:54
 msgid "NVIDIA next boot:"
 msgstr ""
 
-#: src/pil_modu/cli.py:53
+#: src/msi_ultrapower/cli.py:54
 msgid "disabled"
 msgstr ""
 
-#: src/pil_modu/cli.py:53
+#: src/msi_ultrapower/cli.py:54
 msgid "available"
 msgstr ""
 
-#: src/pil_modu/cli.py:57
+#: src/msi_ultrapower/cli.py:58
 msgid "Battery:"
 msgstr ""
 
-#: src/pil_modu/cli.py:60 src/pil_modu/cli.py:131
-#: src/pil_modu/controller.py:143
+#: src/msi_ultrapower/cli.py:61 src/msi_ultrapower/cli.py:134
+#: src/msi_ultrapower/controller.py:143
 msgid "Charge limit:"
 msgstr ""
 
-#: src/pil_modu/cli.py:61
+#: src/msi_ultrapower/cli.py:62
 #, python-brace-format
 msgid "(charging resumes below {start}%)"
 msgstr ""
 
-#: src/pil_modu/cli.py:63
+#: src/msi_ultrapower/cli.py:64
 msgid "Battery discharge power:"
 msgstr ""
 
-#: src/pil_modu/cli.py:64
+#: src/msi_ultrapower/cli.py:65
 msgid "Battery charge current power (not system usage):"
 msgstr ""
 
-#: src/pil_modu/cli.py:72
+#: src/msi_ultrapower/cli.py:73
 msgid "yes"
 msgstr ""
 
-#: src/pil_modu/cli.py:72
+#: src/msi_ultrapower/cli.py:73
 msgid "NO"
 msgstr ""
 
-#: src/pil_modu/cli.py:74
+#: src/msi_ultrapower/cli.py:75
 msgid "Model"
 msgstr ""
 
-#: src/pil_modu/cli.py:75
+#: src/msi_ultrapower/cli.py:76
 msgid "NO (display settings are skipped)"
 msgstr ""
 
-#: src/pil_modu/cli.py:76
+#: src/msi_ultrapower/cli.py:77
 msgid "Display control (kscreen-doctor)"
 msgstr ""
 
-#: src/pil_modu/cli.py:77
+#: src/msi_ultrapower/cli.py:78
 msgid "Brightness control"
 msgstr ""
 
-#: src/pil_modu/cli.py:78
+#: src/msi_ultrapower/cli.py:79
 msgid "Panel refresh rates"
 msgstr ""
 
-#: src/pil_modu/cli.py:79
+#: src/msi_ultrapower/cli.py:80
 #, python-brace-format
 msgid "yes · firmware {version}"
 msgstr ""
 
-#: src/pil_modu/cli.py:80
+#: src/msi_ultrapower/cli.py:81
 msgid "NO (fan/EC settings are skipped; AUR: msi-ec-dkms-git)"
 msgstr ""
 
-#: src/pil_modu/cli.py:81
+#: src/msi_ultrapower/cli.py:82
 msgid "EC modes"
 msgstr ""
 
-#: src/pil_modu/cli.py:82
+#: src/msi_ultrapower/cli.py:83
 msgid "Fan modes"
 msgstr ""
 
-#: src/pil_modu/cli.py:84
+#: src/msi_ultrapower/cli.py:85
 msgid "CPU turbo control"
 msgstr ""
 
-#: src/pil_modu/cli.py:85 src/pil_modu/describe.py:77
-#: src/pil_modu/describe.py:92 src/pil_modu/describe.py:120
+#: src/msi_ultrapower/cli.py:86 src/msi_ultrapower/describe.py:77
+#: src/msi_ultrapower/describe.py:92 src/msi_ultrapower/describe.py:120
 msgid "Keyboard backlight"
 msgstr ""
 
-#: src/pil_modu/cli.py:86 src/pil_modu/describe.py:106
-#: src/pil_modu/ui/charge.py:37 src/pil_modu/ui/tray.py:32
+#: src/msi_ultrapower/cli.py:87 src/msi_ultrapower/describe.py:106
+#: src/msi_ultrapower/ui/charge.py:37 src/msi_ultrapower/ui/tray.py:32
 msgid "Charge limit"
 msgstr ""
 
-#: src/pil_modu/cli.py:88
+#: src/msi_ultrapower/cli.py:89
 msgid "Outputs wired to NVIDIA"
 msgstr ""
 
-#: src/pil_modu/cli.py:89
+#: src/msi_ultrapower/cli.py:90
 msgid "PCI power management"
 msgstr ""
 
-#: src/pil_modu/cli.py:89 src/pil_modu/describe.py:136
+#: src/msi_ultrapower/cli.py:90 src/msi_ultrapower/describe.py:136
 #, python-brace-format
 msgid "{count} device"
 msgid_plural "{count} devices"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/pil_modu/cli.py:91
+#: src/msi_ultrapower/cli.py:92
 msgid "Audio power saving"
 msgstr ""
 
-#: src/pil_modu/cli.py:93
+#: src/msi_ultrapower/cli.py:94
 msgid "Conflicting services"
 msgstr ""
 
-#: src/pil_modu/cli.py:93
+#: src/msi_ultrapower/cli.py:94
 msgid "none"
 msgstr ""
 
-#: src/pil_modu/cli.py:101
+#: src/msi_ultrapower/cli.py:102
 #, python-brace-format
 msgid "Unavailable mode: {mode} ({reason})"
 msgstr ""
 
-#: src/pil_modu/cli.py:112
-msgid "Another pil-modu process is already running."
+#: src/msi_ultrapower/cli.py:115
+msgid "Another msi-ultrapower process is already running."
 msgstr ""
 
-#: src/pil_modu/cli.py:114
+#: src/msi_ultrapower/cli.py:117
 msgid "A value can only be used with the charge or passwordless command."
 msgstr ""
 
-#: src/pil_modu/cli.py:116
+#: src/msi_ultrapower/cli.py:119
 #, python-brace-format
 msgid "The charge limit must be one of: {values}"
 msgstr ""
 
-#: src/pil_modu/cli.py:124
-msgid "Use: pil-modu passwordless on|off"
+#: src/msi_ultrapower/cli.py:127
+msgid "Use: msi-ultrapower passwordless on|off"
 msgstr ""
 
-#: src/pil_modu/cli.py:131
+#: src/msi_ultrapower/cli.py:134
 msgid "not supported on this device"
 msgstr ""
 
-#: src/pil_modu/cli.py:135
+#: src/msi_ultrapower/cli.py:138
 msgid "ERROR:"
 msgstr ""
 
-#: src/pil_modu/controller.py:33
+#: src/msi_ultrapower/controller.py:33
 #, python-brace-format
 msgid ""
 "{outputs} is wired to NVIDIA and cannot stay on in battery mode, because "
 "NVIDIA is turned off. Use balanced mode for two screens."
 msgstr ""
 
-#: src/pil_modu/controller.py:51
+#: src/msi_ultrapower/controller.py:51
 msgid "No saved settings to restore; nothing changed."
 msgstr ""
 
-#: src/pil_modu/controller.py:61
+#: src/msi_ultrapower/controller.py:61
 msgid ""
 "Note: the old EC value 'unspecified' cannot be written back; the closest "
 "mode is used."
 msgstr ""
 
-#: src/pil_modu/controller.py:75
+#: src/msi_ultrapower/controller.py:75
 msgid "CPU, display and EC settings applied:"
 msgstr ""
 
-#: src/pil_modu/controller.py:78
+#: src/msi_ultrapower/controller.py:78
 msgid "NVIDIA boot setting left unchanged."
 msgstr ""
 
-#: src/pil_modu/controller.py:81
-msgid "Status: pil-modu status | Restore: pil-modu restore"
+#: src/msi_ultrapower/controller.py:81
+msgid "Status: msi-ultrapower status | Restore: msi-ultrapower restore"
 msgstr ""
 
-#: src/pil_modu/controller.py:97
+#: src/msi_ultrapower/controller.py:97
 msgid "The power profile was changed by another program"
 msgstr ""
 
-#: src/pil_modu/controller.py:114 src/pil_modu/privileged/hardware.py:168
+#: src/msi_ultrapower/controller.py:114
+#: src/msi_ultrapower/privileged/hardware.py:168
 msgid "Rollback error:"
 msgstr ""
 
-#: src/pil_modu/controller.py:119
+#: src/msi_ultrapower/controller.py:119
 msgid "No NVIDIA GPU; boot setting skipped."
 msgstr ""
 
-#: src/pil_modu/controller.py:122
+#: src/msi_ultrapower/controller.py:122
 msgid ""
 "CPU and display settings were applied, but the NVIDIA boot setting could not "
 "be completed. Apply the same mode again."
 msgstr ""
 
-#: src/pil_modu/controller.py:126
+#: src/msi_ultrapower/controller.py:126
 msgid "NVIDIA is not disabled yet. Restart to finish battery mode."
 msgstr ""
 
-#: src/pil_modu/controller.py:128
+#: src/msi_ultrapower/controller.py:128
 msgid "NVIDIA is currently disabled. Restart to use it again."
 msgstr ""
 
-#: src/pil_modu/controller.py:130
+#: src/msi_ultrapower/controller.py:130
 msgid "The GPU state matches the selected mode."
 msgstr ""
 
-#: src/pil_modu/controller.py:134
+#: src/msi_ultrapower/controller.py:134
 msgid "GPU mode at next boot:"
 msgstr ""
 
-#: src/pil_modu/controller.py:135
+#: src/msi_ultrapower/controller.py:135
 msgid "Profile:"
 msgstr ""
 
-#: src/pil_modu/controller.py:142
+#: src/msi_ultrapower/controller.py:142
 msgid "The charge limit could not be set."
 msgstr ""
 
-#: src/pil_modu/controller.py:148
+#: src/msi_ultrapower/controller.py:148
 msgid "The password rule could not be changed."
 msgstr ""
 
-#: src/pil_modu/controller.py:149
+#: src/msi_ultrapower/controller.py:149
 #, python-brace-format
 msgid "Automatic switching without a password: {state}"
 msgstr ""
 
-#: src/pil_modu/describe.py:14
+#: src/msi_ultrapower/describe.py:14
 msgid "Performance"
 msgstr ""
 
-#: src/pil_modu/describe.py:14 src/pil_modu/presets.py:58
+#: src/msi_ultrapower/describe.py:14 src/msi_ultrapower/presets.py:58
 msgid "Balanced"
 msgstr ""
 
-#: src/pil_modu/describe.py:15
+#: src/msi_ultrapower/describe.py:15
 msgid "Power saver"
 msgstr ""
 
-#: src/pil_modu/describe.py:19
+#: src/msi_ultrapower/describe.py:19
 msgid "Automatic"
 msgstr ""
 
-#: src/pil_modu/describe.py:19
+#: src/msi_ultrapower/describe.py:19
 msgid "Silent"
 msgstr ""
 
-#: src/pil_modu/describe.py:19
+#: src/msi_ultrapower/describe.py:19
 msgid "Basic"
 msgstr ""
 
-#: src/pil_modu/describe.py:20
+#: src/msi_ultrapower/describe.py:20
 msgid "Custom curve (MControlCenter)"
 msgstr ""
 
-#: src/pil_modu/describe.py:24 src/pil_modu/describe.py:137
+#: src/msi_ultrapower/describe.py:24 src/msi_ultrapower/describe.py:137
 msgid "On"
 msgstr ""
 
-#: src/pil_modu/describe.py:24 src/pil_modu/describe.py:77
-#: src/pil_modu/describe.py:89 src/pil_modu/describe.py:120
-#: src/pil_modu/describe.py:137 src/pil_modu/describe.py:178
+#: src/msi_ultrapower/describe.py:24 src/msi_ultrapower/describe.py:77
+#: src/msi_ultrapower/describe.py:89 src/msi_ultrapower/describe.py:120
+#: src/msi_ultrapower/describe.py:137 src/msi_ultrapower/describe.py:178
 msgid "Off"
 msgstr ""
 
-#: src/pil_modu/describe.py:29
+#: src/msi_ultrapower/describe.py:29
 msgid "Highest refresh rate"
 msgstr ""
 
-#: src/pil_modu/describe.py:29
+#: src/msi_ultrapower/describe.py:29
 msgid "Lowest refresh rate"
 msgstr ""
 
-#: src/pil_modu/describe.py:31
+#: src/msi_ultrapower/describe.py:31
 #, python-brace-format
 msgid "{hz} Hz (highest)"
 msgstr ""
 
-#: src/pil_modu/describe.py:32
+#: src/msi_ultrapower/describe.py:32
 #, python-brace-format
 msgid "{hz} Hz (lowest)"
 msgstr ""
 
-#: src/pil_modu/describe.py:37
+#: src/msi_ultrapower/describe.py:37
 #, python-brace-format
 msgid ""
 "Outputs wired to NVIDIA ({outputs}) turn off · others follow your choice"
 msgstr ""
 
-#: src/pil_modu/describe.py:39
+#: src/msi_ultrapower/describe.py:39
 msgid "Follows your choice below · refresh rate unchanged"
 msgstr ""
 
-#: src/pil_modu/describe.py:46
+#: src/msi_ultrapower/describe.py:46
 msgid "Built-in display"
 msgstr ""
 
-#: src/pil_modu/describe.py:47
+#: src/msi_ultrapower/describe.py:47
 msgid "Brightness"
 msgstr ""
 
-#: src/pil_modu/describe.py:48
+#: src/msi_ultrapower/describe.py:48
 msgid "Unchanged (needs Plasma 6.1+)"
 msgstr ""
 
-#: src/pil_modu/describe.py:49 src/pil_modu/ui/window.py:197
+#: src/msi_ultrapower/describe.py:49 src/msi_ultrapower/ui/window.py:197
 msgid "External displays"
 msgstr ""
 
-#: src/pil_modu/describe.py:51 src/pil_modu/describe.py:102
+#: src/msi_ultrapower/describe.py:51 src/msi_ultrapower/describe.py:102
 msgid "Displays"
 msgstr ""
 
-#: src/pil_modu/describe.py:51
+#: src/msi_ultrapower/describe.py:51
 msgid "Unchanged (needs KDE Plasma 6)"
 msgstr ""
 
-#: src/pil_modu/describe.py:53 src/pil_modu/describe.py:101
-#: src/pil_modu/describe.py:173
+#: src/msi_ultrapower/describe.py:53 src/msi_ultrapower/describe.py:101
+#: src/msi_ultrapower/describe.py:173
 msgid "Power profile"
 msgstr ""
 
-#: src/pil_modu/describe.py:54 src/pil_modu/describe.py:118
-#: src/pil_modu/describe.py:119
+#: src/msi_ultrapower/describe.py:54 src/msi_ultrapower/describe.py:118
+#: src/msi_ultrapower/describe.py:119
 msgid "CPU turbo"
 msgstr ""
 
-#: src/pil_modu/describe.py:55
+#: src/msi_ultrapower/describe.py:55
 msgid "Not adjustable on this system"
 msgstr ""
 
-#: src/pil_modu/describe.py:59 src/pil_modu/describe.py:115
+#: src/msi_ultrapower/describe.py:59 src/msi_ultrapower/describe.py:115
 msgid "EC mode"
 msgstr ""
 
-#: src/pil_modu/describe.py:60
+#: src/msi_ultrapower/describe.py:60
 #, python-brace-format
 msgid "{mode} ({wanted} not available)"
 msgstr ""
 
-#: src/pil_modu/describe.py:61 src/pil_modu/describe.py:116
+#: src/msi_ultrapower/describe.py:61 src/msi_ultrapower/describe.py:116
 msgid "Fan"
 msgstr ""
 
-#: src/pil_modu/describe.py:65
+#: src/msi_ultrapower/describe.py:65
 msgid "No msi-ec driver · fan and EC mode are skipped"
 msgstr ""
 
-#: src/pil_modu/describe.py:68 src/pil_modu/describe.py:128
+#: src/msi_ultrapower/describe.py:68 src/msi_ultrapower/describe.py:128
 msgid "NVIDIA now"
 msgstr ""
 
-#: src/pil_modu/describe.py:68 src/pil_modu/describe.py:128
+#: src/msi_ultrapower/describe.py:68 src/msi_ultrapower/describe.py:128
 msgid "Always awake"
 msgstr ""
 
-#: src/pil_modu/describe.py:68 src/pil_modu/describe.py:128
+#: src/msi_ultrapower/describe.py:68 src/msi_ultrapower/describe.py:128
 msgid "Sleeps when idle"
 msgstr ""
 
-#: src/pil_modu/describe.py:69 src/pil_modu/describe.py:177
+#: src/msi_ultrapower/describe.py:69 src/msi_ultrapower/describe.py:177
 msgid "NVIDIA at boot"
 msgstr ""
 
-#: src/pil_modu/describe.py:69
+#: src/msi_ultrapower/describe.py:69
 msgid "Fully off · needs a restart"
 msgstr ""
 
-#: src/pil_modu/describe.py:70 src/pil_modu/describe.py:178
-#: src/pil_modu/describe.py:179
+#: src/msi_ultrapower/describe.py:70 src/msi_ultrapower/describe.py:178
+#: src/msi_ultrapower/describe.py:179
 msgid "Available"
 msgstr ""
 
-#: src/pil_modu/describe.py:72
+#: src/msi_ultrapower/describe.py:72
 msgid "No NVIDIA GPU"
 msgstr ""
 
-#: src/pil_modu/describe.py:80
+#: src/msi_ultrapower/describe.py:80
 msgid "PCI devices"
 msgstr ""
 
-#: src/pil_modu/describe.py:81
+#: src/msi_ultrapower/describe.py:81
 #, python-brace-format
 msgid "{count} device sleeps when idle"
 msgid_plural "{count} devices sleep when idle"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/pil_modu/describe.py:84
+#: src/msi_ultrapower/describe.py:84
 msgid "Sound card"
 msgstr ""
 
-#: src/pil_modu/describe.py:84
+#: src/msi_ultrapower/describe.py:84
 msgid "Sleeps after 1 s of silence"
 msgstr ""
 
-#: src/pil_modu/describe.py:85 src/pil_modu/describe.py:123
+#: src/msi_ultrapower/describe.py:85 src/msi_ultrapower/describe.py:123
 msgid "Disk writes"
 msgstr ""
 
-#: src/pil_modu/describe.py:85
+#: src/msi_ultrapower/describe.py:85
 msgid "Every 60 s (the disk sleeps longer)"
 msgstr ""
 
-#: src/pil_modu/describe.py:87
+#: src/msi_ultrapower/describe.py:87
 msgid "Device power saving"
 msgstr ""
 
-#: src/pil_modu/describe.py:87
+#: src/msi_ultrapower/describe.py:87
 msgid "Off (can be enabled in settings)"
 msgstr ""
 
-#: src/pil_modu/describe.py:90
+#: src/msi_ultrapower/describe.py:90
 msgid "Unchanged"
 msgstr ""
 
-#: src/pil_modu/describe.py:92 src/pil_modu/describe.py:93
+#: src/msi_ultrapower/describe.py:92 src/msi_ultrapower/describe.py:93
 msgid "Back to how it was before the first mode"
 msgstr ""
 
-#: src/pil_modu/describe.py:93
+#: src/msi_ultrapower/describe.py:93
 msgid "PCI, sound, Bluetooth, disk"
 msgstr ""
 
-#: src/pil_modu/describe.py:95
+#: src/msi_ultrapower/describe.py:95
 msgid "Display"
 msgstr ""
 
-#: src/pil_modu/describe.py:95
+#: src/msi_ultrapower/describe.py:95
 msgid "Processor"
 msgstr ""
 
-#: src/pil_modu/describe.py:95
+#: src/msi_ultrapower/describe.py:95
 msgid "Fan and EC"
 msgstr ""
 
-#: src/pil_modu/describe.py:96
+#: src/msi_ultrapower/describe.py:96
 msgid "Graphics"
 msgstr ""
 
-#: src/pil_modu/describe.py:96 src/pil_modu/describe.py:104
+#: src/msi_ultrapower/describe.py:96 src/msi_ultrapower/describe.py:104
 msgid "Devices"
 msgstr ""
 
-#: src/pil_modu/describe.py:100
+#: src/msi_ultrapower/describe.py:100
 msgid "Restored"
 msgstr ""
 
-#: src/pil_modu/describe.py:101
+#: src/msi_ultrapower/describe.py:101
 msgid "The profile before the first mode"
 msgstr ""
 
-#: src/pil_modu/describe.py:102
+#: src/msi_ultrapower/describe.py:102
 msgid "Previous layout, refresh rate, scale and brightness"
 msgstr ""
 
-#: src/pil_modu/describe.py:103
+#: src/msi_ultrapower/describe.py:103
 msgid "Processor and EC"
 msgstr ""
 
-#: src/pil_modu/describe.py:103
+#: src/msi_ultrapower/describe.py:103
 msgid "Previous turbo, EC mode, fan and Cooler Boost"
 msgstr ""
 
-#: src/pil_modu/describe.py:104
+#: src/msi_ultrapower/describe.py:104
 msgid "Previous keyboard backlight, PCI, sound, Bluetooth and disk settings"
 msgstr ""
 
-#: src/pil_modu/describe.py:105
+#: src/msi_ultrapower/describe.py:105
 msgid "Available after a restart"
 msgstr ""
 
-#: src/pil_modu/describe.py:106
+#: src/msi_ultrapower/describe.py:106
 msgid "Unchanged (separate setting)"
 msgstr ""
 
-#: src/pil_modu/describe.py:121
+#: src/msi_ultrapower/describe.py:121
 #, python-brace-format
 msgid "Level {level}"
 msgstr ""
 
-#: src/pil_modu/describe.py:122
+#: src/msi_ultrapower/describe.py:122
 msgid "Sound card power saving"
 msgstr ""
 
-#: src/pil_modu/describe.py:123
+#: src/msi_ultrapower/describe.py:123
 #, python-brace-format
 msgid "Every {seconds} s"
 msgstr ""
 
-#: src/pil_modu/describe.py:138
+#: src/msi_ultrapower/describe.py:138
 msgid "PCI power saving"
 msgstr ""
 
-#: src/pil_modu/describe.py:160
+#: src/msi_ultrapower/describe.py:160
 #, python-brace-format
 msgid "{output} refresh rate"
 msgstr ""
 
-#: src/pil_modu/describe.py:165
+#: src/msi_ultrapower/describe.py:165
 #, python-brace-format
 msgid "{output} brightness"
 msgstr ""
 
-#: src/pil_modu/describe.py:179
+#: src/msi_ultrapower/describe.py:179
 msgid "Off (after a restart)"
 msgstr ""
 
-#: src/pil_modu/display.py:43
+#: src/msi_ultrapower/display.py:43
 #, python-brace-format
 msgid "{output}: previous resolution not found"
 msgstr ""
 
-#: src/pil_modu/display.py:52
+#: src/msi_ultrapower/display.py:52
 #, python-brace-format
 msgid "{output}: {hz} Hz is not supported"
 msgstr ""
 
-#: src/pil_modu/display.py:151
+#: src/msi_ultrapower/display.py:151
 msgid "Built-in display not found"
 msgstr ""
 
-#: src/pil_modu/display.py:156 src/pil_modu/display.py:200
+#: src/msi_ultrapower/display.py:156 src/msi_ultrapower/display.py:200
 msgid "At least one connected display must stay on"
 msgstr ""
 
-#: src/pil_modu/display.py:212
+#: src/msi_ultrapower/display.py:212
 #, python-brace-format
 msgid "Could not verify display state: {output}"
 msgstr ""
 
-#: src/pil_modu/display.py:220
+#: src/msi_ultrapower/display.py:220
 #, python-brace-format
 msgid "Could not verify refresh rate: {output}"
 msgstr ""
 
-#: src/pil_modu/display.py:223
+#: src/msi_ultrapower/display.py:223
 #, python-brace-format
 msgid "Could not verify brightness: {output}"
 msgstr ""
 
-#: src/pil_modu/elevated.py:43
+#: src/msi_ultrapower/elevated.py:43
 msgid "Hardware authorization or apply failed:"
 msgstr ""
 
 #. Translators: percent sign position, e.g. "%{value}" in Turkish
-#: src/pil_modu/i18n.py:74
+#: src/msi_ultrapower/i18n.py:74
 #, python-brace-format
 msgid "{value}%"
 msgstr ""
 
-#: src/pil_modu/plan.py:69
+#: src/msi_ultrapower/plan.py:73
 #, python-brace-format
 msgid "{mode} is not available on this computer: {reason}"
 msgstr ""
 
-#: src/pil_modu/plan.py:94
+#: src/msi_ultrapower/plan.py:98
 #, python-brace-format
 msgid "A hardware setting did not stick: {path}"
 msgstr ""
 
-#: src/pil_modu/presets.py:12
+#: src/msi_ultrapower/presets.py:12
 msgid "Automatic (by mode)"
 msgstr ""
 
-#: src/pil_modu/presets.py:13
+#: src/msi_ultrapower/presets.py:13
 msgid "Keep on"
 msgstr ""
 
-#: src/pil_modu/presets.py:14
+#: src/msi_ultrapower/presets.py:14
 msgid "Turn off"
 msgstr ""
 
-#: src/pil_modu/presets.py:51
+#: src/msi_ultrapower/presets.py:51
 msgid "Maximum performance"
 msgstr ""
 
-#: src/pil_modu/presets.py:51
+#: src/msi_ultrapower/presets.py:51
 msgid "100% brightness · Turbo · Cooler Boost"
 msgstr ""
 
-#: src/pil_modu/presets.py:54
+#: src/msi_ultrapower/presets.py:54
 msgid "Performance · Manual fan"
 msgstr ""
 
-#: src/pil_modu/presets.py:55
+#: src/msi_ultrapower/presets.py:55
 msgid "100% brightness · Turbo · Your own fan curve"
 msgstr ""
 
-#: src/pil_modu/presets.py:58
+#: src/msi_ultrapower/presets.py:58
 msgid "60% brightness · Automatic fan · NVIDIA sleeps when idle"
 msgstr ""
 
-#: src/pil_modu/presets.py:61
+#: src/msi_ultrapower/presets.py:61
 msgid "Maximum battery"
 msgstr ""
 
-#: src/pil_modu/presets.py:61
+#: src/msi_ultrapower/presets.py:61
 msgid "30% brightness · NVIDIA off · Devices sleep"
 msgstr ""
 
-#: src/pil_modu/presets.py:63
+#: src/msi_ultrapower/presets.py:63
 msgid "Maximum battery · Low Hz"
 msgstr ""
 
-#: src/pil_modu/presets.py:63
+#: src/msi_ultrapower/presets.py:63
 msgid "Lowest Hz · 30% brightness · NVIDIA off"
 msgstr ""
 
-#: src/pil_modu/privileged/gpu_boot.py:88
+#: src/msi_ultrapower/privileged/gpu_boot.py:88
 msgid "mkinitcpio/dracut not found; boot images were not rebuilt."
 msgstr ""
 
-#: src/pil_modu/privileged/gpu_boot.py:122
+#: src/msi_ultrapower/privileged/gpu_boot.py:122
 msgid "Invalid GPU mode"
 msgstr ""
 
-#: src/pil_modu/privileged/gpu_boot.py:124
+#: src/msi_ultrapower/privileged/gpu_boot.py:124
 msgid "Administrator rights are required"
 msgstr ""
 
-#: src/pil_modu/privileged/gpu_boot.py:126
+#: src/msi_ultrapower/privileged/gpu_boot.py:126
 msgid "No integrated GPU found; turning NVIDIA off would leave no display"
 msgstr ""
 
-#: src/pil_modu/privileged/gpu_boot.py:128
+#: src/msi_ultrapower/privileged/gpu_boot.py:128
 msgid ""
 "NVIDIA drives the built-in display (GPU mode 'Discrete'/MUX in the BIOS). "
 "Turning NVIDIA off would black out the screen; choose 'MSHybrid'/'Optimus' "
 "in the BIOS."
 msgstr ""
 
-#: src/pil_modu/privileged/gpu_boot.py:137
+#: src/msi_ultrapower/privileged/gpu_boot.py:137
 msgid "Unexpected configuration; existing files were not touched"
 msgstr ""
 
-#: src/pil_modu/privileged/gpu_boot.py:142
+#: src/msi_ultrapower/privileged/gpu_boot.py:142
 msgid "GPU boot setting is already:"
 msgstr ""
 
-#: src/pil_modu/privileged/gpu_boot.py:154
+#: src/msi_ultrapower/privileged/gpu_boot.py:154
 msgid "Rebuilding boot images; this can take a few minutes..."
 msgstr ""
 
-#: src/pil_modu/privileged/gpu_boot.py:159
+#: src/msi_ultrapower/privileged/gpu_boot.py:159
 msgid "GPU configuration rolled back; rebuilding the previous boot images."
 msgstr ""
 
-#: src/pil_modu/privileged/gpu_boot.py:162
+#: src/msi_ultrapower/privileged/gpu_boot.py:162
 msgid "GPU boot setting saved:"
 msgstr ""
 
-#: src/pil_modu/privileged/gpu_boot.py:163
+#: src/msi_ultrapower/privileged/gpu_boot.py:163
 msgid "The change takes effect after a restart. Your session was not closed."
 msgstr ""
 
-#: src/pil_modu/privileged/gpu_boot.py:171
+#: src/msi_ultrapower/privileged/gpu_boot.py:171
 msgid "GPU configuration error:"
 msgstr ""
 
-#: src/pil_modu/privileged/hardware.py:147
+#: src/msi_ultrapower/privileged/hardware.py:147
 msgid "Unsupported setting:"
 msgstr ""
 
-#: src/pil_modu/privileged/hardware.py:162
-#: src/pil_modu/privileged/hardware.py:196
+#: src/msi_ultrapower/privileged/hardware.py:162
+#: src/msi_ultrapower/privileged/hardware.py:196
 msgid "Could not verify:"
 msgstr ""
 
-#: src/pil_modu/privileged/hardware.py:193
+#: src/msi_ultrapower/privileged/hardware.py:193
 msgid "Unsupported charge limit:"
 msgstr ""
 
-#: src/pil_modu/privileged/hardware.py:238
+#: src/msi_ultrapower/privileged/hardware.py:238
 msgid "Skipped (device missing):"
 msgstr ""
 
-#: src/pil_modu/privileged/hardware.py:283
+#: src/msi_ultrapower/privileged/hardware.py:283
 #, python-brace-format
-msgid "{path} does not belong to pil-modu; not touched"
+msgid "{path} does not belong to msi-ultrapower; not touched"
 msgstr ""
 
-#: src/pil_modu/ui/app.py:43 src/pil_modu/ui/tray.py:53
-#: src/pil_modu/ui/tray.py:86 src/pil_modu/ui/tray.py:97
-#: src/pil_modu/ui/tray.py:100 src/pil_modu/ui/window.py:72
-#: src/pil_modu/ui/window.py:137
+#: src/msi_ultrapower/ui/app.py:45 src/msi_ultrapower/ui/tray.py:53
+#: src/msi_ultrapower/ui/tray.py:86 src/msi_ultrapower/ui/tray.py:97
+#: src/msi_ultrapower/ui/tray.py:100 src/msi_ultrapower/ui/window.py:72
+#: src/msi_ultrapower/ui/window.py:137
 msgid "Power Modes"
 msgstr ""
 
-#: src/pil_modu/ui/changes.py:46
+#: src/msi_ultrapower/ui/changes.py:46
 msgid "All settings of this mode"
 msgstr ""
 
-#: src/pil_modu/ui/changes.py:71
+#: src/msi_ultrapower/ui/changes.py:71
 msgid "Cannot apply this mode"
 msgstr ""
 
-#: src/pil_modu/ui/changes.py:74
+#: src/msi_ultrapower/ui/changes.py:74
 #, python-brace-format
 msgid "{count} setting will change"
 msgid_plural "{count} settings will change"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/pil_modu/ui/changes.py:80
+#: src/msi_ultrapower/ui/changes.py:80
 msgid "Nothing to change"
 msgstr ""
 
-#: src/pil_modu/ui/changes.py:81
+#: src/msi_ultrapower/ui/changes.py:81
 msgid "This mode is already in effect."
 msgstr ""
 
-#: src/pil_modu/ui/charge.py:14
+#: src/msi_ultrapower/ui/charge.py:14
 msgid "The battery charges to full."
 msgstr ""
 
-#: src/pil_modu/ui/charge.py:16
+#: src/msi_ultrapower/ui/charge.py:16
 #, python-brace-format
 msgid "Charging stops at {limit}% and resumes below {start}%."
 msgstr ""
 
-#: src/pil_modu/ui/charge.py:18
+#: src/msi_ultrapower/ui/charge.py:18
 #, python-brace-format
 msgid "Charging stops at {limit}%."
 msgstr ""
 
-#: src/pil_modu/ui/charge.py:22
+#: src/msi_ultrapower/ui/charge.py:22
 msgid "Charging now."
 msgstr ""
 
-#: src/pil_modu/ui/charge.py:24
+#: src/msi_ultrapower/ui/charge.py:24
 msgid "Limit reached; plugged in but not charging."
 msgstr ""
 
-#: src/pil_modu/ui/charge.py:25
+#: src/msi_ultrapower/ui/charge.py:25
 msgid "Plugged in, waiting to charge."
 msgstr ""
 
-#: src/pil_modu/ui/charge.py:34
+#: src/msi_ultrapower/ui/charge.py:34
 msgid ""
 "The highest level the battery charges to. Independent of modes and restored "
 "at boot. 60% and 80% extend battery life."
 msgstr ""
 
-#: src/pil_modu/ui/charge.py:62
+#: src/msi_ultrapower/ui/charge.py:62
 msgid "This computer does not support a charge limit."
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:34 src/pil_modu/ui/window.py:148
+#: src/msi_ultrapower/ui/settings_dialog.py:37
+#: src/msi_ultrapower/ui/window.py:148
 msgid "Settings"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:40
+#: src/msi_ultrapower/ui/settings_dialog.py:43
 msgid "System default"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:45
+#: src/msi_ultrapower/ui/settings_dialog.py:48
 msgid "Let PCI devices, the sound card and the disk sleep"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:47
+#: src/msi_ultrapower/ui/settings_dialog.py:50
 msgid "Turn Bluetooth off"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:50
+#: src/msi_ultrapower/ui/settings_dialog.py:53
 msgid "Switch modes when the charger is plugged in or out"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:54
+#: src/msi_ultrapower/ui/settings_dialog.py:57
 msgid "Do not ask for the administrator password"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:58
+#: src/msi_ultrapower/ui/settings_dialog.py:61
 msgid "Start in the system tray when I log in"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:62 src/pil_modu/ui/window.py:425
+#: src/msi_ultrapower/ui/settings_dialog.py:65
+#: src/msi_ultrapower/ui/window.py:425
 msgid "Language"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:64
+#: src/msi_ultrapower/ui/settings_dialog.py:67
 msgid "A new language is used after the app restarts."
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:66
+#: src/msi_ultrapower/ui/settings_dialog.py:69
 msgid "Battery modes"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:70
+#: src/msi_ultrapower/ui/settings_dialog.py:73
 msgid "Automatic mode"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:73
+#: src/msi_ultrapower/ui/settings_dialog.py:76
 msgid "Plugged in"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:74
+#: src/msi_ultrapower/ui/settings_dialog.py:77
 msgid "On battery"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:76
+#: src/msi_ultrapower/ui/settings_dialog.py:79
 msgid ""
 "Automatic switches do not change the NVIDIA boot setting, so the boot image "
 "is not rebuilt each time. Apply a battery mode by hand to turn NVIDIA fully "
 "off. The app must be running (tray is enough)."
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:80
+#: src/msi_ultrapower/ui/settings_dialog.py:83
 msgid "Administrator password"
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:82
+#: src/msi_ultrapower/ui/settings_dialog.py:85
 msgid ""
 "Applies to switching modes, the charge limit and automatic mode. Adds a "
 "polkit rule for local administrators (wheel) of an active session; only the "
-"two pil-modu helpers are allowed, and they only write whitelisted settings. "
-"You are asked for the password once to turn this on or off."
+"two msi-ultrapower helpers are allowed, and they only write whitelisted "
+"settings. You are asked for the password once to turn this on or off."
 msgstr ""
 
-#: src/pil_modu/ui/settings_dialog.py:88
+#: src/msi_ultrapower/ui/settings_dialog.py:91
 msgid "System tray"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:11
+#: src/msi_ultrapower/ui/status_strip.py:11
 msgid "No battery information"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:14
+#: src/msi_ultrapower/ui/status_strip.py:14
 #, python-brace-format
 msgid "{level} · charging"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:16
+#: src/msi_ultrapower/ui/status_strip.py:16
 #, python-brace-format
 msgid "{level} · plugged in"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:18
+#: src/msi_ultrapower/ui/status_strip.py:18
 #, python-brace-format
 msgid "{level} · on battery"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:23
+#: src/msi_ultrapower/ui/status_strip.py:23
 #, python-brace-format
 msgid "{watts} W"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:29
+#: src/msi_ultrapower/ui/status_strip.py:29
 msgid "Power use: not measured while plugged in"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:30
+#: src/msi_ultrapower/ui/status_strip.py:30
 #, python-brace-format
 msgid "Now {watts}"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:32
+#: src/msi_ultrapower/ui/status_strip.py:32
 #, python-brace-format
 msgid "average {watts}"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:39
+#: src/msi_ultrapower/ui/status_strip.py:39
 msgid ""
 "Plugged in, the battery only reports its charging power, so the laptop's "
 "power use cannot be measured. Unplug to see it."
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:42
+#: src/msi_ultrapower/ui/status_strip.py:42
 msgid "The average appears after a few seconds on battery."
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:43
+#: src/msi_ultrapower/ui/status_strip.py:43
 #, python-brace-format
 msgid ""
 "Average since the charger was unplugged ({minutes} min). Resets when you "
 "plug it in."
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:49
+#: src/msi_ultrapower/ui/status_strip.py:49
 msgid "NVIDIA off"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:50
+#: src/msi_ultrapower/ui/status_strip.py:50
 msgid "NVIDIA sleeping"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:50
+#: src/msi_ultrapower/ui/status_strip.py:50
 msgid "NVIDIA active"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:51
+#: src/msi_ultrapower/ui/status_strip.py:51
 msgid "NVIDIA going to sleep"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:51
+#: src/msi_ultrapower/ui/status_strip.py:51
 msgid "NVIDIA waking up"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:58
+#: src/msi_ultrapower/ui/status_strip.py:58
 #, python-brace-format
 msgid "CPU {temp}°C"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:60 src/pil_modu/ui/status_strip.py:65
+#: src/msi_ultrapower/ui/status_strip.py:60
+#: src/msi_ultrapower/ui/status_strip.py:65
 #, python-brace-format
 msgid "fan {speed}%"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:63
+#: src/msi_ultrapower/ui/status_strip.py:63
 #, python-brace-format
 msgid "GPU {temp}°C"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:135
+#: src/msi_ultrapower/ui/status_strip.py:135
 msgid "Battery level and charging state"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:137 src/pil_modu/ui/status_strip.py:138
+#: src/msi_ultrapower/ui/status_strip.py:137
+#: src/msi_ultrapower/ui/status_strip.py:138
 msgid "Temperature and fan speed reported by the EC"
 msgstr ""
 
-#: src/pil_modu/ui/status_strip.py:139
+#: src/msi_ultrapower/ui/status_strip.py:139
 msgid "Current state of the NVIDIA GPU"
 msgstr ""
 
-#: src/pil_modu/ui/tray.py:43
+#: src/msi_ultrapower/ui/tray.py:43
 msgid "Open Power Modes"
 msgstr ""
 
-#: src/pil_modu/ui/tray.py:44
+#: src/msi_ultrapower/ui/tray.py:44
 msgid "Quit"
 msgstr ""
 
-#: src/pil_modu/ui/tray.py:53
+#: src/msi_ultrapower/ui/tray.py:53
 msgid "Another change is still being applied."
 msgstr ""
 
-#: src/pil_modu/ui/tray.py:90
+#: src/msi_ultrapower/ui/tray.py:90
 #, python-brace-format
 msgid "Average over {minutes} min on battery"
 msgstr ""
 
-#: src/pil_modu/ui/tray.py:97 src/pil_modu/ui/window.py:382
+#: src/msi_ultrapower/ui/tray.py:97 src/msi_ultrapower/ui/window.py:382
 #, python-brace-format
 msgid "{name} applied."
 msgstr ""
 
-#: src/pil_modu/ui/tray.py:100
+#: src/msi_ultrapower/ui/tray.py:100
 #, python-brace-format
 msgid "{name} could not be applied. Open the window for the log."
 msgstr ""
 
-#: src/pil_modu/ui/widgets.py:125
+#: src/msi_ultrapower/ui/widgets.py:125
 msgid "Active"
 msgstr ""
 
-#: src/pil_modu/ui/widgets.py:148
+#: src/msi_ultrapower/ui/widgets.py:148
 #, python-brace-format
 msgid "Not available here: {reason}"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:41
+#: src/msi_ultrapower/ui/window.py:41
 msgid ""
 "The msi-ec driver was not found: fan, EC mode and Cooler Boost cannot be "
 "changed (AUR: msi-ec-dkms-git)."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:44
+#: src/msi_ultrapower/ui/window.py:44
 msgid ""
 "KDE Plasma 6 was not found: refresh rate and brightness are not changed."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:46
+#: src/msi_ultrapower/ui/window.py:46
 #, python-brace-format
 msgid ""
 "{services} is running and conflicts with power profiles; modes may fail to "
 "verify. Disable one of them."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:54
+#: src/msi_ultrapower/ui/window.py:54
 msgid "Activity log"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:60
+#: src/msi_ultrapower/ui/window.py:60
 msgid "Applied steps appear here."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:157 src/pil_modu/ui/window.py:435
+#: src/msi_ultrapower/ui/window.py:157 src/msi_ultrapower/ui/window.py:435
 msgid "Restart"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:194
+#: src/msi_ultrapower/ui/window.py:194
 msgid ""
 "Whether external displays stay on in this mode. Their refresh rate and "
 "resolution never change."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:215
+#: src/msi_ultrapower/ui/window.py:215
 msgid "Show log"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:226 src/pil_modu/ui/window.py:227
+#: src/msi_ultrapower/ui/window.py:226 src/msi_ultrapower/ui/window.py:227
 msgid "Restore previous settings"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:229
+#: src/msi_ultrapower/ui/window.py:229
 msgid "Previous settings"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:231 src/pil_modu/ui/window.py:318
+#: src/msi_ultrapower/ui/window.py:231 src/msi_ultrapower/ui/window.py:318
 msgid "Apply"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:309
+#: src/msi_ultrapower/ui/window.py:309
 #, python-brace-format
 msgid ""
 "{outputs} is wired to NVIDIA: it turns off in battery mode and cannot be "
 "used until NVIDIA is back."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:318
+#: src/msi_ultrapower/ui/window.py:318
 msgid "Apply again"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:328
+#: src/msi_ultrapower/ui/window.py:328
 #, python-brace-format
 msgid "Active mode: {mode}"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:329
+#: src/msi_ultrapower/ui/window.py:329
 msgid "No mode applied yet (system settings)"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:334
+#: src/msi_ultrapower/ui/window.py:334
 msgid "NVIDIA will be disabled after a restart."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:335
+#: src/msi_ultrapower/ui/window.py:335
 msgid "NVIDIA will be available again after a restart."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:358
+#: src/msi_ultrapower/ui/window.py:358
 #, python-brace-format
 msgid "{limit}% charge limit"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:363
+#: src/msi_ultrapower/ui/window.py:363
 #, python-brace-format
 msgid "Password-free switching {state}"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:370
+#: src/msi_ultrapower/ui/window.py:370
 #, python-brace-format
 msgid "Applying {name}… An administrator password may be requested."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:384
+#: src/msi_ultrapower/ui/window.py:384
 #, python-brace-format
 msgid "{count} setting changed."
 msgid_plural "{count} settings changed."
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/pil_modu/ui/window.py:388
+#: src/msi_ultrapower/ui/window.py:388
 #, python-brace-format
 msgid "{name} could not be applied. See the log for details."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:426
+#: src/msi_ultrapower/ui/window.py:426
 msgid "The new language is used after the app restarts."
 msgstr ""
 
-#: src/pil_modu/ui/window.py:435
+#: src/msi_ultrapower/ui/window.py:435
 msgid "Restart the computer now?"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:445
+#: src/msi_ultrapower/ui/window.py:445
 msgid "Still working"
 msgstr ""
 
-#: src/pil_modu/ui/window.py:446
+#: src/msi_ultrapower/ui/window.py:446
 msgid "You can close the window when the settings are applied."
 msgstr ""

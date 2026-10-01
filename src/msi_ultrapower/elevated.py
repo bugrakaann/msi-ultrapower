@@ -18,7 +18,7 @@ def helper(name, script):
 
 
 def hardware(*args):
-    return [*helper("pil-modu-hardware", paths.HARDWARE_HELPER), *args]
+    return [*helper("msi-ultrapower-hardware", paths.HARDWARE_HELPER), *args]
 
 
 class HardwareHelper:
@@ -56,7 +56,7 @@ class HardwareHelper:
 
 def configure_gpu_boot(mode):
     """Sonraki açılışın GPU modunu hazırlar. Başarılıysa True."""
-    result = subprocess.run([*helper("pil-modu-gpu-boot", paths.GPU_BOOT_HELPER), mode])
+    result = subprocess.run([*helper("msi-ultrapower-gpu-boot", paths.GPU_BOOT_HELPER), mode])
     return result.returncode == 0
 
 

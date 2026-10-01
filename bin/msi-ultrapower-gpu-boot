@@ -1,0 +1,5 @@
+#!/usr/bin/python3 -P
+# pkexec ile root olarak çalışır; polkit eylemi: io.github.bugrakaann.msiultrapower.gpu-boot
+from msi_ultrapower.privileged.gpu_boot import entry
+
+entry()
