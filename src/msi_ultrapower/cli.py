@@ -3,7 +3,7 @@ import argparse
 import fcntl
 import sys
 
-from . import __version__, capabilities, controller, paths, state, status, system
+from . import __version__, capabilities, controller, i18n, paths, state, status, system
 from .i18n import _, ngettext, percent
 from .presets import EXTERNAL_CHOICES, PRESETS, RESTORE_COMMAND
 from .privileged import hardware as hw
@@ -59,7 +59,9 @@ def print_status():
 
 
 def print_doctor():
-    """Compatibility report: which features exist and why others do not. Attached to bug reports."""
+    """Compatibility report: which features exist and why others do not. Attached to bug reports,
+    so it is always in English whatever the app or system language is."""
+    i18n.setup("en")
     caps = capabilities.detect(system.get_outputs())
     plasma = system.plasma_version()
     yes = {True: _("yes"), False: _("NO")}

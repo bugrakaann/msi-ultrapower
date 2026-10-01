@@ -1,3 +1,4 @@
+import io
 import shutil
 import subprocess
 import tempfile
@@ -26,6 +27,17 @@ class TranslationTests(unittest.TestCase):
     def use(self, language):
         with patch.object(i18n, "localedir", return_value=self.locale.name):
             i18n.setup(language)
+
+    def test_doctor_is_always_english(self):
+        self.use("ru")
+        from msi_ultrapower import cli
+        with patch.object(cli.i18n, "localedir", return_value=self.locale.name), \
+                patch.object(cli.system, "get_outputs", return_value=[]), \
+                patch.object(cli.system, "plasma_version", return_value=""), \
+                patch("sys.stdout", new_callable=io.StringIO) as out:
+            cli.print_doctor()
+        self.assertIn("Charge limit", out.getvalue())
+        self.assertNotIn("Предел заряда", out.getvalue())
 
     def test_every_language_translates_the_main_button(self):
         expected = {"tr": "Uygula", "ru": "Применить", "es": "Aplicar", "ar": "تطبيق"}
