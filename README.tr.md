@@ -63,7 +63,7 @@ Bilgisayarında neyin çalıştığını görmek için `pil-modu doctor` çalı�
 ## Kurulum
 
 ```
-git clone https://github.com/<kullanıcı-adın>/pil-modu.git
+git clone https://github.com/bugrakaann/pil-modu.git
 cd pil-modu
 make install      # paketi derler ve pacman ile kurar (güncellemek için de aynı komut)
 make uninstall    # kaldırır (sudo pacman -R pil-modu)
@@ -168,6 +168,12 @@ make clean    # derleme artıklarını sil
 
 Proje yapısı ve katmanlar için İngilizce README'deki *Development* bölümüne bak. Arayüz
 donanıma kendisi dokunmaz; CLI'yi çalıştırır, böylece terminal ve pencere hep aynı davranır.
+
+## Sorumluluk reddi
+
+pil-modu resmi olmayan bir projedir; Micro-Star International (MSI) ile bağlantısı yoktur ve
+MSI tarafından onaylanmamıştır. Gömülü denetleyiciye (EC), çekirdek modülü ve açılış ayarlarına
+yazar; kullanım sorumluluğu sana aittir. Hiçbir garanti verilmez (lisansın 15–16. maddeleri).
 
 ## Lisans
 

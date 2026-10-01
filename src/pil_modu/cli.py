@@ -6,7 +6,7 @@ import argparse
 import fcntl
 import sys
 
-from . import capabilities, controller, paths, state, status, system
+from . import __version__, capabilities, controller, paths, state, status, system
 from .i18n import _, ngettext, percent
 from .presets import ALIASES, EXTERNAL_ALIASES, EXTERNAL_CHOICES, PRESETS, RESTORE_COMMANDS
 from .privileged import hardware as hw
@@ -17,6 +17,7 @@ COMMANDS = [*PRESETS, *RESTORE_COMMANDS, "durum", "sarj", "doctor", "passwordles
 def parse_args(argv):
     parser = argparse.ArgumentParser(
         prog="pil-modu", description=_("Power modes for MSI laptops on KDE Plasma."))
+    parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
     parser.add_argument("mod", metavar="command", choices=[*COMMANDS, *ALIASES],
                         help=_("mode, restore, status, charge or doctor") + ": "
                         + ", ".join(sorted({*COMMANDS, *ALIASES})))

@@ -61,7 +61,7 @@ reports from other models are very welcome (see [Reporting your model](#reportin
 ## Install
 
 ```
-git clone https://github.com/<your-username>/pil-modu.git
+git clone https://github.com/bugrakaann/pil-modu.git
 cd pil-modu
 make install      # builds the package and installs it with pacman (also used to update)
 make uninstall    # removes it (sudo pacman -R pil-modu)
@@ -179,6 +179,12 @@ src/pil_modu/
 
 The UI never touches hardware itself: it runs the CLI, so the terminal and the window always
 behave the same.
+
+## Disclaimer
+
+pil-modu is an unofficial project and is not affiliated with or endorsed by Micro-Star
+International (MSI). It writes to the embedded controller, kernel module and boot settings;
+use it at your own risk. It comes with no warranty (see sections 15–16 of the license).
 
 ## License
 

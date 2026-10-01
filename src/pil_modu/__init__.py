@@ -1,2 +1,2 @@
-"""pil-modu: MSI dizüstüleri / KDE Plasma için güç modu yöneticisi."""
-__version__ = "2.0.0"
+"""pil-modu: power mode manager for MSI laptops on KDE Plasma."""
+__version__ = "3.0.0"

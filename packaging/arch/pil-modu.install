@@ -16,7 +16,7 @@ post_install() {
     if [ -e /var/lib/pil-modu/hardware.json ] || [ -e /var/lib/pil-modu/charge ]; then
         systemctl enable pil-modu-restore.service >/dev/null 2>&1 || true
     fi
-    echo "pil-modu kuruldu. Uygulama menüsü: Güç Modları · Terminal: pil-modu --help"
+    echo "pil-modu installed. App menu: Power Modes · Terminal: pil-modu --help"
 }
 
 post_upgrade() {
@@ -35,5 +35,5 @@ post_remove() {
     if grep -qs "Managed by pil-modu" /etc/polkit-1/rules.d/49-pil-modu.rules; then
         rm -f /etc/polkit-1/rules.d/49-pil-modu.rules
     fi
-    echo "Kişisel kayıtlar ~/.local/share/pil-modu içinde duruyor; istersen silebilirsin."
+    echo "Your personal data is kept in ~/.local/share/pil-modu and ~/.config/pil-modu; delete them if you like."
 }

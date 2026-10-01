@@ -6,13 +6,13 @@
 pkgname=pil-modu
 pkgver=3.0.0
 pkgrel=1
-pkgdesc="MSI dizüstüleri / KDE için güç modu yöneticisi (performans, dengeli, batarya)"
+pkgdesc="Power mode manager for MSI laptops on KDE Plasma (performance, balanced, battery)"
 arch=('any')
 license=('GPL-3.0-or-later')
-depends=('python' 'pyside6' 'power-profiles-daemon' 'kscreen' 'polkit' 'initramfs' 'systemd')
+depends=('python' 'pyside6' 'power-profiles-daemon' 'libkscreen' 'polkit' 'initramfs' 'systemd')
 makedepends=('gettext')
-optdepends=('msi-ec-dkms-git: fan, EC modu, Cooler Boost ve şarj sınırı için'
-            'mcontrolcenter: performans-manuel modunda fan eğrisini ayarlamak için')
+optdepends=('msi-ec-dkms-git: fan, EC mode, Cooler Boost and charge limit'
+            'mcontrolcenter: set the fan curve for the manual-fan performance mode')
 install=pil-modu.install
 
 # Kaynak kod bu deponun kendisi (iki üst klasör).
